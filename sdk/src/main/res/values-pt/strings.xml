@@ -203,7 +203,7 @@
     <string name="mpsdk_your_atm">caixa eletrônico de</string>
     <string name="mpsdk_review_product_quantity">Quantidade: %1$s</string>
     <string name="mpsdk_review_product_price">Preço unitário: %1$s</string>
-    <string name="mpsdk_activity_checkout_title">Confirme a seu compra</string>
+    <string name="mpsdk_activity_checkout_title">Confirme a sua compra</string>
     <string name="mpsdk_review_summary_products">Produtos</string>
     <string name="mpsdk_review_symmary_discount">Descontos</string>
     <string name="mpsdk_review_summary_discounts">Desconto %1$s</string>
