@@ -67,6 +67,13 @@
                 android:gravity="center_horizontal"
                 android:textSize="12dp"/>
 
+            <Spinner
+                android:id="@+id/mpsdkCheckoutSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"/>
+
             <com.mercadopago.customviews.MPButton
                 android:padding="5dp"
                 android:layout_width="match_parent"

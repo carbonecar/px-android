@@ -51,7 +51,24 @@
                     android:gravity="center_horizontal"
                     style="@style/form_label"/>
 
+                <Spinner
+                    android:id="@+id/mpsdkCheckoutSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"/>
+
+
+                <ProgressBar
+                    android:id="@+id/mpsdkCheckoutLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="25dp"
+                    android:visibility="gone"/>
+
                 <com.mercadopago.customviews.MPButton
+                    android:id="@+id/mpsdkContinueButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/mpsdk_button_height"
                     android:layout_marginTop="25dp"
