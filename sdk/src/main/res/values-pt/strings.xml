@@ -195,9 +195,9 @@
     <string name="mpsdk_change_payment">Alterar pagamento</string>
     <string name="mpsdk_review_description_card">%1$s terminado em: %2$s</string>
     <string name="mpsdk_review_off_text_default">Você pagará %1$s\n%2$s</string>
-    <string name="mpsdk_review_off_text">Você pagará %1$s em um\n%2$s</string>
-    <string name="mpsdk_review_off_text_2">Você pagará %1$s em\n%2$s</string>
-    <string name="mpsdk_review_off_text_3">Você pagará %1$s no seu\n%2$s</string>
+    <string name="mpsdk_review_off_text">Você pagará %1$s com\n%2$s</string>
+    <string name="mpsdk_review_off_text_2">Você pagará %1$s no\n%2$s</string>
+    <string name="mpsdk_review_off_text_3">Você pagará %1$s no\n%2$s</string>
     <string name="mpsdk_review_off_text_4">Você pagará %1$s com\n%2$s</string>
     <string name="mpsdk_homebanking">Internet Banking de</string>
     <string name="mpsdk_your_atm">caixa eletrônico de</string>
