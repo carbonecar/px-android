@@ -37,6 +37,7 @@
             android:id="@+id/mpsdkActivityInstallmentsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/mpsdk_white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:descendantFocusability="afterDescendants"/>
     </FrameLayout>
