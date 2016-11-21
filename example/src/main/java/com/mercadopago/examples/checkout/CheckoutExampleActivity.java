@@ -119,6 +119,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     private void getInitialPreference() {
         mContinueLoading.setVisibility(View.VISIBLE);
         mContinueButton.setVisibility(View.GONE);
+        mSpinner.setVisibility(View.INVISIBLE);
         showProgressLayout();
         Map<String, Object> map = new HashMap<>();
         map.put("item_id", "1");
@@ -132,6 +133,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                         initSpinner();
                         mContinueLoading.setVisibility(View.GONE);
                         mContinueButton.setVisibility(View.VISIBLE);
+                        mSpinner.setVisibility(View.VISIBLE);
                     }
 
                     @Override
