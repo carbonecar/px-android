@@ -8,6 +8,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.Payment;
@@ -81,6 +82,24 @@ public class SecurityCodeActivityTest {
     public void releaseIntents() {
         Intents.release();
     }
+
+
+    //Timer
+    @Test
+    public void showCountDownTimerWhenItIsInitialized(){
+
+        CheckoutTimer.getInstance().start(15);
+
+        //sleep();
+
+        mTestRule.launchActivity(validStartIntent);
+
+        onView(withId(R.id.mpsdkTimerTextView)).check(matches(isDisplayed()));
+
+        assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
+
+    }
+
 
     //Recoverable Token
     @Test
