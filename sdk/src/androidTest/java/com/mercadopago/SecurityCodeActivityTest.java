@@ -1,6 +1,8 @@
 package com.mercadopago;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -25,13 +27,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by mromar on 11/21/16.
@@ -132,67 +137,73 @@ public class SecurityCodeActivityTest {
         assertFalse(tokenResult.getId().equals(token.getId()));
     }
 
+    @Test
+    public void showErrorWhenSecurityCodeHaveToBeThreeDigitsAndEnterTwoDigits() {
+        Token token = StaticMock.getToken();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+
+        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE.substring(0, 1)));
+        onView(withId(R.id.mpsdkSecurityCodeNextButton)).perform(click());
+
+        checkSecurityCodeIsInvalid("11", onView(withId(R.id.mpsdkSecurityCodeNextButton)));
+    }
+
+    //TODO check si está ok, sobretodo el método checkSecurityCodeIsInvalid
+    @Test
+    public void showErrorWhenSecurityCodeHaveToBeFourDigitsAndEnterThreeDigits() {
+        Token token = StaticMock.getTokenAmex();
+        PaymentMethod paymentMethod = StaticMock.getAmexPaymentMethodOn();
+
+        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE_FOUR_DIGITS.substring(0, 2)));
+        onView(withId(R.id.mpsdkSecurityCodeNextButton)).perform(click());
+
+        checkSecurityCodeIsInvalid("111", onView(withId(R.id.mpsdkSecurityCodeNextButton)));
+    }
+
+      //TODO Arreglar, rompe
 //    @Test
-//    public void ifSecurityCodeInputIsValidCloneTokenAndFinishActivity() {
+//    public void finishActivityWithCancelResultWhenPressesBackButton() {
 //        Token token = StaticMock.getToken();
-//        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
 //        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-//        Issuer issuer  = StaticMock.getIssuer();
 //
-//        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-//        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-//
-//        Token mockedToken = StaticMock.getToken();
-//        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
-//        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+//        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+//        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+//        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
 //
 //        mTestRule.launchActivity(validStartIntent);
 //
-//        onView(withId(R.id.mpsdkCardSecurityCodeContainer)).check(matches(isDisplayed()));
-//        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE));
-//        onView(withId(R.id.mpsdkNextButton)).perform(click());
-//
-//        ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
-//        String tokenJson = JsonUtil.getInstance().toJson(mockedToken);
-//        assertTrue(tokenJson.equals(result.getExtras().getString("token")));
-//    }
-//
-//    @Test
-//    public void ifSecurityCodeInputForPaymentRecoveryIsNotValidShowError() {
-//        Token token = StaticMock.getToken();
-//        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-//        Issuer issuer  = StaticMock.getIssuer();
-//
-//        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-//        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        onView(withId(R.id.mpsdkCardSecurityCodeContainer)).check(matches(isDisplayed()));
-//        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE.substring(0, 1)));
-//        onView(withId(R.id.mpsdkNextButton)).perform(click());
-//
-//        checkSecurityCodeIsInvalid("11", onView(withId(R.id.mpsdkNextButton)));
-//    }
-//
-//    @Test
-//    public void ifAskSecurityCodeAndPressesBackButtonFinishActivityWithCancelResult() {
-//        Token token = StaticMock.getToken();
-//        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-//        Issuer issuer  = StaticMock.getIssuer();
-//
-//        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-//        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-//
-//        mTestRule.launchActivity(validStartIntent);
 //        onView(withId(R.id.mpsdkBackButton)).perform(click());
 //
 //        ActivityResultUtil.assertFinishCalledWithResult(mTestRule.getActivity(), Activity.RESULT_CANCELED);
-//
 //    }
+
+    private void checkSecurityCodeIsInvalid(String securityCode, ViewInteraction viewInteraction) {
+        fillSecurityCode(securityCode);
+        viewInteraction.perform(click());
+        securityCodeIsCurrentEditText();
+    }
+
+    private void fillSecurityCode(String code) {
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(clearText());
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(code));
+    }
+
+    private void securityCodeIsCurrentEditText() {
+        onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
+        onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(hasFocus()));
+    }
 }
