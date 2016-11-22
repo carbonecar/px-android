@@ -12,9 +12,11 @@ import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentRecovery;
 import com.mercadopago.model.Token;
+import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
 import com.mercadopago.test.StaticMock;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.utils.ActivityResultUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,9 +25,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by mromar on 11/21/16.
@@ -75,30 +81,28 @@ public class SecurityCodeActivityTest {
     @Test
     public void ifPaymentRecoveryReceivedWithPaymentStatusDetailCallForAuthorizeShowOnlySecurityCode() {
         Token token = StaticMock.getToken();
-        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
         PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-        Issuer issuer  = StaticMock.getIssuer();
-
-        //PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
 
         validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
         validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
         validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
 
-// TODO delete, es para guía
-//        mPresenter.setCardInfo(new CardInfo(mPresenter.getPaymentRecovery().getToken()));
-//        mPresenter.setPaymentMethod(mPresenter.getPaymentRecovery().getPaymentMethod());
-//        mPresenter.setToken(mPresenter.getPaymentRecovery().getToken());
+        Token mockedClonedToken = StaticMock.getClonedToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedClonedToken), 200, "");
+
+        Token mockedPutSecurityCodeToken = StaticMock.getClonedToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedPutSecurityCodeToken), 200, "");
 
         mTestRule.launchActivity(validStartIntent);
 
         onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
-        //onView(withId(R.id.mpsdkCardNumberInput)).check(matches(not(isDisplayed())));
-        //onView(withId(R.id.mpsdkCardholderNameInput)).check(matches(not(isDisplayed())));
-        //onView(withId(R.id.mpsdkExpiryDateInput)).check(matches(not(isDisplayed())));
-        //onView(withId(R.id.mpsdkCardPaymentMethodSelectionContainer)).check(matches(not(isDisplayed())));
-        //onView(withId(R.id.mpsdkCardIdentificationTypeContainer)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE));
+        onView(withId(R.id.mpsdkSecurityCodeNextButton)).perform(click());
+
+        ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
+        Token tokenResult = JsonUtil.getInstance().fromJson(result.getExtras().getString("token"), Token.class);
+
+        assertFalse(tokenResult.getId().equals(token.getId()));
     }
 
 //    @Test
