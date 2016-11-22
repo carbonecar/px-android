@@ -274,6 +274,15 @@ public class StaticMock {
         }
     }
 
+    public static Token getClonedTokenAmex() {
+
+        try {
+            return JsonUtil.getInstance().fromJson(getFile(InstrumentationRegistry.getContext(), "mocks/cloned_token_amex.json"), Token.class);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public static Token getTokenMasterIssuers() {
 
         try {

@@ -79,7 +79,7 @@ public class SecurityCodeActivityTest {
 
     //Recoverable Token
     @Test
-    public void ifPaymentRecoveryReceivedWithPaymentStatusDetailCallForAuthorizeShowOnlySecurityCode() {
+    public void askThreeDigitsAndCloneTokenWhenTokenIsReceived() {
         Token token = StaticMock.getToken();
         PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
 
@@ -97,6 +97,33 @@ public class SecurityCodeActivityTest {
 
         onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
         onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE));
+        onView(withId(R.id.mpsdkSecurityCodeNextButton)).perform(click());
+
+        ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
+        Token tokenResult = JsonUtil.getInstance().fromJson(result.getExtras().getString("token"), Token.class);
+
+        assertFalse(tokenResult.getId().equals(token.getId()));
+    }
+
+    @Test
+    public void askFourDigitsAndCloneTokenWhenAmexTokenIsReceived() {
+        Token token = StaticMock.getTokenAmex();
+        PaymentMethod paymentMethod = StaticMock.getAmexPaymentMethodOn();
+
+        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+
+        Token mockedClonedToken = StaticMock.getClonedTokenAmex();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedClonedToken), 200, "");
+
+        Token mockedPutSecurityCodeToken = StaticMock.getClonedTokenAmex();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedPutSecurityCodeToken), 200, "");
+
+        mTestRule.launchActivity(validStartIntent);
+
+        onView(withId(R.id.mpsdkCardSecurityCode)).check(matches(isDisplayed()));
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE_FOUR_DIGITS));
         onView(withId(R.id.mpsdkSecurityCodeNextButton)).perform(click());
 
         ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
