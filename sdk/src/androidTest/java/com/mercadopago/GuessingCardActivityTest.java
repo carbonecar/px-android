@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
@@ -14,6 +15,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.content.ContextCompat;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -42,6 +44,8 @@ import com.mercadopago.utils.ActivityResultUtil;
 import com.mercadopago.utils.CardTestUtils;
 import com.mercadopago.utils.IdentificationTestUtils;
 import com.mercadopago.utils.ViewUtils;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -1912,6 +1916,43 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkNextButton)).perform(click());
         onView(withId(R.id.mpsdkCardIdentificationNumber)).check(matches(withText(paymentRecovery.getToken().getCardHolder().getIdentification().getNumber())));
         onView(withId(R.id.mpsdkCardIdentificationType)).check(matches((isDisplayed())));
+    }
+
+    //Timer
+    @Test
+    public void showCountDownTimerWhenItIsInitialized(){
+        addBankDealsCall();
+        addPaymentMethodsCall();
+        addIdentificationTypesCall();
+
+        Looper.prepare();
+
+        CheckoutTimer.getInstance().start(60);
+
+        mTestRule.launchActivity(validStartIntent);
+
+        Assert.assertTrue(mTestRule.getActivity().findViewById(R.id.mpsdkTimerTextView).getVisibility() == View.VISIBLE);
+        Assert.assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
+    }
+
+    @Test
+    public void finishActivityWhenSetOnFinishCheckoutListener(){
+        addBankDealsCall();
+        addPaymentMethodsCall();
+        addIdentificationTypesCall();
+
+        Looper.prepare();
+
+        CheckoutTimer.getInstance().start(10);
+        CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {
+            @Override
+            public void onFinish() {
+                CheckoutTimer.getInstance().finishCheckout();
+                Assert.assertTrue(mTestRule.getActivity().isFinishing());
+            }
+        });
+
+        mTestRule.launchActivity(validStartIntent);
     }
 
 //    @Test
