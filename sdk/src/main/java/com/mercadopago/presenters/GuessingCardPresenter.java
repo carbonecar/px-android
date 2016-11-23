@@ -269,10 +269,6 @@ public class GuessingCardPresenter {
         return PaymentMethodGuessingController.getCardNumberLength(mPaymentMethod, mBin);
     }
 
-    public void setCardNumberLength(int length) {
-
-    }
-
     protected void initializeGuessingCardNumberController() {
         List<PaymentMethod> supportedPaymentMethods = mPaymentPreference
                 .getSupportedPaymentMethods(mPaymentMethodList);
