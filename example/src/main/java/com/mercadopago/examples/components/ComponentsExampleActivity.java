@@ -6,13 +6,9 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
@@ -38,7 +34,6 @@ import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentPreference;
-import com.mercadopago.model.Site;
 import com.mercadopago.model.Token;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
@@ -55,13 +50,11 @@ public class ComponentsExampleActivity extends AppCompatActivity {
     private CheckBox mCashExcluded;
     private ProgressBar mProgressBar;
     private View mRegularLayout;
-    private Spinner mSpinner;
 
     private String mPublicKey;
     private Integer mSelectedColor;
     private Integer mDefaultColor;
     private BigDecimal mAmount;
-    private Site mSite;
     private boolean mCreatePaymentExampleSelected;
 
     @Override
@@ -78,43 +71,8 @@ public class ComponentsExampleActivity extends AppCompatActivity {
         mVisaExcluded = (CheckBox) findViewById(R.id.visaExcluded);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mRegularLayout = findViewById(R.id.regularLayout);
-        mSpinner = (Spinner) findViewById(R.id.mpsdkCheckoutSpinner);
         mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY_EXAMPLES_SERVICE;
         mAmount = ExamplesUtils.DUMMY_ITEM_UNIT_PRICE;
-        initSpinner();
-    }
-
-    private void initSpinner() {
-        String[] countries = {"Argentina", "Brasil", "Mexico"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, countries);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setSelection(0);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setCountryValues(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    private void setCountryValues(int position) {
-        if (position == 0) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY;
-            mSite = Sites.ARGENTINA;
-        } else if (position == 1) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY_BR;
-            mSite = Sites.BRASIL;
-        } else if (position == 2) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY_MX;
-            mSite = Sites.MEXICO;
-        }
     }
 
     public void onCompletePaymentMethodSelectionClicked(View view) {
@@ -124,7 +82,7 @@ public class ComponentsExampleActivity extends AppCompatActivity {
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)
-                .setSite(mSite)
+                .setSite(Sites.ARGENTINA)
                 .setAmount(mAmount)
                 .setPaymentPreference(paymentPreference) //Optional
                 .setDecorationPreference(decorationPreference) //Optional
@@ -141,9 +99,11 @@ public class ComponentsExampleActivity extends AppCompatActivity {
 
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey(mPublicKey)
+//                .setPublicKey("APP_USR-f163b2d7-7462-4e7b-9bd5-9eae4a7f99c3")
+                .setPublicKey("25145556-1163-4fad-8a18-355e4411158b")
                 .setAmount(mAmount)
-                .setSite(mSite)
+//                .setSite(Sites.BRASIL)
+                .setSite(Sites.ARGENTINA)
                 .setInstallmentsEnabled(true)
                 .setPaymentPreference(paymentPreference) //Optional
                 .setDecorationPreference(decorationPreference) //Optional
@@ -203,7 +163,7 @@ public class ComponentsExampleActivity extends AppCompatActivity {
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)
-                .setSite(mSite)
+                .setSite(Sites.ARGENTINA)
                 .setAmount(mAmount)
                 .setIssuer(issuer)
                 .setPaymentMethod(paymentMethod)

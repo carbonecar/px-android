@@ -6,18 +6,14 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MerchantServer;
-import com.mercadopago.customviews.MPButton;
 import com.mercadopago.examples.R;
 import com.mercadopago.examples.utils.ColorPickerDialog;
 import com.mercadopago.examples.utils.ExamplesUtils;
@@ -40,15 +36,11 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     private CheckBox mDarkFontEnabled;
     private ProgressBar mProgressBar;
     private View mRegularLayout;
-    private Spinner mSpinner;
-    private MPButton mContinueButton;
-    private ProgressBar mContinueLoading;
 
     private CheckoutPreference mCheckoutPreference;
     private String mPublicKey;
     private Integer mDefaultColor;
     private Integer mSelectedColor;
-    private String mCheckoutPreferenceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,43 +53,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         mRegularLayout = findViewById(R.id.regularLayout);
         mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY;
         mDefaultColor = ContextCompat.getColor(this, R.color.colorPrimary);
-        mSpinner = (Spinner) findViewById(R.id.mpsdkCheckoutSpinner);
-        mContinueButton = (MPButton) findViewById(R.id.mpsdkContinueButton);
-        mContinueLoading = (ProgressBar) findViewById(R.id.mpsdkCheckoutLoading);
-        getInitialPreference();
-    }
-
-    private void initSpinner() {
-        String[] countries = {"Argentina", "Brasil", "Mexico"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, countries);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setSelection(0);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setCountryValues(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    private void setCountryValues(int position) {
-        if (position == 0) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY;
-            mCheckoutPreferenceId = mCheckoutPreference.getId();
-        } else if (position == 1) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY_BR;
-            mCheckoutPreferenceId = ExamplesUtils.DUMMY_MERCHANT_PREF_ID_BR;
-        } else if (position == 2) {
-            mPublicKey = ExamplesUtils.DUMMY_MERCHANT_PUBLIC_KEY_MX;
-            mCheckoutPreferenceId = ExamplesUtils.DUMMY_MERCHANT_PREF_ID_MX;
-        }
     }
 
     public void changeColor(View view) {
@@ -113,32 +68,20 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
 
     public void onContinueClicked(View view) {
-        startMercadoPagoCheckout();
-    }
-
-    private void getInitialPreference() {
-        mContinueLoading.setVisibility(View.VISIBLE);
-        mContinueButton.setVisibility(View.GONE);
-        mSpinner.setVisibility(View.INVISIBLE);
         showProgressLayout();
         Map<String, Object> map = new HashMap<>();
         map.put("item_id", "1");
         map.put("amount", new BigDecimal(300));
-        MerchantServer.createPreference(this, "http://private-9376e-paymentmethodsmla.apiary-mock.com/",
-                "merchantUri/merchant_preference", map, new Callback<CheckoutPreference>() {
+        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
                     @Override
                     public void success(CheckoutPreference checkoutPreference) {
                         mCheckoutPreference = checkoutPreference;
-                        mCheckoutPreferenceId = mCheckoutPreference.getId();
-                        initSpinner();
-                        mContinueLoading.setVisibility(View.GONE);
-                        mContinueButton.setVisibility(View.VISIBLE);
-                        mSpinner.setVisibility(View.VISIBLE);
+                        startMercadoPagoCheckout();
                     }
 
                     @Override
                     public void failure(ApiException error) {
-                        mContinueLoading.setVisibility(View.GONE);
                         showRegularLayout();
                         Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
                     }
@@ -146,13 +89,12 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     }
 
     private void startMercadoPagoCheckout() {
-
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)
-                .setCheckoutPreferenceId(mCheckoutPreferenceId)
+                .setCheckoutPreferenceId(mCheckoutPreference.getId())
                 .setDecorationPreference(decorationPreference) //Optional
                 .setMerchantBaseUrl(ExamplesUtils.DUMMY_MERCHANT_BASE_URL) //Optional
                 .setMerchantGetCustomerUri(ExamplesUtils.DUMMY_MERCHANT_GET_CUSTOMER_URI) //Optional

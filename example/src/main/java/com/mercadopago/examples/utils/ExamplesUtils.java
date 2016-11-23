@@ -36,8 +36,6 @@ public class ExamplesUtils {
 
     // * Merchant public key
     public static final String DUMMY_MERCHANT_PUBLIC_KEY = "TEST-ad365c37-8012-4014-84f5-6c895b3f8e0a";
-    public static final String DUMMY_MERCHANT_PUBLIC_KEY_BR = "TEST-fd3d3fc1-4929-4ce6-8f3f-ee89c4c2a92e";
-    public static final String DUMMY_MERCHANT_PUBLIC_KEY_MX = "TEST-9eb0be69-329a-417f-9dd5-aad772a4d50b";
 
     public static final String DUMMY_MERCHANT_PUBLIC_KEY_EXAMPLES_SERVICE = "444a9ef5-8a6b-429f-abdf-587639155d88";
     // DUMMY_MERCHANT_PUBLIC_KEY_AR = "444a9ef5-8a6b-429f-abdf-587639155d88";
@@ -45,10 +43,6 @@ public class ExamplesUtils {
     // DUMMY_MERCHANT_PUBLIC_KEY_MX = "6c0d81bc-99c1-4de8-9976-c8d1d62cd4f2";
     // DUMMY_MERCHANT_PUBLIC_KEY_VZ = "2b66598b-8b0f-4588-bd2f-c80ca21c6d18";
     // DUMMY_MERCHANT_PUBLIC_KEY_CO = "aa371283-ad00-4d5d-af5d-ed9f58e139f1";
-
-    // * Merchant preferences
-    public static final String DUMMY_MERCHANT_PREF_ID_BR = "231055220-25f99796-1b62-40f1-9fe3-2ecc662f2438";
-    public static final String DUMMY_MERCHANT_PREF_ID_MX = "137787120-2853c5cb-388b-49f1-824c-759366965aef";
 
     // * Merchant server vars
     public static final String DUMMY_MERCHANT_BASE_URL = "https://www.mercadopago.com";
