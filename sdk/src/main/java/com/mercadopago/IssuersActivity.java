@@ -266,6 +266,7 @@ public class IssuersActivity extends AppCompatActivity implements IssuersActivit
         mFrontCardView.inflateInParent(mCardContainer, true);
         mFrontCardView.initializeControls();
         mFrontCardView.draw();
+        mFrontCardView.enableEditingCardNumber();
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {

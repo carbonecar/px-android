@@ -243,6 +243,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mFrontCardView.inflateInParent(mCardContainer, true);
         mFrontCardView.initializeControls();
         mFrontCardView.draw();
+        mFrontCardView.enableEditingCardNumber();
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {

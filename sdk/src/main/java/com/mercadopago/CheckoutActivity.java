@@ -153,6 +153,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     @Override
     protected void getActivityParameters() {
+
         mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mMerchantBaseUrl = this.getIntent().getStringExtra("merchantBaseUrl");
         mMerchantGetCustomerUri = this.getIntent().getStringExtra("merchantGetCustomerUri");
@@ -620,6 +621,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
         drawSummary();
         drawProductList();
         drawPaymentMethodList();
+        mScrollView.scrollTo(0, 0);
     }
 
     private void showScrollView() {

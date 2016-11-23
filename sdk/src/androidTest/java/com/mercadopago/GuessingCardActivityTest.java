@@ -2038,6 +2038,11 @@ public class GuessingCardActivityTest {
         mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
     }
 
+    private void addPaymentMethodsCallMLM() {
+        String paymentMethods = StaticMock.getPaymentMethodListMLM();
+        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
+    }
+
     private void sleep() {
         try {
             Thread.sleep(3000);

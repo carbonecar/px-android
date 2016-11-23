@@ -12,7 +12,7 @@
     <FrameLayout
         android:id="@+id/mpsdkSecurityCodeActivityBackground"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="145dp"
         android:background="@color/mpsdk_background_blue">
 
         <com.mercadopago.customviews.MPTextView

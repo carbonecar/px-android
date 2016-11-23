@@ -253,6 +253,7 @@ public class PaymentTypesActivity extends AppCompatActivity implements PaymentTy
         mFrontCardView.inflateInParent(mCardContainer, true);
         mFrontCardView.initializeControls();
         mFrontCardView.draw();
+        mFrontCardView.enableEditingCardNumber();
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {
