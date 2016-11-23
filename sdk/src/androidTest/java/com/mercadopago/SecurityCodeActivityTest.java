@@ -2,11 +2,14 @@ package com.mercadopago;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.View;
 
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.Issuer;
@@ -85,28 +88,48 @@ public class SecurityCodeActivityTest {
 
 
     //Timer
-//    @Test
-//    public void showCountDownTimerWhenItIsInitialized(){
+    @Test
+    public void showCountDownTimerWhenItIsInitialized(){
 
-//        mTestRule.getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                CheckoutTimer.getInstance().start(15);
-//            }
-//        });
-//        new Thread(new Runnable() {
-//            public void run() {
-//                CheckoutTimer.getInstance().start(15);
-//            }
-//        }).start();
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        onView(withId(R.id.mpsdkTimerTextView)).check(matches(isDisplayed()));
-//
-//        assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
-//    }
+        Token token = StaticMock.getToken();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
 
+        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+
+        Looper.prepare();
+
+        CheckoutTimer.getInstance().start(60);
+
+        mTestRule.launchActivity(validStartIntent);
+
+        assertTrue(mTestRule.getActivity().findViewById(R.id.mpsdkTimerTextView).getVisibility() == View.VISIBLE);
+        assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
+    }
+
+    @Test
+    public void finishActivityWhenSetOnFinishCheckoutListener(){
+        Token token = StaticMock.getToken();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+
+        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
+        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+
+        Looper.prepare();
+
+        CheckoutTimer.getInstance().start(10);
+        CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {
+            @Override
+            public void onFinish() {
+                CheckoutTimer.getInstance().finishCheckout();
+                assertTrue(mTestRule.getActivity().isFinishing());
+            }
+        });
+
+        mTestRule.launchActivity(validStartIntent);
+    }
 
     //Recoverable Token
     @Test

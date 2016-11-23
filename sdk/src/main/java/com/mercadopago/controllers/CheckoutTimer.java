@@ -98,7 +98,9 @@ public class CheckoutTimer {
                 String timeToShow = calculateTime(0);
                 notifyOnTimeChangeAllObservers(timeToShow);
                 stop();
-                mFinishListener.onFinish();
+                if(mFinishListener != null) {
+                    mFinishListener.onFinish();
+                }
             }
         };
     }
