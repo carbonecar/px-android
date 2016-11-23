@@ -402,7 +402,13 @@ public class GuessingCardPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                getIdentificationTypesAsync();
+                setFailureRecovery(new FailureRecovery() {
+                    @Override
+                    public void recover() {
+                        getIdentificationTypesAsync();
+                    }
+                });
+                mView.showApiExceptionError(apiException);
             }
         });
     }
@@ -427,7 +433,7 @@ public class GuessingCardPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                getBankDealsAsync();
+                //do nothing
             }
         });
     }
