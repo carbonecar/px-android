@@ -43,6 +43,7 @@ import com.mercadopago.listeners.card.CardSecurityCodeTextWatcher;
 import com.mercadopago.listeners.card.CardholderNameTextWatcher;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CardInfo;
+import com.mercadopago.model.CardToken;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Identification;
 import com.mercadopago.model.IdentificationType;
@@ -83,6 +84,15 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
     public static final String ERROR_STATE = "textview_error";
     public static final String NORMAL_STATE = "textview_normal";
+
+    public static final String CARD_SIDE_STATE_BUNDLE = "mCardSideState";
+    public static final String PAYMENT_METHOD_BUNDLE = "mPaymentMethod";
+    public static final String ID_REQUIRED_BUNDLE = "mIdentificationNumberRequired";
+    public static final String SEC_CODE_REQUIRED_BUNDLE = "mIsSecurityCodeRequired";
+    public static final String SEC_CODE_LENGTH_BUNDLE = "mCardSecurityCodeLength";
+    public static final String CARD_NUMBER_LENGTH_BUNDLE = "mCardNumberLength";
+    public static final String SEC_CODE_LOCATION_BUNDLE = "mSecurityCodeLocation";
+    public static final String CARD_TOKEN_BUNDLE = "mCardToken";
 
     //ViewMode
     protected boolean mLowResActive;
@@ -798,6 +808,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     public void initializeIdentificationTypes(List<IdentificationType> identificationTypes) {
         mIdentificationTypeSpinner.setAdapter(new IdentificationTypesAdapter(this, identificationTypes));
         mIdentificationTypeContainer.setVisibility(View.VISIBLE);
+        mIdentificationCardView.setIdentificationType(identificationTypes.get(0));
     }
 
     @Override
