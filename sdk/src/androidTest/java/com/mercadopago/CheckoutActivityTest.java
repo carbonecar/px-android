@@ -60,6 +60,8 @@ public class CheckoutActivityTest {
         }
     }
 
+    //
+
     //COMMON STATE TESTS
 
 //    @Test

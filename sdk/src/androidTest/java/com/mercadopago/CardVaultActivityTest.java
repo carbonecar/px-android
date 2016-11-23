@@ -8,9 +8,13 @@ import android.support.test.rule.ActivityTestRule;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.constants.Sites;
+import com.mercadopago.model.BankDeal;
 import com.mercadopago.model.Installment;
 import com.mercadopago.model.Issuer;
+import com.mercadopago.model.PayerCost;
+import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
+import com.mercadopago.model.PaymentRecovery;
 import com.mercadopago.model.Token;
 import com.mercadopago.test.FakeAPI;
 import com.mercadopago.test.StaticMock;
@@ -27,10 +31,13 @@ import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.Intents.times;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -470,4 +477,52 @@ public class CardVaultActivityTest {
 
         intended(hasComponent(InstallmentsActivity.class.getName()));
     }
+
+    //Recoverable token
+    @Test
+    public void showSecurityCodeActivityWhenPaymentRecoveryIsRecoverableToken(){
+        Token token = StaticMock.getToken();
+        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
+        Issuer issuer  = StaticMock.getIssuer();
+
+        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
+        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        Intents.intended(hasComponent(SecurityCodeActivity.class.getName()), times(1));
+    }
+
+    //Recoverable payment
+    @Test
+    public void showGuessingCardActivityWhenPaymentRecoveryIsNotRecoverableToken(){
+        addBankDealsCall();
+        addPaymentMethodsCall();
+
+        Token token = StaticMock.getToken();
+        Payment payment = StaticMock.getPaymentRejectedBadFilledSecurityCode();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
+        Issuer issuer  = StaticMock.getIssuer();
+
+        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
+        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        Intents.intended(hasComponent(GuessingCardActivity.class.getName()), times(1));
+    }
+
+    private void addBankDealsCall() {
+        List<BankDeal> bankDeals = StaticMock.getBankDeals();
+        mFakeAPI.addResponseToQueue(bankDeals, 200, "");
+    }
+
+    private void addPaymentMethodsCall() {
+        String paymentMethods = StaticMock.getPaymentMethodList();
+        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
+    }
+
 }
