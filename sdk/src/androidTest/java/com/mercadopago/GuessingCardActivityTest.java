@@ -1,11 +1,9 @@
 package com.mercadopago;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
@@ -2033,10 +2031,6 @@ public class GuessingCardActivityTest {
 //        onView(withId(R.id.mpsdkCardIdentificationType)).check(matches((isDisplayed())));
 //    }
 
-    private void addPaymentMethodsCallMLM() {
-        String paymentMethods = StaticMock.getPaymentMethodListMLM();
-        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
-    }
 
     private void addPaymentMethodsCallMLM() {
         String paymentMethods = StaticMock.getPaymentMethodListMLM();
