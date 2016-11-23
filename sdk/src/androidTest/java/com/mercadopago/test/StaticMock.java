@@ -68,6 +68,8 @@ public class StaticMock {
     public final static String DUMMY_SECURITY_CODE = "123";
     public final static String DUMMY_SECURITY_CODE_FOUR_DIGITS = "1234";
     public final static String DUMMY_EXPIRATION_DATE = "1225";
+    public final static int DUMMY_EXPIRATION_DATE_ONLY_MONTH = 12;
+    public final static int DUMMY_EXPIRATION_DATE_ONLY_YEAR = 25;
     public final static String DUMMY_EXPIRATION_DATE_WITH_MASK = "12/25";
     public final static String DUMMY_CI_NUMBER = "123456789";
     public final static String DUMMY_LC_NUMBER = "1234567";
@@ -153,6 +155,15 @@ public class StaticMock {
             return null;
         }
 
+    }
+
+    public static String getPaymentMethodListMLM() {
+        try {
+            return getFile(InstrumentationRegistry.getContext(), "mocks/payment_method_list_mlm.json");
+
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static List<PayerCost> getPayerCosts(Context context) {

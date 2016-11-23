@@ -69,13 +69,12 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
 
     public void onContinueClicked(View view) {
-
         showProgressLayout();
         Map<String, Object> map = new HashMap<>();
         map.put("item_id", "1");
         map.put("amount", new BigDecimal(300));
-        MerchantServer.createPreference(this, "http://private-9376e-paymentmethodsmla.apiary-mock.com/",
-                "merchantUri/merchant_preference", map, new Callback<CheckoutPreference>() {
+        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
                     @Override
                     public void success(CheckoutPreference checkoutPreference) {
                         mCheckoutPreference = checkoutPreference;
@@ -91,7 +90,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     }
 
     private void startMercadoPagoCheckout() {
-
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 
         CheckoutTimer.getInstance().start(40);

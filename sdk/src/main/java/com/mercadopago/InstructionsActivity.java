@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -20,6 +21,7 @@ import com.mercadopago.constants.PaymentTypes;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.model.ApiException;
+import com.mercadopago.model.Currency;
 import com.mercadopago.model.Instruction;
 import com.mercadopago.model.InstructionActionInfo;
 import com.mercadopago.model.InstructionReference;
@@ -30,7 +32,6 @@ import com.mercadopago.util.ApiUtil;
 import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
-import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.util.MercadoPagoUtil;
 import com.mercadopago.util.ScaleUtil;
 
@@ -58,6 +59,8 @@ public class InstructionsActivity extends MercadoPagoActivity {
     protected MPTextView mReferencePrimaryInfo;
     protected MPTextView mPrimaryInfoInstructions;
     protected View mPrimaryInfoSeparator;
+    protected ProgressBar mProgressBar;
+    protected LinearLayout mContentLayout;
 
     //Params
     protected Payment mPayment;
@@ -105,6 +108,8 @@ public class InstructionsActivity extends MercadoPagoActivity {
         mPrimaryInfoInstructions = (MPTextView) findViewById(R.id.mpsdkPrimaryInfoInstructions);
         mPrimaryInfoSeparator = findViewById(R.id.mpsdkPrimaryInfoSeparator);
         mExitTextView = (MPTextView) findViewById(R.id.mpsdkExitInstructions);
+        mProgressBar = (ProgressBar) findViewById(R.id.mpsdkProgressBar);
+        mContentLayout = (LinearLayout) findViewById(R.id.mpsdkInstructionsContent);
         mExitTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +136,7 @@ public class InstructionsActivity extends MercadoPagoActivity {
 
     protected void getInstructionsAsync() {
 
-        LayoutUtil.showProgressLayout(this);
+        showLoading();
         mMercadoPago.getPaymentResult(mPayment.getId(), mPaymentTypeId, new Callback<PaymentResult>() {
             @Override
             public void success(PaymentResult paymentResult) {
@@ -166,7 +171,17 @@ public class InstructionsActivity extends MercadoPagoActivity {
         } else {
             showInstructions(instruction);
         }
-        LayoutUtil.showRegularLayout(this);
+        stopLoading();
+    }
+
+    private void showLoading() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mContentLayout.setVisibility(View.GONE);
+    }
+
+    private void stopLoading() {
+        mProgressBar.setVisibility(View.GONE);
+        mContentLayout.setVisibility(View.VISIBLE);
     }
 
     private Instruction getInstruction(List<Instruction> instructions) {
@@ -201,7 +216,9 @@ public class InstructionsActivity extends MercadoPagoActivity {
     }
 
     protected void setTitle(String title) {
-        Spanned formattedTitle = CurrenciesUtil.formatCurrencyInText(mPayment.getTransactionAmount(), mPayment.getCurrencyId(), title, false, true);
+        Spanned formattedTitle = CurrenciesUtil.formatCurrencyInText("<br>", mPayment.getTransactionAmount(), mPayment.getCurrencyId(), title, false, true);
+        List<Currency> currencies = CurrenciesUtil.getAllCurrencies();
+
         mTitle.setText(formattedTitle);
     }
 
@@ -223,12 +240,10 @@ public class InstructionsActivity extends MercadoPagoActivity {
         }
     }
 
-
     protected void setReferencesInformation(Instruction instruction) {
         LinearLayout.LayoutParams marginParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        int marginTop = ScaleUtil.getPxFromDp(3, this);
-        int marginBottom = ScaleUtil.getPxFromDp(15, this);
+        int marginBottom = ScaleUtil.getPxFromDp(13, this);
         for (InstructionReference reference : instruction.getReferences()) {
             MPTextView currentTitleTextView = new MPTextView(this);
             MPTextView currentValueTextView = new MPTextView(this);
@@ -248,9 +263,9 @@ public class InstructionsActivity extends MercadoPagoActivity {
                 currentValueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, referenceSize);
 
                 if (reference.isNumericReference()){
-                    marginParams.setMargins(175, marginTop, 175, marginBottom);
+                    marginParams.setMargins(150, 0, 150, marginBottom);
                 } else {
-                    marginParams.setMargins(0, marginTop, 0, marginBottom);
+                    marginParams.setMargins(0, 0, 0, marginBottom);
                 }
 
                 currentValueTextView.setLayoutParams(marginParams);
@@ -265,7 +280,7 @@ public class InstructionsActivity extends MercadoPagoActivity {
     }
 
     private int getTextSizeForReference() {
-        return getResources().getDimensionPixelSize(R.dimen.mpsdk_large_text);
+        return getResources().getDimensionPixelSize(R.dimen.mpsdk_title_text);
     }
 
     private void setInformationMessages(Instruction instruction) {
