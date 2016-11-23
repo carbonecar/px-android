@@ -848,7 +848,6 @@ public class PaymentVaultActivityTest {
     @Test
     public void whenReceivedCancelResponseWithMPExceptionFromNestedSelectionFinishSelection() {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
-
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
         MPException mpException = new MPException("Some message", false);
@@ -918,6 +917,13 @@ public class PaymentVaultActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
+        List<String> excludedTypes = new ArrayList<String>() {{
+            add("ticket");
+        }};
+        PaymentPreference paymentPreference = new PaymentPreference();
+        paymentPreference.setExcludedPaymentTypeIds(excludedTypes);
+        validStartIntent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
+
         Looper.prepare();
 
         CheckoutTimer.getInstance().start(60);
@@ -932,6 +938,13 @@ public class PaymentVaultActivityTest {
     public void finishActivityWhenSetOnFinishCheckoutListener(){
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
+
+        List<String> excludedTypes = new ArrayList<String>() {{
+            add("ticket");
+        }};
+        PaymentPreference paymentPreference = new PaymentPreference();
+        paymentPreference.setExcludedPaymentTypeIds(excludedTypes);
+        validStartIntent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
 
         Looper.prepare();
 
