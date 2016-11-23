@@ -269,7 +269,7 @@ public class GuessingCardPresenter {
         return PaymentMethodGuessingController.getCardNumberLength(mPaymentMethod, mBin);
     }
 
-    protected void initializeGuessingCardNumberController() {
+    public void initializeGuessingCardNumberController() {
         List<PaymentMethod> supportedPaymentMethods = mPaymentPreference
                 .getSupportedPaymentMethods(mPaymentMethodList);
         mPaymentMethodGuessingController = new PaymentMethodGuessingController(
@@ -344,16 +344,25 @@ public class GuessingCardPresenter {
         }
     }
 
+    public String getSavedBin() {
+        return mBin;
+    }
+
+    public void saveBin(String bin) {
+        mBin = bin;
+        mPaymentMethodGuessingController.saveBin(bin);
+    }
+
     public void configureWithSettings() {
         if (mPaymentMethod == null) return;
-        mBin = mPaymentMethodGuessingController.getSavedBin();
+
         mIsSecurityCodeRequired = mPaymentMethod.isSecurityCodeRequired(mBin);
         if (!mIsSecurityCodeRequired) {
             mView.hideSecurityCodeInput();
         }
         Setting setting = PaymentMethodGuessingController.getSettingByPaymentMethodAndBin(mPaymentMethod, mBin);
         if (setting == null) {
-            mView.showApiExceptionError(null);
+            mView.startErrorView("", "");
         } else {
             int cardNumberLength = getCardNumberLength();
             int spaces = FrontCardView.CARD_DEFAULT_AMOUNT_SPACES;
@@ -516,6 +525,14 @@ public class GuessingCardPresenter {
 
     public String getExpiryYear() {
         return mExpiryYear;
+    }
+
+    public void setExpiryMonth(String expiryMonth) {
+        this.mExpiryMonth = expiryMonth;
+    }
+
+    public void setExpiryYear(String expiryYear) {
+        this.mExpiryYear = expiryYear;
     }
 
     public String getSecurityCode() {

@@ -43,6 +43,7 @@ import com.mercadopago.listeners.card.CardSecurityCodeTextWatcher;
 import com.mercadopago.listeners.card.CardholderNameTextWatcher;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CardInfo;
+import com.mercadopago.model.CardToken;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Identification;
 import com.mercadopago.model.IdentificationType;
@@ -93,6 +94,10 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     public static final String CARD_NUMBER_LENGTH_BUNDLE = "mCardNumberLength";
     public static final String SEC_CODE_LOCATION_BUNDLE = "mSecurityCodeLocation";
     public static final String CARD_TOKEN_BUNDLE = "mCardToken";
+    public static final String CARD_INFO_BIN_BUNDLE = "mBin";
+    public static final String PAYMENT_METHOD_LIST_BUNDLE = "mPaymentMethodList";
+    public static final String EXPIRY_MONTH_BUNDLE = "mExpiryMonth";
+    public static final String EXPIRY_YEAR_BUNDLE = "mExpiryYear";
 
     //ViewMode
     protected boolean mLowResActive;
@@ -196,6 +201,61 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mPresenter.setIdentificationNumberRequired(identificationNumberRequired);
         mPresenter.setPaymentPreference(paymentPreference);
         mPresenter.setPaymentRecovery(paymentRecovery);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mPresenter.getPaymentMethod() != null) {
+            outState.putString(CARD_SIDE_STATE_BUNDLE, mCardSideState);
+            outState.putString(PAYMENT_METHOD_BUNDLE, JsonUtil.getInstance().toJson(mPresenter.getPaymentMethod()));
+            outState.putBoolean(ID_REQUIRED_BUNDLE, mPresenter.isIdentificationNumberRequired());
+            outState.putBoolean(SEC_CODE_REQUIRED_BUNDLE, mPresenter.isSecurityCodeRequired());
+            outState.putInt(SEC_CODE_LENGTH_BUNDLE, mPresenter.getSecurityCodeLength());
+            outState.putInt(CARD_NUMBER_LENGTH_BUNDLE, mPresenter.getCardNumberLength());
+            outState.putString(SEC_CODE_LOCATION_BUNDLE, mPresenter.getSecurityCodeLocation());
+            outState.putString(CARD_TOKEN_BUNDLE, JsonUtil.getInstance().toJson(mPresenter.getCardToken()));
+            outState.putString(CARD_INFO_BIN_BUNDLE, mPresenter.getSavedBin());
+            outState.putString(PAYMENT_METHOD_LIST_BUNDLE, JsonUtil.getInstance().toJson(mPresenter.getPaymentMethodList()));
+            outState.putString(EXPIRY_MONTH_BUNDLE, mPresenter.getExpiryMonth());
+            outState.putString(EXPIRY_YEAR_BUNDLE, mPresenter.getExpiryYear());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString(PAYMENT_METHOD_BUNDLE) != null) {
+                PaymentMethod pm = JsonUtil.getInstance().fromJson(savedInstanceState.getString(PAYMENT_METHOD_BUNDLE), PaymentMethod.class);
+                if (pm != null) {
+                    List<PaymentMethod> paymentMethodList;
+                    try {
+                        Type listType = new TypeToken<List<PaymentMethod>>() {
+                        }.getType();
+                        paymentMethodList = JsonUtil.getInstance().getGson().fromJson(
+                                savedInstanceState.getString(PAYMENT_METHOD_LIST_BUNDLE), listType);
+                    } catch (Exception ex) {
+                        paymentMethodList = null;
+                    }
+                    mPresenter.setPaymentMethodList(paymentMethodList);
+                    mPresenter.initializeGuessingCardNumberController();
+                    mPresenter.saveBin(savedInstanceState.getString(CARD_INFO_BIN_BUNDLE));
+
+                    mPresenter.setIdentificationNumberRequired(savedInstanceState.getBoolean(ID_REQUIRED_BUNDLE));
+                    mPresenter.setSecurityCodeRequired(savedInstanceState.getBoolean(SEC_CODE_REQUIRED_BUNDLE));
+                    mPresenter.setCardToken(JsonUtil.getInstance().fromJson(savedInstanceState.getString(CARD_TOKEN_BUNDLE), CardToken.class));
+                    mPresenter.setExpiryMonth(savedInstanceState.getString(EXPIRY_MONTH_BUNDLE));
+                    mPresenter.setExpiryYear(savedInstanceState.getString(EXPIRY_YEAR_BUNDLE));
+                    mCardView.drawEditingExpiryYear(mPresenter.getExpiryYear());
+
+                    setPaymentMethod(pm);
+                    mCardView.updateCardNumberMask(getCardNumberTextTrimmed());
+                }
+            }
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+        requestCardNumberFocus();
     }
 
     private void analizeLowRes() {
@@ -445,7 +505,8 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             controller,
             new PaymentMethodSelectionCallback() {
                 @Override
-                public void onPaymentMethodListSet(List<PaymentMethod> paymentMethodList) {
+                public void onPaymentMethodListSet(List<PaymentMethod> paymentMethodList, String bin) {
+                    mPresenter.saveBin(bin);
                     if (paymentMethodList.size() == 0) {
                         setInputMaxLength(mCardNumberEditText, MercadoPago.BIN_LENGTH);
                         setErrorView(getString(R.string.mpsdk_invalid_payment_method));
