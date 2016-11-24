@@ -3,7 +3,6 @@ package com.mercadopago;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.graphics.MaskFilter;
 import android.os.Build;
 import android.os.Looper;
 import android.support.test.InstrumentationRegistry;

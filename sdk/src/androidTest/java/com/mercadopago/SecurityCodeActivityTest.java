@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.PaymentMethod;
-
 import com.mercadopago.model.Token;
 import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
