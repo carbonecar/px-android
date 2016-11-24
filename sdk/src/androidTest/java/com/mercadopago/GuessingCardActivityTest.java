@@ -36,6 +36,7 @@ import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentPreference;
 import com.mercadopago.model.PaymentRecovery;
+import com.mercadopago.model.PaymentType;
 import com.mercadopago.model.Token;
 import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
@@ -74,6 +75,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtL
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.mercadopago.utils.ActivityResultUtil.assertFinishCalledWithResult;
+import static com.mercadopago.utils.ActivityResultUtil.getActivityResult;
 import static com.mercadopago.utils.CardTestUtils.getDummyCard;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -1860,7 +1862,29 @@ public class GuessingCardActivityTest {
         Intent paymentTypeResultIntent = new Intent();
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, paymentTypeResultIntent);
         intending(hasComponent(PaymentTypesActivity.class.getName())).respondWith(result);
+        sleep();
     }
+//
+//   @Test
+//   public void resolvePaymentMethodOnPaymentTypeSelection() {
+//       addBankDealsCall();
+//       addPaymentMethodsCallMLM();
+//       addIdentificationTypesCall();
+//
+//       mTestRule.launchActivity(validStartIntent);
+//       DummyCard card = CardTestUtils.getDummyCard("master_mlm");
+//
+//       onView(withId(R.id.mpsdkCardNumber)).perform(typeText(card.getCardNumber()));
+//       onView(withId(R.id.mpsdkNextButton)).perform(click());
+//       onView(withId(R.id.mpsdkCardholderName)).perform(typeText(StaticMock.DUMMY_CARDHOLDER_NAME));
+//       onView(withId(R.id.mpsdkNextButton)).perform(click());
+//       onView(withId(R.id.mpsdkCardExpiryDate)).perform(typeText(StaticMock.DUMMY_EXPIRATION_DATE));
+//       onView(withId(R.id.mpsdkNextButton)).perform(click());
+//       onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(card.getSecurityCode()));
+//       onView(withId(R.id.mpsdkNextButton)).perform(click());
+//
+//
+//   }
 
     //Recoverable Token
 //    @Test

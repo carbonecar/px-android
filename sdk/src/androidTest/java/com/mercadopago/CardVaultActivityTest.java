@@ -9,6 +9,7 @@ import android.support.test.rule.ActivityTestRule;
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.constants.Sites;
 import com.mercadopago.model.BankDeal;
+import com.mercadopago.model.CardToken;
 import com.mercadopago.model.Installment;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
@@ -16,12 +17,9 @@ import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentRecovery;
 import com.mercadopago.model.Token;
-import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
 import com.mercadopago.test.StaticMock;
 import com.mercadopago.util.JsonUtil;
-import com.mercadopago.utils.ActivityResultUtil;
-import com.mercadopago.utils.CardTestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,17 +32,12 @@ import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.Intents.times;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static com.mercadopago.utils.ActivityResultUtil.assertFinishCalledWithResult;
-import static com.mercadopago.utils.CardTestUtils.getDummyCard;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -106,12 +99,13 @@ public class CardVaultActivityTest {
 
         PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
         Issuer issuer = StaticMock.getIssuer();
-        Token token = StaticMock.getToken();
+//           Token token = StaticMock.getToken();
+        CardToken cardToken = StaticMock.getCardToken();
 
         Intent guessingResultIntent = new Intent();
         guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
         guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+        guessingResultIntent.putExtra("cardToken", JsonUtil.getInstance().toJson(cardToken));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
         intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
 
