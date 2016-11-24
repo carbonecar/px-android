@@ -87,24 +87,7 @@ public class CheckoutActivityTest {
         }
     }
 
-    //Recoverable token
-    @Test
-    public void showSecurityCodeActivityWhenPaymentRecoveryIsRecoverableToken(){
-        Token token = StaticMock.getToken();
-        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
-        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-        Issuer issuer  = StaticMock.getIssuer();
-
-        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-
-        mTestRule.launchActivity(validStartIntent);
-
-        intended(hasComponent(SecurityCodeActivity.class.getName()), times(1));
-    }
-
-    //Recoverable payment
+    //Recoverable payment or token
     @Test
     public void onResultRecoverPaymentFromPaymentResultActivityStartCardVault() {
         CheckoutPreference preference = StaticMock.getPreferenceWithExclusions();
