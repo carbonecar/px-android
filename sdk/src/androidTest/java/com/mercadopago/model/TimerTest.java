@@ -4,7 +4,6 @@ import android.os.Looper;
 
 import com.mercadopago.controllers.CheckoutTimer;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

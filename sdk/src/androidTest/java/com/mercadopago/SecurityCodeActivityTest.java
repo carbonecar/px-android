@@ -1,10 +1,7 @@
 package com.mercadopago;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.os.Looper;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,11 +9,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
 import com.mercadopago.controllers.CheckoutTimer;
-import com.mercadopago.model.Issuer;
-import com.mercadopago.model.PayerCost;
-import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
-import com.mercadopago.model.PaymentRecovery;
 import com.mercadopago.model.Token;
 import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
@@ -32,17 +25,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.Matchers.not;
 
 /**
  * Created by mromar on 11/21/16.
@@ -92,7 +81,7 @@ public class SecurityCodeActivityTest {
     public void releaseIntents() {
         Intents.release();
     }
-    
+
     //Recoverable Token
     @Test
     public void askThreeDigitsAndCloneTokenWhenTokenIsReceived() {
