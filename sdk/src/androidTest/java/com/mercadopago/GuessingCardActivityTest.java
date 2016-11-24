@@ -49,6 +49,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,6 +96,11 @@ public class GuessingCardActivityTest {
     private String mMerchantPublicKey;
 
     private FakeAPI mFakeAPI;
+
+    @BeforeClass
+    static public void initialize(){
+        Looper.prepare();
+    }
 
     @Before
     public void createValidStartIntent() {
@@ -1925,8 +1931,6 @@ public class GuessingCardActivityTest {
         addPaymentMethodsCall();
         addIdentificationTypesCall();
 
-        Looper.prepare();
-
         CheckoutTimer.getInstance().start(60);
 
         mTestRule.launchActivity(validStartIntent);
@@ -1940,8 +1944,6 @@ public class GuessingCardActivityTest {
         addBankDealsCall();
         addPaymentMethodsCall();
         addIdentificationTypesCall();
-
-        Looper.prepare();
 
         CheckoutTimer.getInstance().start(10);
         CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {

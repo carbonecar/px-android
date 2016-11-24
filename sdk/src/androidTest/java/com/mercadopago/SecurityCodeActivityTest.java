@@ -26,6 +26,7 @@ import com.mercadopago.utils.ActivityResultUtil;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
@@ -56,6 +58,11 @@ public class SecurityCodeActivityTest {
     private String mMerchantPublicKey;
 
     private FakeAPI mFakeAPI;
+
+    @BeforeClass
+    static public void initialize(){
+        Looper.prepare();
+    }
 
     @Before
     public void createValidStartIntent() {
@@ -85,14 +92,7 @@ public class SecurityCodeActivityTest {
     public void releaseIntents() {
         Intents.release();
     }
-
-
-    //Saved cards
-    @Test
-    public void askThreeDigitsAndCreateTokenWhenSavedCardIsReceived() {
-        //TODO WIP
-    }
-
+    
     //Recoverable Token
     @Test
     public void askThreeDigitsAndCloneTokenWhenTokenIsReceived() {
@@ -182,22 +182,6 @@ public class SecurityCodeActivityTest {
         onView(withId(R.id.mpsdkSecurityCodeErrorText)).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void finishActivityWithCancelResultWhenPressesBackButton() {
-        Token token = StaticMock.getToken();
-        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-
-        validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
-        validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-        validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
-
-        mTestRule.launchActivity(validStartIntent);
-
-        onView(withId(R.id.mpsdkBackButton)).perform(click());
-
-        ActivityResultUtil.assertFinishCalledWithResult(mTestRule.getActivity(), Activity.RESULT_CANCELED);
-    }
-
     //Timer
     @Test
     public void showCountDownTimerWhenItIsInitialized(){
@@ -208,8 +192,6 @@ public class SecurityCodeActivityTest {
         validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
         validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
         validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-
-        Looper.prepare();
 
         CheckoutTimer.getInstance().start(60);
 
@@ -227,8 +209,6 @@ public class SecurityCodeActivityTest {
         validStartIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
         validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
         validStartIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-
-        Looper.prepare();
 
         CheckoutTimer.getInstance().start(10);
         CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {

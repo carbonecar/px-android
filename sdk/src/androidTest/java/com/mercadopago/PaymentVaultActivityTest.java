@@ -39,6 +39,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,6 +81,11 @@ public class PaymentVaultActivityTest {
 
     private Intent validStartIntent;
     private FakeAPI mFakeAPI;
+
+    @BeforeClass
+    static public void initialize(){
+        Looper.prepare();
+    }
 
     @Before
     public void setupStartIntent() {
@@ -924,8 +930,6 @@ public class PaymentVaultActivityTest {
         paymentPreference.setExcludedPaymentTypeIds(excludedTypes);
         validStartIntent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
 
-        Looper.prepare();
-
         CheckoutTimer.getInstance().start(60);
 
         mTestRule.launchActivity(validStartIntent);
@@ -945,8 +949,6 @@ public class PaymentVaultActivityTest {
         PaymentPreference paymentPreference = new PaymentPreference();
         paymentPreference.setExcludedPaymentTypeIds(excludedTypes);
         validStartIntent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
-
-        Looper.prepare();
 
         CheckoutTimer.getInstance().start(10);
         CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {
