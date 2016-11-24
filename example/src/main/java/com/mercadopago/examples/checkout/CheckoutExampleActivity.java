@@ -91,7 +91,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
     private void startMercadoPagoCheckout() {
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
-
+        
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)

@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.PaymentMethod;
+
 import com.mercadopago.model.Token;
 import com.mercadopago.test.ActivityResult;
 import com.mercadopago.test.FakeAPI;
@@ -32,6 +33,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+
 
 /**
  * Created by mromar on 11/21/16.
