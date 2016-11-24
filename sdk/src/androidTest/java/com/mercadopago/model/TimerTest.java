@@ -21,6 +21,7 @@ public class TimerTest extends TestCase {
             @Override
             public void onFinish() {
                 assertTrue(CheckoutTimer.getInstance().getCurrentTime().equals("00:00"));
+                Thread.currentThread().interrupt();
             }
         });
     }
@@ -28,10 +29,13 @@ public class TimerTest extends TestCase {
     public void testStop() {
 
         Looper.prepare();
-        CheckoutTimer.getInstance().start(3);
+
+        CheckoutTimer.getInstance().start(2);
         CheckoutTimer.getInstance().stop();
 
         assertFalse(CheckoutTimer.getInstance().isTimerEnabled());
+
+        Thread.currentThread().interrupt();
     }
 
     public void testReset() {
