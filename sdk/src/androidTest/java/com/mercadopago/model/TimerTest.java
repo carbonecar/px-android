@@ -4,17 +4,26 @@ import android.os.Looper;
 
 import com.mercadopago.controllers.CheckoutTimer;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by mromar on 11/23/16.
  */
 
-public class TimerTest extends TestCase {
+public class TimerTest {
 
-    public void testStart() {
-
+    @BeforeClass
+    static public void initialize(){
         Looper.prepare();
+    }
+
+    @Test
+    public void start() {
 
         CheckoutTimer.getInstance().start(2);
         CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {
@@ -26,9 +35,8 @@ public class TimerTest extends TestCase {
         });
     }
 
-    public void testStop() {
-
-        Looper.prepare();
+    @Test
+    public void stop() {
 
         CheckoutTimer.getInstance().start(2);
         CheckoutTimer.getInstance().stop();
@@ -38,9 +46,8 @@ public class TimerTest extends TestCase {
         Thread.currentThread().interrupt();
     }
 
-    public void testReset() {
-
-        Looper.prepare();
+    @Test
+    public void reset() {
 
         CheckoutTimer.getInstance().start(2);
         CheckoutTimer.getInstance().setOnFinishListener(new CheckoutTimer.FinishListener() {
