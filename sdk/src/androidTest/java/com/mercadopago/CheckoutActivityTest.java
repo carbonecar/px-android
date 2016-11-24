@@ -9,11 +9,13 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
+import com.mercadopago.model.PaymentPreference;
 import com.mercadopago.model.PaymentRecovery;
 import com.mercadopago.model.PaymentResultAction;
 import com.mercadopago.model.Token;
@@ -26,6 +28,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -100,10 +105,9 @@ public class CheckoutActivityTest {
     }
 
     //Recoverable payment
-
     @Test
     public void onResultRecoverPaymentFromPaymentResultActivityStartCardVault() {
-        CheckoutPreference preference = StaticMock.getCheckoutPreference();
+        CheckoutPreference preference = StaticMock.getPreferenceWithExclusions();
         mFakeAPI.addResponseToQueue(preference, 200, "");
 
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
@@ -135,7 +139,7 @@ public class CheckoutActivityTest {
 
         mTestRule.launchActivity(validStartIntent);
 
-        onView(withId(R.id.mpsdkPayButton)).perform(click());
+        onView(withId(R.id.mpsdkReviewButtonText)).perform(click());
 
         intended(hasComponent(CardVaultActivity.class.getName()));
     }
