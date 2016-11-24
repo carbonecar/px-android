@@ -1803,6 +1803,29 @@ public class GuessingCardActivityTest {
         addIdentificationTypesCall();
     }
 
+    //MLM
+    @Test
+    public void showPaymentTypeSelectionWhenGuessingDoesntResolvePaymentType() {
+        addBankDealsCall();
+        addPaymentMethodsCallMLM();
+        addIdentificationTypesCall();
+        mTestRule.launchActivity(validStartIntent);
+        DummyCard card = CardTestUtils.getDummyCard("master_mlm");
+
+        onView(withId(R.id.mpsdkCardNumber)).perform(typeText(card.getCardNumber()));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+        onView(withId(R.id.mpsdkCardholderName)).perform(typeText(StaticMock.DUMMY_CARDHOLDER_NAME));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+        onView(withId(R.id.mpsdkCardExpiryDate)).perform(typeText(StaticMock.DUMMY_EXPIRATION_DATE));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(card.getSecurityCode()));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+
+        Intent paymentTypeResultIntent = new Intent();
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, paymentTypeResultIntent);
+        intending(hasComponent(PaymentTypesActivity.class.getName())).respondWith(result);
+    }
+
     //Recoverable Token
 //    @Test
 //    public void ifPaymentRecoveryReceivedWithPaymentStatusDetailCallForAuthorizeShowOnlySecurityCode() {
