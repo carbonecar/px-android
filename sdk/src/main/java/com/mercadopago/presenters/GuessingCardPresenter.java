@@ -203,6 +203,18 @@ public class GuessingCardPresenter {
         this.mPaymentMethodList = paymentMethodList;
     }
 
+    public void setPaymentTypesList(List<PaymentType> paymentTypesList) {
+        this.mPaymentTypesList = paymentTypesList;
+    }
+
+    public void setIdentificationTypesList(List<IdentificationType> identificationTypesList) {
+        this.mIdentificationTypes = identificationTypesList;
+    }
+
+    public void setBankDealsList(List<BankDeal> bankDealsList) {
+        this.mBankDealsList = bankDealsList;
+    }
+
     public Identification getIdentification() {
         return mIdentification;
     }
@@ -507,7 +519,12 @@ public class GuessingCardPresenter {
         }
     }
 
+    public IdentificationType getIdentificationType() {
+        return this.mIdentificationType;
+    }
+
     public void setIdentificationNumber(String number) {
+        mIdentificationNumber = number;
         mIdentification.setNumber(number);
     }
 
@@ -515,8 +532,16 @@ public class GuessingCardPresenter {
         return mCardNumber;
     }
 
+    public void setCardNumber(String cardNumber) {
+        this.mCardNumber = cardNumber;
+    }
+
     public String getCardholderName() {
         return mCardholderName;
+    }
+
+    public void setCardholderName(String name) {
+        this.mCardholderName = name;
     }
 
     public String getExpiryMonth() {
