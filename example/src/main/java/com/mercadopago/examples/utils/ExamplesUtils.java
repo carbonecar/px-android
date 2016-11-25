@@ -35,9 +35,12 @@ public class ExamplesUtils {
     public static final int CARD_REQUEST_CODE = 13;
 
     // * Merchant public key
-    public static final String DUMMY_MERCHANT_PUBLIC_KEY = "TEST-ad365c37-8012-4014-84f5-6c895b3f8e0a";
+//    public static final String DUMMY_MERCHANT_PUBLIC_KEY = "TEST-ad365c37-8012-4014-84f5-6c895b3f8e0a";
+    public static final String DUMMY_MERCHANT_PUBLIC_KEY = "TEST-fd3d3fc1-4929-4ce6-8f3f-ee89c4c2a92e";
 
-    public static final String DUMMY_MERCHANT_PUBLIC_KEY_EXAMPLES_SERVICE = "444a9ef5-8a6b-429f-abdf-587639155d88";
+//    public static final String DUMMY_MERCHANT_PUBLIC_KEY_EXAMPLES_SERVICE = "444a9ef5-8a6b-429f-abdf-587639155d88";
+    public static final String DUMMY_MERCHANT_PUBLIC_KEY_EXAMPLES_SERVICE = "APP_USR-f163b2d7-7462-4e7b-9bd5-9eae4a7f99c3";
+
     // DUMMY_MERCHANT_PUBLIC_KEY_AR = "444a9ef5-8a6b-429f-abdf-587639155d88";
     // DUMMY_MERCHANT_PUBLIC_KEY_BR = "APP_USR-f163b2d7-7462-4e7b-9bd5-9eae4a7f99c3";
     // DUMMY_MERCHANT_PUBLIC_KEY_MX = "6c0d81bc-99c1-4de8-9976-c8d1d62cd4f2";
@@ -51,7 +54,9 @@ public class ExamplesUtils {
     //public static final String DUMMY_MERCHANT_GET_DISCOUNT_URI = "/checkout/examples/getDiscounts";
 
     // * Merchant access token
-    public static final String DUMMY_MERCHANT_ACCESS_TOKEN = "mla-cards-data";
+//    public static final String DUMMY_MERCHANT_ACCESS_TOKEN = "mla-cards-data";
+    public static final String DUMMY_MERCHANT_ACCESS_TOKEN = "mlb-cards-data";
+
     // DUMMY_MERCHANT_ACCESS_TOKEN_AR = "mla-cards-data";
     // DUMMY_MERCHANT_ACCESS_TOKEN_BR = "mlb-cards-data";
     // DUMMY_MERCHANT_ACCESS_TOKEN_MX = "mlm-cards-data";
