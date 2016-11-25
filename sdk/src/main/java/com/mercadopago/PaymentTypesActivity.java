@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -93,6 +94,7 @@ public class PaymentTypesActivity extends AppCompatActivity implements PaymentTy
             Type listType = new TypeToken<List<PaymentMethod>>() {
             }.getType();
             paymentMethods = JsonUtil.getInstance().getGson().fromJson(this.getIntent().getStringExtra("paymentMethods"), listType);
+            Log.d("lala", this.getIntent().getStringExtra("paymentMethods"));
         } catch (Exception ex) {
             paymentMethods = null;
         }
@@ -102,10 +104,11 @@ public class PaymentTypesActivity extends AppCompatActivity implements PaymentTy
             Type listType = new TypeToken<List<PaymentType>>() {
             }.getType();
             paymentTypes = JsonUtil.getInstance().getGson().fromJson(this.getIntent().getStringExtra("paymentTypes"), listType);
+            Log.d("lala", this.getIntent().getStringExtra("paymentTypes"));
         } catch (Exception ex) {
             paymentTypes = null;
         }
-        String publicKey = getIntent().getStringExtra("publicKey");
+        String publicKey = getIntent().getStringExtra("merchantPublicKey");
         CardInfo cardInfo = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("cardInfo"), CardInfo.class);
         mDecorationPreference = null;
         if (getIntent().getStringExtra("decorationPreference") != null) {

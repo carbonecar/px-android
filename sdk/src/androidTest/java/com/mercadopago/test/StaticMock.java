@@ -32,6 +32,7 @@ public class StaticMock {
     // * Merchant public key
     public static final String DUMMY_MERCHANT_PUBLIC_KEY = "444a9ef5-8a6b-429f-abdf-587639155d88";
     public static final String DUMMY_TEST_PUBLIC_KEY = "TEST-ad365c37-8012-4014-84f5-6c895b3f8e0a";
+    public static final String DUMMY_TEST_MX_PUBLIC_KEY = "TEST-9eb0be69-329a-417f-9dd5-aad772a4d50b";
     public static final String DUMMY_MX_MERCHANT_PUBLIC_KEY = "6c0d81bc-99c1-4de8-9976-c8d1d62cd4f2";
 
     // DUMMY_MERCHANT_PUBLIC_KEY_AR = "444a9ef5-8a6b-429f-abdf-587639155d88";
@@ -244,6 +245,22 @@ public class StaticMock {
         try {
             return getFile(InstrumentationRegistry.getContext(), "mocks/payment_method_list.json");
 
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public static String getPaymentMethodListMaster() {
+        try {
+            return getFile(InstrumentationRegistry.getContext(), "mocks/payment_method_list_master.json");
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public static String getPaymentTypesListMaster() {
+        try {
+            return getFile(InstrumentationRegistry.getContext(), "mocks/payment_types_list_master.json");
         } catch (Exception ex) {
             return null;
         }
