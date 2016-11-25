@@ -374,7 +374,7 @@ public class GuessingCardPresenter {
         }
         Setting setting = PaymentMethodGuessingController.getSettingByPaymentMethodAndBin(mPaymentMethod, mBin);
         if (setting == null) {
-            mView.startErrorView("", "");
+            mView.startErrorView("", "Setting not found for BIN");
         } else {
             int cardNumberLength = getCardNumberLength();
             int spaces = FrontCardView.CARD_DEFAULT_AMOUNT_SPACES;
