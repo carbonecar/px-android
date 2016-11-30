@@ -35,6 +35,7 @@ import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.CardToken;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.IdentificationType;
 import com.mercadopago.model.Installment;
 import com.mercadopago.model.Issuer;
@@ -55,6 +56,7 @@ import com.mercadopago.model.Site;
 import com.mercadopago.model.Token;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.services.BankDealService;
+import com.mercadopago.services.DiscountService;
 import com.mercadopago.services.GatewayService;
 import com.mercadopago.services.IdentificationService;
 import com.mercadopago.services.PaymentService;
@@ -218,6 +220,17 @@ public class MercadoPago {
         }
     }
 
+    //TODO discounts
+    public void getDiscount(final Callback<Discount> callback) {
+        if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
+            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
+
+            DiscountService service = mRetrofit.create(DiscountService.class);
+            service.getDiscount(this.mKey, ).enqueue(callback);
+        } else {
+            throw new RuntimeException("Unsupported key type for this method");
+        }
+    }
 
     public void getIdentificationTypes(Callback<List<IdentificationType>> callback) {
         IdentificationService service = mRetrofit.create(IdentificationService.class);

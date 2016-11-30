@@ -28,9 +28,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 //            setTheme(R.style.Theme_MercadoPagoTheme_NoActionBar);
 //        }
 
-        //TODO analizar para que era esto
-        //mActivityActive = true;
-
         setContentView();
 
         try {
@@ -43,7 +40,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     protected void createPresenter() {
-        mDiscountsPresenter = new DiscountsPresenter();
+        mDiscountsPresenter = new DiscountsPresenter(getBaseContext());
         mDiscountsPresenter.attachView(this);
     }
 
@@ -62,8 +59,11 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     protected void onValidStart() {
+        mDiscountsPresenter.initializeMercadoPago();
+
         //TODO analizar si va el Timer
         //showTimer();
+
         mDiscountsPresenter.initialize(mDiscountsPresenter.getPublicKey());
     }
 
@@ -79,4 +79,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         ErrorUtil.startErrorActivity(this, message, false);
     }
 
+    //TODO es de la vista
+    public void drawReview() {
+        //TODO draw review
+    }
 }

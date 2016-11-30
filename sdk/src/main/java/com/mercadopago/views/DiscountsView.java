@@ -6,5 +6,6 @@ package com.mercadopago.views;
 
 public interface DiscountsView {
 
+    void drawReview();
 
 }

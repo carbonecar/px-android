@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 public class Discount {
 
-    private BigDecimal amountOff;
-    private BigDecimal couponAmount;
-    private String currencyId;
     private Long id;
     private String name;
     private BigDecimal percentOff;
+    private BigDecimal amountOff;
+    private BigDecimal couponAmount;
+    private String currencyId;
 
     public BigDecimal getAmountOff() {
         return amountOff;
