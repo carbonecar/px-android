@@ -520,4 +520,16 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     public void onFinish() {
         this.finish();
     }
+
+    //TODO discounts
+    public void startDiscountsActivity(View view){
+        new MercadoPago.StartActivityBuilder()
+                .setActivity(this)
+                .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
+                .setPayerEmail("matias.romar@mercadolibre.com")
+                //.setAmount(mPaymentVaultPresenter.getAmount())
+                //.setSite(mPaymentVaultPresenter.getSite())
+                //.setDecorationPreference(mDecorationPreference)
+                .startDiscountsActivity();
+    }
 }

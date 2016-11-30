@@ -40,7 +40,8 @@
             android:name=".CheckoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
-        <activity android:name=".GuessingCardActivity"
+        <activity
+            android:name=".GuessingCardActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"
             android:windowSoftInputMode="adjustResize" />
@@ -87,19 +88,27 @@
             android:theme="@style/Theme.PendingMercadoPagoTheme.NoActionbar" />
         <activity
             android:name=".PaymentResultActivity"
-            android:theme="@style/Theme.MercadoPagoTheme.NoActionBar"/>
-        <activity android:name=".SecurityCodeActivity"
+            android:theme="@style/Theme.MercadoPagoTheme.NoActionBar" />
+        <activity
+            android:name=".SecurityCodeActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
-        <activity android:name=".PaymentTypesActivity"
+        <activity
+            android:name=".PaymentTypesActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
-        <activity android:name=".VaultActivity"
-            android:theme="@style/Theme.MercadoPagoTheme" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity
+            android:name=".VaultActivity"
+            android:theme="@style/Theme.MercadoPagoTheme" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".DiscountsActivity"></activity>
     </application>
 
 </manifest>

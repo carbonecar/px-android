@@ -40,4 +40,7 @@
     <dimen name="mpsdk_payer_cost_total_small_text">14dp</dimen>
     <dimen name="mpsdk_payment_text_small_text">20dp</dimen>
     <dimen name="mpsdk_payment_description_small_text">14dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>
