@@ -28,6 +28,7 @@ import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CustomSearchItem;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
@@ -313,6 +314,10 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
             resolvePaymentMethodsRequest(resultCode, data);
         } else if (requestCode == MercadoPago.PAYMENT_VAULT_REQUEST_CODE) {
             resolvePaymentVaultRequest(resultCode, data);
+
+            //TODO discounts
+        } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
+            resolveDiscountRequest(resultCode, data);
         } else if (requestCode == ErrorUtil.ERROR_REQUEST_CODE) {
             resolveErrorRequest(resultCode, data);
         }
@@ -369,6 +374,15 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         if (resultCode == RESULT_OK) {
             PaymentMethod paymentMethod = JsonUtil.getInstance().fromJson(data.getStringExtra("paymentMethod"), PaymentMethod.class);
             selectPaymentMethod(paymentMethod);
+        }
+    }
+
+
+    //TODO discounts
+    protected void resolveDiscountRequest(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            setResult(RESULT_OK, data);
+            finish();
         }
     }
 
@@ -522,12 +536,14 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     //TODO discounts
+    //TODO consejo de Mau, que sea el listener de un botón
     public void startDiscountsActivity(View view){
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
+                //TODO discounts, volver a public key
+                .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
                 .setPayerEmail("matias.romar@mercadolibre.com")
-                //.setAmount(mPaymentVaultPresenter.getAmount())
+                .setAmount(mPaymentVaultPresenter.getAmount())
                 //.setSite(mPaymentVaultPresenter.getSite())
                 //.setDecorationPreference(mDecorationPreference)
                 .startDiscountsActivity();

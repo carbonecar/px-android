@@ -1,14 +1,15 @@
 package com.mercadopago.presenters;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
-import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Discount;
-import com.mercadopago.model.Token;
 import com.mercadopago.views.DiscountsView;
+
+import java.math.BigDecimal;
 
 /**
  * Created by mromar on 11/29/16.
@@ -28,6 +29,13 @@ public class DiscountsPresenter {
     private String mPayerEmail;
     private String mMerchantBaseUrl;
     private String mMerchantDiscountsUri;
+    private String mDiscountCode;
+    private BigDecimal mTransactionAmount;
+
+    private Boolean mDirectDiscountEnable = true;
+    private Boolean mCodeDiscountEnable = true;
+
+    private Discount mDiscount;
 
     public DiscountsPresenter(Context context) {
         this.mContext = context;
@@ -37,14 +45,20 @@ public class DiscountsPresenter {
         this.mDiscountsView = discountsView;
     }
 
-    public void initialize(String publicKey) {
-        //TODO do something
-        getDiscount();
+    public void initialize() {
+
+        if (mDirectDiscountEnable) {
+            getDirectDiscount();
+        }
+
+        if (false) {//mCodeDiscountEnable) {
+            //View.askCode()
+            getCodeDiscount();
+        }
     }
 
     public void validateParameters() throws IllegalStateException {
-        //TODO do something
-        //is valid call getDiscount()
+        //TODO validar todos los parámetros
     }
 
     public void initializeMercadoPago() {
@@ -75,23 +89,59 @@ public class DiscountsPresenter {
         this.mPayerEmail = payerEmail;
     }
 
-    public String getPublicKey() {
-        return mPublicKey;
+    public void setDicountCode(String discountCode) {
+        this.mDiscountCode = discountCode;
     }
 
-    private void getDiscount() {
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.mTransactionAmount = transactionAmount;
+    }
+
+    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
+    public String getCurrencyId() {
+        return mDiscount.getCurrencyId();
+    }
+
+    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
+    public BigDecimal getTransactionAmount() {
+        return mTransactionAmount;
+    }
+
+    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
+    public BigDecimal getPercentOff() {
+        return mDiscount.getPercentOff();
+    }
+
+    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
+    public BigDecimal getAmountOff() {
+        return mDiscount.getAmountOff();
+    }
+
+    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
+    public BigDecimal getCouponAmount() {
+        return mDiscount.getCouponAmount();
+    }
+
+    private void getDirectDiscount() {
         //TODO agregar método en la view
         //mDiscountsView.showLoadingView();
 
-        mMercadoPago.getDiscount(new Callback<Discount>() {
+        //TODO no hace falta pasar la PK, la tengo en MercadoPago
+        mMercadoPago.getDirectDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
-                //TODO askCode
-                mDiscountsView.drawReview();
+                mDiscount = discount;
+                mDiscountsView.drawSummary();
             }
 
             @Override
             public void failure(ApiException apiException) {
+                //TODO sino tiene descuento chequear si tiene código
+                //TODO buscar algo más elegante para el equals ese
+                if (apiException.getMessage().equals("doesn't find a campaign")) {
+                    Toast.makeText(mContext, "No posee descuento", Toast.LENGTH_SHORT).show();
+                    //View.askDicountCode
+                }
 //                setFailureRecovery(new FailureRecovery() {
 //                    @Override
 //                    public void recover() {
@@ -102,6 +152,42 @@ public class DiscountsPresenter {
                 //mView.showApiExceptionError(apiException);
             }
         });
+    }
 
+    private void getCodeDiscount() {
+        mMercadoPago.getCodeDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail, "PRUEBA", new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                Toast.makeText(mContext, discount.getName(), Toast.LENGTH_SHORT).show();
+                //mDiscountsView.drawReview();
+                mDiscount = discount;
+                mDiscountsView.finishWithResult();
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                Toast.makeText(mContext, apiException.getMessage(), Toast.LENGTH_SHORT).show();
+
+                //TODO si el código es incorrecto, mostrar
+                if (apiException.getMessage().equals("doesn't find a campaign with the given code")) {
+                    Toast.makeText(mContext, "No existe código", Toast.LENGTH_SHORT).show();
+                    //TODO código incorrecto
+                }
+
+//                setFailureRecovery(new FailureRecovery() {
+//                    @Override
+//                    public void recover() {
+//                        cloneToken();
+//                    }
+//                });
+                //mView.stopLoadingView();
+                //mView.showApiExceptionError(apiException);
+
+            }
+        });
+    }
+
+    public Discount getDiscount() {
+        return this.mDiscount;
     }
 }

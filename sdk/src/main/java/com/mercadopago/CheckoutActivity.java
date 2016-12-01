@@ -40,6 +40,7 @@ import com.mercadopago.model.Card;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.Customer;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.Payer;
 import com.mercadopago.model.PayerCost;
@@ -68,6 +69,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
@@ -145,6 +147,9 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected FrameLayout mReviewSummaryContainer;
     protected NestedScrollView mScrollView;
     protected String mCustomerId;
+
+    //TODO discounts ordenar
+    protected Discount mDiscount;
 
     @Override
     protected void setContentView() {
@@ -456,6 +461,13 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     private void resolvePaymentVaultRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+
+            //TODO discounts, borrar
+            mDiscount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+//            if (mDiscount != null) {
+//                createPayment();
+//            }
+
 
             mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
             mSelectedPayerCost = JsonUtil.getInstance().fromJson(data.getStringExtra("payerCost"), PayerCost.class);

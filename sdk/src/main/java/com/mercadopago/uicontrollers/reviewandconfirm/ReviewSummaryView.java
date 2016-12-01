@@ -121,7 +121,9 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
         } else {
             mSubtotalRow.setVisibility(View.GONE);
         }
-        if (MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
+        //TODO discount, agregué si payment method es null
+        if (mPaymentMethod != null && MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
+        //if (MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
             //Pagas
             showPayerCostRow();
             showTotal(mPayerCost.getTotalAmount());

@@ -6,6 +6,7 @@ import com.mercadopago.adapters.ErrorHandlingCallAdapter;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.Customer;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.MerchantPayment;
 import com.mercadopago.model.Payment;
 import com.mercadopago.services.MerchantService;
@@ -36,6 +37,15 @@ public class MerchantServer {
         MerchantService service = getService(context, merchantBaseUrl);
         service.createPayment(ripFirstSlash(merchantCreatePaymentUri), payment).enqueue(callback);
     }
+
+    //TODO discounts
+//    public static void getDiscount(Context context, String merchantBaseUrl, String merchantGetDiscountUri, String merchantAccessToken, Callback<Discount> callback) {
+//
+//        MerchantService service = getService(context, merchantBaseUrl);
+//
+//        //TODO creo que va AT como parámtro, analizar
+//        service.getDiscount(ripFirstSlash(merchantGetDiscountUri), merchantAccessToken).enqueue(callback);
+//    }
 
     private static String ripFirstSlash(String uri) {
 

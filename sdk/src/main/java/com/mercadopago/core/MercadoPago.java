@@ -221,12 +221,28 @@ public class MercadoPago {
     }
 
     //TODO discounts
-    public void getDiscount(final Callback<Discount> callback) {
+    //TODO volar el paso del accessToken por parámetro y ver si vuelo el paso del amount
+    public void getDirectDiscount(String publicKey, String amount, String payerEmail, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             DiscountService service = mRetrofit.create(DiscountService.class);
-            service.getDiscount(this.mKey, ).enqueue(callback);
+            //TODO cambiar accessToken por this.mKey
+            service.getDirectDiscount(publicKey, amount, payerEmail).enqueue(callback);
+        } else {
+            throw new RuntimeException("Unsupported key type for this method");
+        }
+    }
+
+    //TODO discounts
+    //TODO volar el paso del accessToken por parámetro y ver si vuelo el paso del amount
+    public void getCodeDiscount(String publicKey, String amount, String payerEmail, String couponCode, final Callback<Discount> callback) {
+        if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
+            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
+
+            DiscountService service = mRetrofit.create(DiscountService.class);
+            //TODO cambiar accessToken por this.mKey
+            service.getCodeDiscount(publicKey, amount, payerEmail, couponCode).enqueue(callback);
         } else {
             throw new RuntimeException("Unsupported key type for this method");
         }
@@ -537,11 +553,12 @@ public class MercadoPago {
     }
 
     //TODO discounts
-    private static void startDiscountsActivity(Activity activity, String key, String payerEmail) {
+    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount) {
 
         Intent discountsIntent = new Intent(activity, DiscountsActivity.class);
         discountsIntent.putExtra("merchantPublicKey", key);
         discountsIntent.putExtra("payerEmail", payerEmail);
+        discountsIntent.putExtra("amount", amount.toString());
 
         activity.startActivityForResult(discountsIntent, DISCOUNTS_REQUEST_CODE);
     }
@@ -1135,8 +1152,9 @@ public class MercadoPago {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mKey == null) throw new IllegalStateException("key is null");
             if (this.mPayerEmail == null ) throw new IllegalStateException("email is null");
+            if (this.mAmount == null) throw new IllegalStateException("amount is null");
 
-            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail);
+            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount);
         }
 
 
