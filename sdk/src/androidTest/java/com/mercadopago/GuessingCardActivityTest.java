@@ -1249,13 +1249,14 @@ public class GuessingCardActivityTest {
     @Test
     public void validateCardColorCordobesa() {
         addInitCalls();
-        mTestRule.launchActivity(validStartIntent);
+        GuessingCardActivity activity = mTestRule.launchActivity(validStartIntent);
 
         DummyCard card = getDummyCard("cordobesa");
         onView(withId(R.id.mpsdkCardNumber)).perform(typeText(card.getCardNumber()));
 
         int expectedColor = ContextCompat.getColor(InstrumentationRegistry.getContext(), R.color.mpsdk_cordobesa);
         validateCardColor(expectedColor);
+        activity.finish();
     }
 
     @Test
