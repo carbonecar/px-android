@@ -1522,6 +1522,40 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkNextButton)).perform(click());
         identificationNumberIsCurrentEditText();
     }
+
+    @Test
+    public void finishWithResultOnSecurityCodeNotRequired() {
+//        addInitCalls();
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+        Issuer mockedIssuer = StaticMock.getIssuer();
+        List<Issuer> issuerList = new ArrayList<>();
+        issuerList.add(mockedIssuer);
+        mFakeAPI.addResponseToQueue(issuerList, 200, "");
+
+        mTestRule.launchActivity(validStartIntent);
+        DummyCard card = CardTestUtils.getPaymentMethodOnWithoutRequiredSecurityCode();
+
+        onView(withId(R.id.mpsdkCardNumber)).perform(typeText(card.getCardNumber()));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+        onView(withId(R.id.mpsdkCardholderName)).perform(typeText(StaticMock.DUMMY_CARDHOLDER_NAME));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+        onView(withId(R.id.mpsdkCardExpiryDate)).perform(typeText(StaticMock.DUMMY_EXPIRATION_DATE));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+//        identificationNumberIsCurrentEditText();
+        onView(withId(R.id.mpsdkCardIdentificationNumber)).perform(typeText(StaticMock.DUMMY_IDENTIFICATION_NUMBER));
+        onView(withId(R.id.mpsdkNextButton)).perform(click());
+
+        ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
+        Issuer selectedIssuer = JsonUtil.getInstance().fromJson(result.getExtras().getString("issuer"), Issuer.class);
+        assertEquals(mockedIssuer.getId(), selectedIssuer.getId());
+//        Token tokenResult = JsonUtil.getInstance().fromJson(result.getExtras().getString("token"), Token.class);
+//        assertEquals(mockedToken.getId(), tokenResult.getId());
+        PaymentMethod pmResult = JsonUtil.getInstance().fromJson(result.getExtras().getString("paymentMethod"), PaymentMethod.class);
+        assertEquals("tarshop", pmResult.getId());
+
+        ActivityResultUtil.assertFinishCalledWithResult(mTestRule.getActivity(), Activity.RESULT_OK);
+    }
 /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Test

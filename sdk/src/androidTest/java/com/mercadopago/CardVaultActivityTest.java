@@ -12,6 +12,7 @@ import com.mercadopago.constants.Sites;
 import com.mercadopago.model.BankDeal;
 import com.mercadopago.model.CardToken;
 import com.mercadopago.model.Card;
+import com.mercadopago.model.DummyCard;
 import com.mercadopago.model.Installment;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
@@ -24,6 +25,7 @@ import com.mercadopago.test.FakeAPI;
 import com.mercadopago.test.StaticMock;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.utils.ActivityResultUtil;
+import com.mercadopago.utils.CardTestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +39,7 @@ import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.Intents.times;
@@ -329,6 +332,32 @@ public class CardVaultActivityTest {
     }
 
     @Test
+    public void onGuessingResultCancelFinishActivityAndTrack() {
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        Issuer issuer = StaticMock.getIssuer();
+        Token token = StaticMock.getToken();
+
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+
+        Intent guessingResultIntent = new Intent();
+        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
+        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, guessingResultIntent);
+        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended(hasComponent(GuessingCardActivity.class.getName()));
+
+        assertEquals(null, activity.mPresenter.getPayerCost());
+        assertEquals(null, activity.mPresenter.getIssuer());
+        assertEquals(null, activity.mPresenter.getToken());
+        assertEquals(null, activity.mPresenter.getPaymentMethod());
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
     public void onInstallmentsResultFinishWithPayerCost() {
         validStartIntent.putExtra("amount", "1000");
         validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
@@ -423,219 +452,293 @@ public class CardVaultActivityTest {
         intended(hasComponent(ErrorActivity.class.getName()));
     }
 
-//    @Test
-//    public void onUniquePayerCostFinishActivityWithResult() {
-//        validStartIntent.putExtra("amount", "1000");
-//        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
-//        validStartIntent.putExtra("installmentsEnabled", true);
-//
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        Issuer issuer = StaticMock.getIssuer();
-//        CardToken cardToken = StaticMock.getCardToken();
-//        Token token = StaticMock.getToken();
-//
-//        Intent guessingResultIntent = new Intent();
-//        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        guessingResultIntent.putExtra("cardToken", JsonUtil.getInstance().toJson(cardToken));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
-//        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
-//
-//        Intent issuersResultIntent = new Intent();
-//        issuersResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-//        Instrumentation.ActivityResult issuerResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, issuersResultIntent);
-//        intending(hasComponent(IssuersActivity.class.getName())).respondWith(issuerResult);
-//
-//        String installments = StaticMock.getInstallmentsWithUniquePayerCostJson();
-//        Type listType = new TypeToken<List<Installment>>() {
-//        }.getType();
-//        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
-//
-//        Api calls for this flow
-//        List<BankDeal> bankDeals = StaticMock.getBankDeals();
-//        String paymentMethods = StaticMock.getPaymentMethodList();
-//        String issuers = StaticMock.getIssuersJson();
-//        Token mockedToken = StaticMock.getToken();
-//        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(bankDeals), 200, "");
-//        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
-//        mFakeAPI.addResponseToQueue(issuers, 200, "");
-//        mFakeAPI.addResponseToQueue(installmentList, 200, "");
-//        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
-//
-//        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
-//
-//        ActivityResult activityResult = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
-//        String pm = JsonUtil.getInstance().toJson(paymentMethod);
-//        assertTrue(pm.equals(activityResult.getExtras().getString("paymentMethod")));
-//        String iss = JsonUtil.getInstance().toJson(issuer);
-//        assertTrue(iss.equals(activityResult.getExtras().getString("issuer")));
-//        String pc = JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0));
-//        assertTrue(pc.equals(activityResult.getExtras().getString("payerCost")));
-//
-//
-//        assertEquals(installmentList.get(0).getPayerCosts().get(0).getInstallments(), activity.mPresenter.getPayerCost().getInstallments());
-//        assertTrue(activity.isFinishing());
-//    }
-//
-//    @Test
-//    public void onEmptyPayerCostListStartErrorActivity() {
-//        validStartIntent.putExtra("amount", "1000");
-//        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
-//        validStartIntent.putExtra("installmentsEnabled", true);
-//
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        Issuer issuer = StaticMock.getIssuer();
-//        Token token = StaticMock.getToken();
-//
-//        Intent guessingResultIntent = new Intent();
-//        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-//        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
-//        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
-//
-//        List<Installment> installmentList = new ArrayList<>();
-//        mFakeAPI.addResponseToQueue(installmentList, 200, "");
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        intended(hasComponent(ErrorActivity.class.getName()));
-//    }
-//
-//    @Test
-//    public void onInstallmentsCallApiErrorOpenErrorActivity() {
-//        validStartIntent.putExtra("amount", "1000");
-//        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
-//        validStartIntent.putExtra("installmentsEnabled", true);
-//
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        Issuer issuer = StaticMock.getIssuer();
-//        Token token = StaticMock.getToken();
-//
-//        Intent guessingResultIntent = new Intent();
-//        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-//        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
-//        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
-//
-//        //Installments call
-//        mFakeAPI.addResponseToQueue("", 401, "");
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        intended(hasComponent(ErrorActivity.class.getName()));
-//    }
+    @Test
+    public void onInstallmentsResultCancelFinishActivity() {
+        validStartIntent.putExtra("amount", "1000");
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+        validStartIntent.putExtra("installmentsEnabled", true);
 
-//    @Test
-//    public void onInstallmentsResultCancelFinishActivity() {
-//        validStartIntent.putExtra("amount", "1000");
-//        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
-//        validStartIntent.putExtra("installmentsEnabled", true);
-//
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        Issuer issuer = StaticMock.getIssuer();
-//        Token token = StaticMock.getToken();
-//
-//        Intent guessingResultIntent = new Intent();
-//        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-//        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
-//        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
-//
-//        String installments = StaticMock.getInstallmentsJson();
-//        Type listType = new TypeToken<List<Installment>>() {
-//        }.getType();
-//        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
-//        mFakeAPI.addResponseToQueue(installmentList, 200, "");
-//
-//        Intent installmentsIntent = new Intent();
-//        installmentsIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0)));
-//        Instrumentation.ActivityResult installmentsResult = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, installmentsIntent);
-//        intending(hasComponent(InstallmentsActivity.class.getName())).respondWith(installmentsResult);
-//
-//        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
-//
-//        intended(hasComponent(InstallmentsActivity.class.getName()));
-//
-//        assertEquals(null, activity.mPresenter.getPayerCost());
-//        assertTrue(activity.isFinishing());
-//    }
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        Issuer issuer = StaticMock.getIssuer();
+        CardToken cardToken = StaticMock.getCardToken();
 
-//    @Test
-//    public void onInstallmentsCallApiErrorRetryAndRecover() {
-//        validStartIntent.putExtra("amount", "1000");
-//        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
-//        validStartIntent.putExtra("installmentsEnabled", true);
-//
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        Issuer issuer = StaticMock.getIssuer();
-//        Token token = StaticMock.getToken();
-//
-//        Intent guessingResultIntent = new Intent();
-//        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        guessingResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
-//        guessingResultIntent.putExtra("token", JsonUtil.getInstance().toJson(token));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
-//        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
-//
-//        //First installments call
-//        mFakeAPI.addResponseToQueue("", 401, "");
-//
-//        //Second installments call
-//        String installments = StaticMock.getInstallmentsJson();
-//        Type listType = new TypeToken<List<Installment>>() {
-//        }.getType();
-//        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
-//        mFakeAPI.addResponseToQueue(installmentList, 200, "");
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        Intent errorResultIntent = new Intent();
-//        Instrumentation.ActivityResult retryResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, errorResultIntent);
-//        intending(hasComponent(ErrorActivity.class.getName())).respondWith(retryResult);
-//
-//        onView(withId(R.id.mpsdkErrorRetry)).perform(click());
-//
-//        intended(hasComponent(InstallmentsActivity.class.getName()));
-//    }
+        Intent guessingResultIntent = new Intent();
+        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        guessingResultIntent.putExtra("cardToken", JsonUtil.getInstance().toJson(cardToken));
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
+        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
+
+        Intent issuersResultIntent = new Intent();
+        issuersResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
+        Instrumentation.ActivityResult issuerResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, issuersResultIntent);
+        intending(hasComponent(IssuersActivity.class.getName())).respondWith(issuerResult);
+
+        String installments = StaticMock.getInstallmentsJson();
+        Type listType = new TypeToken<List<Installment>>() {
+        }.getType();
+        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
+
+        //Api calls for this flow
+        List<BankDeal> bankDeals = StaticMock.getBankDeals();
+        String paymentMethods = StaticMock.getPaymentMethodList();
+        String issuers = StaticMock.getIssuersJson();
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(bankDeals), 200, "");
+        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
+        mFakeAPI.addResponseToQueue(issuers, 200, "");
+        mFakeAPI.addResponseToQueue(installmentList, 200, "");
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+
+        Intent installmentsIntent = new Intent();
+        installmentsIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0)));
+        Instrumentation.ActivityResult installmentsResult = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, installmentsIntent);
+        intending(hasComponent(InstallmentsActivity.class.getName())).respondWith(installmentsResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended(hasComponent(InstallmentsActivity.class.getName()));
+
+        assertEquals(null, activity.mPresenter.getPayerCost());
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void onIssuersResultCancelFinishActivity() {
+        validStartIntent.putExtra("amount", "1000");
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+        validStartIntent.putExtra("installmentsEnabled", true);
+
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        Issuer issuer = StaticMock.getIssuer();
+        CardToken cardToken = StaticMock.getCardToken();
+
+        Intent guessingResultIntent = new Intent();
+        guessingResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        guessingResultIntent.putExtra("cardToken", JsonUtil.getInstance().toJson(cardToken));
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, guessingResultIntent);
+        intending(hasComponent(GuessingCardActivity.class.getName())).respondWith(result);
+
+        Intent issuersResultIntent = new Intent();
+        issuersResultIntent.putExtra("issuer", JsonUtil.getInstance().toJson(issuer));
+        Instrumentation.ActivityResult issuerResult = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, issuersResultIntent);
+        intending(hasComponent(IssuersActivity.class.getName())).respondWith(issuerResult);
+
+
+        //Api calls for this flow
+        List<BankDeal> bankDeals = StaticMock.getBankDeals();
+        String paymentMethods = StaticMock.getPaymentMethodList();
+        String issuers = StaticMock.getIssuersJson();
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(bankDeals), 200, "");
+        mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
+        mFakeAPI.addResponseToQueue(issuers, 200, "");
+
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended(hasComponent(IssuersActivity.class.getName()));
+
+        assertEquals(null, activity.mPresenter.getIssuer());
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void openSecurityCodeActivityOnSavedCardWithInstallmentsEnabled() {
+        Card savedCard = StaticMock.getCard();
+        validStartIntent.putExtra("amount", "1000");
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+        validStartIntent.putExtra("installmentsEnabled", true);
+        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(savedCard));
+
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        Issuer issuer = StaticMock.getIssuer();
+        CardToken cardToken = StaticMock.getCardToken();
+
+        String installments = StaticMock.getInstallmentsJson();
+        Type listType = new TypeToken<List<Installment>>() {
+        }.getType();
+        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
+
+        //Api calls for this flow
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(installmentList, 200, "");
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+        Intent installmentsIntent = new Intent();
+        installmentsIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0)));
+        Instrumentation.ActivityResult installmentsResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, installmentsIntent);
+        intending(hasComponent(InstallmentsActivity.class.getName())).respondWith(installmentsResult);
+
+        Intent securityCodeIntent = new Intent();
+        securityCodeIntent.putExtra("token", JsonUtil.getInstance().toJson(mockedToken));
+        Instrumentation.ActivityResult securityCodeResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, securityCodeIntent);
+        intending(hasComponent(SecurityCodeActivity.class.getName())).respondWith(securityCodeResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended((hasComponent(InstallmentsActivity.class.getName())), times(1));
+        intended((hasComponent(SecurityCodeActivity.class.getName())), times(1));
+    }
+
+    @Test
+    public void openSecurityCodeActivityOnSavedCardWithInstallmentsNotEnabled() {
+        Card savedCard = StaticMock.getCard();
+        validStartIntent.putExtra("installmentsEnabled", false);
+        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(savedCard));
+
+        //Api calls for this flow
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+        Intent securityCodeIntent = new Intent();
+        securityCodeIntent.putExtra("token", JsonUtil.getInstance().toJson(mockedToken));
+        Instrumentation.ActivityResult securityCodeResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, securityCodeIntent);
+        intending(hasComponent(SecurityCodeActivity.class.getName())).respondWith(securityCodeResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended((hasComponent(InstallmentsActivity.class.getName())), times(0));
+        intended((hasComponent(SecurityCodeActivity.class.getName())), times(1));
+    }
+
+    @Test
+    public void openSecurityCodeActivityOnSavedCardAndCreateToken() {
+        Card savedCard = StaticMock.getCard();
+        validStartIntent.putExtra("amount", "1000");
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+        validStartIntent.putExtra("installmentsEnabled", true);
+        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(savedCard));
+
+        String installments = StaticMock.getInstallmentsJson();
+        Type listType = new TypeToken<List<Installment>>() {
+        }.getType();
+        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
+
+        //Api calls for this flow
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(installmentList, 200, "");
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+        Intent installmentsIntent = new Intent();
+        installmentsIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0)));
+        Instrumentation.ActivityResult installmentsResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, installmentsIntent);
+        intending(hasComponent(InstallmentsActivity.class.getName())).respondWith(installmentsResult);
+
+        Intent securityCodeIntent = new Intent();
+        securityCodeIntent.putExtra("token", JsonUtil.getInstance().toJson(mockedToken));
+        Instrumentation.ActivityResult securityCodeResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, securityCodeIntent);
+        intending(hasComponent(SecurityCodeActivity.class.getName())).respondWith(securityCodeResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended((hasComponent(InstallmentsActivity.class.getName())), times(1));
+        intended((hasComponent(SecurityCodeActivity.class.getName())), times(1));
+
+        ActivityResult activityResult = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
+        String pm = JsonUtil.getInstance().toJson(savedCard.getPaymentMethod());
+        assertTrue(pm.equals(activityResult.getExtras().getString("paymentMethod")));
+        String iss = JsonUtil.getInstance().toJson(savedCard.getIssuer());
+        assertTrue(iss.equals(activityResult.getExtras().getString("issuer")));
+        String token = JsonUtil.getInstance().toJson(mockedToken);
+        assertTrue(token.equals(activityResult.getExtras().getString("token")));
+    }
+
+    @Test
+    public void finishOnSecurityCodeActivityCancel() {
+        Card savedCard = StaticMock.getCard();
+        validStartIntent.putExtra("amount", "1000");
+        validStartIntent.putExtra("site", JsonUtil.getInstance().toJson(Sites.ARGENTINA));
+        validStartIntent.putExtra("installmentsEnabled", true);
+        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(savedCard));
+
+        String installments = StaticMock.getInstallmentsJson();
+        Type listType = new TypeToken<List<Installment>>() {
+        }.getType();
+        List<Installment> installmentList = JsonUtil.getInstance().getGson().fromJson(installments, listType);
+
+        //Api calls for this flow
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(installmentList, 200, "");
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+        Intent installmentsIntent = new Intent();
+        installmentsIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(installmentList.get(0).getPayerCosts().get(0)));
+        Instrumentation.ActivityResult installmentsResult = new Instrumentation.ActivityResult(Activity.RESULT_OK, installmentsIntent);
+        intending(hasComponent(InstallmentsActivity.class.getName())).respondWith(installmentsResult);
+
+        Intent securityCodeIntent = new Intent();
+        securityCodeIntent.putExtra("token", JsonUtil.getInstance().toJson(mockedToken));
+        Instrumentation.ActivityResult securityCodeResult = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, securityCodeIntent);
+        intending(hasComponent(SecurityCodeActivity.class.getName())).respondWith(securityCodeResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended((hasComponent(InstallmentsActivity.class.getName())), times(1));
+        intended((hasComponent(SecurityCodeActivity.class.getName())), times(1));
+
+        assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void finishOnSecurityCodeActivityCancelWithoutInstallments() {
+        Card savedCard = StaticMock.getCard();
+        validStartIntent.putExtra("installmentsEnabled", false);
+        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(savedCard));
+
+        //Api calls for this flow
+        Token mockedToken = StaticMock.getToken();
+        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+
+        Intent securityCodeIntent = new Intent();
+        securityCodeIntent.putExtra("token", JsonUtil.getInstance().toJson(mockedToken));
+        Instrumentation.ActivityResult securityCodeResult = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, securityCodeIntent);
+        intending(hasComponent(SecurityCodeActivity.class.getName())).respondWith(securityCodeResult);
+
+        CardVaultActivity activity = mTestRule.launchActivity(validStartIntent);
+
+        intended((hasComponent(InstallmentsActivity.class.getName())), times(0));
+        intended((hasComponent(SecurityCodeActivity.class.getName())), times(1));
+
+        assertTrue(activity.isFinishing());
+    }
 
     //Recoverable token
-//    @Test
-//    public void showSecurityCodeActivityWhenPaymentRecoveryIsRecoverableToken(){
-//        Token token = StaticMock.getToken();
-//        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-//        Issuer issuer  = StaticMock.getIssuer();
-//
-//        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-//        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        Intents.intended(hasComponent(SecurityCodeActivity.class.getName()), times(1));
-//    }
-//
-//    //Recoverable payment
-//    @Test
-//    public void showGuessingCardActivityWhenPaymentRecoveryIsNotRecoverableToken(){
-//        addBankDealsCall();
-//        addPaymentMethodsCall();
-//
-//        Token token = StaticMock.getToken();
-//        Payment payment = StaticMock.getPaymentRejectedBadFilledSecurityCode();
-//        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
-//        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
-//        Issuer issuer  = StaticMock.getIssuer();
-//
-//        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
-//        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        Intents.intended(hasComponent(GuessingCardActivity.class.getName()), times(1));
-//    }
+    @Test
+    public void showSecurityCodeActivityWhenPaymentRecoveryIsRecoverableToken(){
+        Token token = StaticMock.getToken();
+        Payment payment = StaticMock.getPaymentRejectedCallForAuthorize();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
+        Issuer issuer  = StaticMock.getIssuer();
+
+        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
+        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        Intents.intended(hasComponent(SecurityCodeActivity.class.getName()), times(1));
+    }
+
+    //Recoverable payment
+    @Test
+    public void showGuessingCardActivityWhenPaymentRecoveryIsNotRecoverableToken(){
+        addBankDealsCall();
+        addPaymentMethodsCall();
+
+        Token token = StaticMock.getToken();
+        Payment payment = StaticMock.getPaymentRejectedBadFilledSecurityCode();
+        PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
+        PayerCost payerCost = StaticMock.getPayerCostWithInterests();
+        Issuer issuer  = StaticMock.getIssuer();
+
+        PaymentRecovery paymentRecovery = new PaymentRecovery(token, payment, paymentMethod, payerCost, issuer);
+        validStartIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
+
+        mTestRule.launchActivity(validStartIntent);
+
+        Intents.intended(hasComponent(GuessingCardActivity.class.getName()), times(1));
+    }
 
     private void addBankDealsCall() {
         List<BankDeal> bankDeals = StaticMock.getBankDeals();
@@ -647,7 +750,6 @@ public class CardVaultActivityTest {
         mFakeAPI.addResponseToQueue(paymentMethods, 200, "");
     }
 
-    //TODO viene de guessing card activity test, arreglar
 //    @Test
 //    public void createTokenOnSecurityCodeNotRequired() {
 ////        addInitCalls();
