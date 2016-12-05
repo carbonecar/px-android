@@ -1,5 +1,6 @@
 package com.mercadopago;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Looper;
 import android.support.test.espresso.intent.Intents;
@@ -11,7 +12,6 @@ import android.view.View;
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CardInfo;
-import com.mercadopago.model.DummyCard;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.Token;
@@ -20,7 +20,6 @@ import com.mercadopago.test.FakeAPI;
 import com.mercadopago.test.StaticMock;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.utils.ActivityResultUtil;
-import com.mercadopago.utils.CardTestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +31,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -152,7 +152,7 @@ public class SecurityCodeActivityTest {
     //Recoverable Token
     @Test
     public void askThreeDigitsAndCloneTokenWhenTokenIsReceived() {
-        Token token = StaticMock.getTokenAmex();
+        Token token = StaticMock.getToken();
         PaymentMethod paymentMethod = StaticMock.getPaymentMethodOn();
 
         validStartIntent.putExtra("cardInfo", JsonUtil.getInstance().toJson(token));
