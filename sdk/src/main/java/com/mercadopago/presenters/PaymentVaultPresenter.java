@@ -32,7 +32,6 @@ import static android.text.TextUtils.isEmpty;
  */
 public class PaymentVaultPresenter {
 
-    private static final int MAX_SAVED_CARDS = 3;
     private static final String ACCOUNT_MONEY_ID = "account_money";
 
     private PaymentVaultView mPaymentVaultView;
@@ -51,6 +50,7 @@ public class PaymentVaultPresenter {
     private BigDecimal mAmount;
     private String mPayerAccessToken;
     private Boolean mAccountMoneyEnabled;
+    private Integer mMaxSavedCards;
 
     public void attachView(PaymentVaultView paymentVaultView) {
         this.mPaymentVaultView = paymentVaultView;
@@ -175,11 +175,20 @@ public class PaymentVaultPresenter {
                 showEmptyPaymentMethodsError();
             } else if (isOnlyUniqueSearchSelectionAvailable()) {
                 selectItem(mPaymentMethodSearch.getGroups().get(0));
+            } else if (isOnlyAccountMoneyEnabled()) {
+                selectAccountMoney(mCustomSearchItems.get(0));
             } else {
                 showAvailableOptions();
                 mPaymentVaultView.hideProgress();
             }
         }
+    }
+
+    private boolean isOnlyAccountMoneyEnabled() {
+        return mAccountMoneyEnabled
+                && mCustomSearchItems.size() == 1
+                && mCustomSearchItems.get(0).getId().equals(ACCOUNT_MONEY_ID)
+                && (mPaymentMethodSearch.getGroups() == null || mPaymentMethodSearch.getGroups().isEmpty());
     }
 
     private void selectItem(PaymentMethodSearchItem item) {
@@ -202,8 +211,8 @@ public class PaymentVaultPresenter {
             mCustomSearchItems.addAll(createCustomSearchItemsFromCards(mSavedCards));
         }
 
-        if (mSavedCards != null && mSavedCards.size() > MAX_SAVED_CARDS) {
-            mCustomSearchItems = getLimitedCustomOptions(mCustomSearchItems, MAX_SAVED_CARDS);
+        if (mSavedCards != null && mMaxSavedCards != null && mMaxSavedCards > 0) {
+            mCustomSearchItems = getLimitedCustomOptions(mCustomSearchItems, mMaxSavedCards);
         }
 
         if (customSearchItemsAvailable()) {
@@ -248,7 +257,7 @@ public class PaymentVaultPresenter {
         return mCustomSearchItems != null && !mCustomSearchItems.isEmpty();
     }
 
-    protected OnSelectedCallback<PaymentMethodSearchItem> getPaymentMethodSearchItemSelectionCallback() {
+    private OnSelectedCallback<PaymentMethodSearchItem> getPaymentMethodSearchItemSelectionCallback() {
         return new OnSelectedCallback<PaymentMethodSearchItem>() {
             @Override
             public void onSelected(PaymentMethodSearchItem item) {
@@ -265,21 +274,29 @@ public class PaymentVaultPresenter {
                     Card card = getCardWithPaymentMethod(searchItem);
                     selectCard(card);
                 } else if (ACCOUNT_MONEY_ID.equals(searchItem.getPaymentMethodId())) {
-                    PaymentMethod paymentMethod = new PaymentMethod();
-                    paymentMethod.setId(ACCOUNT_MONEY_ID);
-                    paymentMethod.setName(searchItem.getDescription());
-                    paymentMethod.setPaymentTypeId(searchItem.getType());
-                    mPaymentVaultView.selectPaymentMethod(paymentMethod);
+                    selectAccountMoney(searchItem);
                 }
             }
         };
     }
+
+    private void selectAccountMoney(CustomSearchItem searchItem) {
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setId(ACCOUNT_MONEY_ID);
+        paymentMethod.setName(searchItem.getDescription());
+        paymentMethod.setPaymentTypeId(searchItem.getType());
+        mPaymentVaultView.selectPaymentMethod(paymentMethod);
+    }
+
 
     private Card getCardWithPaymentMethod(CustomSearchItem searchItem) {
         PaymentMethod paymentMethod = mPaymentMethodSearch.getPaymentMethodById(searchItem.getPaymentMethodId());
         Card selectedCard = getCardById(mSavedCards, searchItem.getId());
         if (paymentMethod != null) {
             selectedCard.setPaymentMethod(paymentMethod);
+            if(selectedCard.getSecurityCode() == null && paymentMethod.getSettings() != null && paymentMethod.getSettings().get(0) != null) {
+                selectedCard.setSecurityCode(paymentMethod.getSettings().get(0).getSecurityCode());
+            }
         }
         return selectedCard;
     }
@@ -367,7 +384,8 @@ public class PaymentVaultPresenter {
     }
 
     private boolean noPaymentMethodsAvailable() {
-        return (mSavedCards == null || mSavedCards.isEmpty())
+        return !mAccountMoneyEnabled
+                && (mSavedCards == null || mSavedCards.isEmpty())
                 && (mPaymentMethodSearch.getGroups() == null || mPaymentMethodSearch.getGroups().isEmpty());
     }
 
@@ -457,5 +475,9 @@ public class PaymentVaultPresenter {
 
     public void setAccountMoneyEnabled(boolean accountMoneyEnabled) {
         this.mAccountMoneyEnabled = accountMoneyEnabled;
+    }
+
+    public void setMaxSavedCards(int maxSavedCards) {
+        this.mMaxSavedCards = maxSavedCards;
     }
 }
