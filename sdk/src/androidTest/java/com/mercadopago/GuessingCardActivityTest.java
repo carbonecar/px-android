@@ -1784,6 +1784,69 @@ public class GuessingCardActivityTest {
         sleep();
     }
 
+    //CUSTOMER CARDS
+
+//    @Test
+//    public void ifCardReceivedShowOnlySecurityCode() {
+//        Card card = StaticMock.getCard();
+//        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+//        mTestRule.launchActivity(validStartIntent);
+//
+//        onView(withId(R.id.mpsdkCardSecurityCodeContainer)).check(matches(isDisplayed()));
+//
+//        onView(withId(R.id.mpsdkCardNumberInput)).check(matches(not(isDisplayed())));
+//        onView(withId(R.id.mpsdkCardholderNameInput)).check(matches(not(isDisplayed())));
+//        onView(withId(R.id.mpsdkExpiryDateInput)).check(matches(not(isDisplayed())));
+//        onView(withId(R.id.mpsdkCardPaymentMethodSelectionContainer)).check(matches(not(isDisplayed())));
+//        onView(withId(R.id.mpsdkCardIdentificationTypeContainer)).check(matches(not(isDisplayed())));
+//    }
+
+//    @Test
+//    public void ifSecurityCodeInputIsValidCreateTokenAndFinishActivity() {
+//        Card card = StaticMock.getCard();
+//        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+//
+//        Token mockedToken = StaticMock.getToken();
+//        mFakeAPI.addResponseToQueue(JsonUtil.getInstance().toJson(mockedToken), 200, "");
+//
+//        mTestRule.launchActivity(validStartIntent);
+//
+//        onView(withId(R.id.mpsdkCardSecurityCodeContainer)).check(matches(isDisplayed()));
+//        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE));
+//        onView(withId(R.id.mpsdkNextButton)).perform(click());
+//
+//        ActivityResult result = ActivityResultUtil.getActivityResult(mTestRule.getActivity());
+//        String tokenJson = JsonUtil.getInstance().toJson(mockedToken);
+//        assertTrue(tokenJson.equals(result.getExtras().getString("token")));
+//    }
+//
+//    @Test
+//    public void ifSecurityCodeInputIsNotValidShowError() {
+//        Card card = StaticMock.getCard();
+//        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+//
+//        mTestRule.launchActivity(validStartIntent);
+//
+//        onView(withId(R.id.mpsdkCardSecurityCodeContainer)).check(matches(isDisplayed()));
+//        onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(StaticMock.DUMMY_SECURITY_CODE.substring(0, 1)));
+//        onView(withId(R.id.mpsdkNextButton)).perform(click());
+//
+//        checkSecurityCodeIsInvalid("11", onView(withId(R.id.mpsdkNextButton)));
+//    }
+
+//    @Test
+//    public void ifCardSetAndUserPressesBackButtonFinishActivityWithCancelResult() {
+//        Card card = StaticMock.getCard();
+//        validStartIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+//
+//        mTestRule.launchActivity(validStartIntent);
+//
+//        onView(withId(R.id.mpsdkBackButton)).perform(click());
+//
+//        ActivityResultUtil.assertFinishCalledWithResult(mTestRule.getActivity(), Activity.RESULT_CANCELED);
+//
+//    }
+
     private void addIdentificationTypesCall() {
         String identificationTypes = StaticMock.getIdentificationTypeList();
         mFakeAPI.addResponseToQueue(identificationTypes, 200, "");
