@@ -250,23 +250,5 @@ public class CardVaultPresenter {
         });
     }
 
-    public void createToken(final SavedCardToken savedCardToken) {
-        mMercadoPago.createToken(savedCardToken, new Callback<Token>() {
-            @Override
-            public void success(Token token) {
-                mToken = token;
-            }
 
-            @Override
-            public void failure(ApiException apiException) {
-                setFailureRecovery(new FailureRecovery() {
-                    @Override
-                    public void recover() {
-                        createToken(savedCardToken);
-                    }
-                });
-                mView.showApiExceptionError(apiException);
-            }
-        });
-    }
 }

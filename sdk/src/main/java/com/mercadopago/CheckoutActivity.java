@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -96,8 +97,6 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected Token mCreatedToken;
     protected Payment mCreatedPayment;
     protected Site mSite;
-
-    protected String mPurchaseTitle;
 
     protected boolean mPaymentMethodEditionRequested;
 
