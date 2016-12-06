@@ -82,7 +82,7 @@ public class ComponentsExampleActivity extends AppCompatActivity {
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)
-                .setSite(Sites.BRASIL)
+                .setSite(Sites.ARGENTINA)
                 .setAmount(mAmount)
                 .setPaymentPreference(paymentPreference) //Optional
                 .setDecorationPreference(decorationPreference) //Optional
@@ -99,9 +99,9 @@ public class ComponentsExampleActivity extends AppCompatActivity {
 
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey("TEST-9eb0be69-329a-417f-9dd5-aad772a4d50b")
+                .setPublicKey(mPublicKey)
                 .setAmount(mAmount)
-                .setSite(Sites.MEXICO)
+                .setSite(Sites.ARGENTINA)
                 .setInstallmentsEnabled(true)
                 .setPaymentPreference(paymentPreference) //Optional
                 .setDecorationPreference(decorationPreference) //Optional

@@ -94,8 +94,8 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey("TEST-9eb0be69-329a-417f-9dd5-aad772a4d50b")
-                .setCheckoutPreferenceId("137787120-2853c5cb-388b-49f1-824c-759366965aef")
+                .setPublicKey(mPublicKey)
+                .setCheckoutPreferenceId(mCheckoutPreference.getId())
                 .setDecorationPreference(decorationPreference) //Optional
                 .startCheckoutActivity();
     }

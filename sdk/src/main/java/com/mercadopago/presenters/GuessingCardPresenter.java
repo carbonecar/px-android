@@ -454,8 +454,7 @@ public class GuessingCardPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                //TODO REMOVE
-                System.out.print("hola");
+                //do nothing
             }
         });
     }
