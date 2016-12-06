@@ -51,21 +51,59 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-
     <LinearLayout
         android:id="@+id/mpsdkRegularLayout"
         android:layout_width="match_parent"
         android:layout_height="613dp"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-        <com.mercadopago.customviews.MPTextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
-            android:text="Tengo un descuento"
-            android:onClick="startDiscountsActivity"
-            android:clickable="true"/>
+            android:orientation="vertical">
+
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Producto $ 1.309"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/mpsdk_discount"/>
+
+                <com.mercadopago.customviews.MPTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Tengo un descuento"
+                    android:onClick="startDiscountsActivity"
+                    android:clickable="true"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/mpsdkTopEmailSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/mpsdk_separator"
+                android:layout_gravity="center_horizontal|bottom" />
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mpsdkGroupsList"

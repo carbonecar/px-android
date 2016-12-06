@@ -8,5 +8,7 @@ public interface DiscountsView {
 
     void drawSummary();
 
+    void showLoadingView();
+
     void finishWithResult();
 }

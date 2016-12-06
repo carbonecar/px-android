@@ -73,7 +73,8 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         Map<String, Object> map = new HashMap<>();
         map.put("item_id", "1");
         map.put("amount", new BigDecimal(300));
-        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+
+       MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
                 "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
                     @Override
                     public void success(CheckoutPreference checkoutPreference) {

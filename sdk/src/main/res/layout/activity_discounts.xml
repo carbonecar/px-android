@@ -1,92 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_discounts"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009EE3"
     tools:context="com.mercadopago.DiscountsActivity">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/mpsdkReviewSummaryContainer"
-            android:layout_width="wrap_content"
+            android:id="@+id/mpsdkReviewDiscountSummaryContainer"
+            android:visibility="gone"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:layout_gravity="center|center_horizontal">
+            android:layout_gravity="center">
+        </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkProduct"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="Producto"/>
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkProductAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="$ 1000"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkDiscount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="Descuento"/>
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkDiscountAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="$ 10"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkTotal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="Total"/>
-
-                    <com.mercadopago.customviews.MPTextView
-                        android:id="@+id/mpsdkTotalAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        tools:text="$ 990"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
+        <FrameLayout
+            android:id="@+id/mpsdkDiscountCodeContainer"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
         </FrameLayout>
     </ScrollView>
-</RelativeLayout>
+</LinearLayout>

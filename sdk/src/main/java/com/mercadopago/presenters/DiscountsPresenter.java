@@ -123,7 +123,6 @@ public class DiscountsPresenter {
     }
 
     private void getDirectDiscount() {
-        //TODO agregar método en la view
         //mDiscountsView.showLoadingView();
 
         //TODO no hace falta pasar la PK, la tengo en MercadoPago

@@ -3,15 +3,19 @@ package com.mercadopago;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.mercadopago.callbacks.OnConfirmPaymentCallback;
+import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
 import com.mercadopago.uicontrollers.reviewandconfirm.ReviewSummaryView;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
@@ -22,8 +26,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected DecorationPreference mDecorationPreference;
 
     //View
-    protected FrameLayout mReviewSummaryContainer;
-    protected OnConfirmPaymentCallback mConfirmCallback;
+    protected ProgressBar mProgressBar;
+
+    protected FrameLayout mReviewSummary;
+    protected MPTextView mReviewSummaryTitle;
+    protected MPTextView mReviewSummaryProductAmount;
+    protected MPTextView mReviewSummaryDiscountAmount;
+    protected MPTextView mReviewSummaryTotalAmount;
 
     protected DiscountsPresenter mDiscountsPresenter;
 
@@ -72,9 +81,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected void onValidStart() {
         mDiscountsPresenter.initializeMercadoPago();
 
-        //TODO analizar si va el Timer
-        //showTimer();
-
         mDiscountsPresenter.initialize();
     }
 
@@ -83,16 +89,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     protected void initializeControls() {
-        //TODO initialize controls
-        mReviewSummaryContainer = (FrameLayout) findViewById(R.id.mpsdkReviewSummaryContainer);
+        mProgressBar = (ProgressBar) findViewById(R.id.mpsdkProgressBar);
+        mReviewSummary = (FrameLayout) findViewById(R.id.mpsdkReviewSummary);
 
-        mConfirmCallback = new OnConfirmPaymentCallback() {
-            @Override
-            public void confirmPayment() {
-                //TODO ver de cambiarle el nombre al método y ver si hay que finalizar
-                finishWithResult();
-            }
-        };
+        mReviewSummaryTitle = (MPTextView) findViewById(R.id.mpsdkReviewSummaryTitle);
+        mReviewSummaryProductAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryProductsAmount);
+        mReviewSummaryDiscountAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryDiscountsAmount);
+        mReviewSummaryTotalAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryTotalAmount);
     }
 
     protected void onInvalidStart(String message) {
@@ -108,13 +111,30 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     public void drawSummary() {
         //TODO volar subtotal
         //TODO que evalúa si mostrar o no descuentos por el couponAmount
-        mReviewSummaryContainer.removeAllViews();
-        ReviewSummaryView summaryView = new ReviewSummaryView(this, mDiscountsPresenter.getCurrencyId(),
-                mDiscountsPresenter.getTransactionAmount(), null, null, mDiscountsPresenter.getPercentOff(),
-                mDiscountsPresenter.getCouponAmount(), mConfirmCallback, mDecorationPreference);
-        summaryView.inflateInParent(mReviewSummaryContainer, true);
-        summaryView.initializeControls();
-        summaryView.drawSummary();
+        mReviewSummary.setVisibility(View.VISIBLE);
+
+        if (mDiscountsPresenter.getDiscount().getAmountOff().equals(new BigDecimal(0))) {
+            String title = mDiscountsPresenter.getPercentOff() + " de descuento";
+            mReviewSummaryTitle.setText(title);
+        } else {
+            String title = mDiscountsPresenter.getAmountOff() + " de descuento";
+            mReviewSummaryTitle.setText(title);
+        }
+
+        //TODO agregar el formateo a los números
+        mReviewSummaryProductAmount.setText(mDiscountsPresenter.getTransactionAmount().toString());
+        mReviewSummaryDiscountAmount.setText(mDiscountsPresenter.getCouponAmount().toString());
+
+        BigDecimal total = mDiscountsPresenter.getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
+        String totalAmount = total.toString();
+
+        mReviewSummaryTotalAmount.setText(totalAmount);
+    }
+
+    @Override
+    public void showLoadingView() {
+        //LayoutUtil.showProgressLayout(this);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
