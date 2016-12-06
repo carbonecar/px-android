@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:textSize="18dp"
+                android:textSize="23dp"
                 app:fontStyle="regular"
                 tools:text="$ 100 de descuento"/>
         </LinearLayout>
@@ -109,6 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="horizontal"
                 android:weightSum="1">
                 <com.mercadopago.customviews.MPTextView

@@ -1,10 +1,10 @@
 package com.mercadopago.presenters;
 
+
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.callbacks.OnSelectedCallback;
-import com.mercadopago.constants.PaymentTypes;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MerchantServer;
 import com.mercadopago.exceptions.MPException;
@@ -12,6 +12,7 @@ import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CustomSearchItem;
 import com.mercadopago.model.Customer;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Payer;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentMethodSearch;
@@ -53,6 +54,9 @@ public class PaymentVaultPresenter {
     private String mPayerAccessToken;
     private Boolean mAccountMoneyEnabled;
 
+    //TODO discounts
+    private Discount mDiscount;
+
     public void attachView(PaymentVaultView paymentVaultView) {
         this.mPaymentVaultView = paymentVaultView;
     }
@@ -67,8 +71,28 @@ public class PaymentVaultPresenter {
         if (isItemSelected()) {
             showSelectedItemChildren();
         } else {
+            //TODO discounts
+            getDirectDiscount();
+
             initPaymentMethodSearch();
         }
+    }
+
+    //TODO discounts
+    private void getDirectDiscount() {
+        //TODO revisar los get de Discounts activity que es donde están los últimos
+        mMercadoPago.getDirectDiscount(mMerchantPublicKey, mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                mPaymentVaultView.showDirectDiscount(discount, mAmount);
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                //TODO do something
+            }
+        });
     }
 
     public void validateParameters() throws IllegalStateException {

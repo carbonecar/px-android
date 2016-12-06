@@ -12,20 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/mpsdkReviewDiscountSummaryContainer"
-            android:visibility="gone"
+        <LinearLayout
+            android:id="@+id/mpsdkDiscountLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="top">
+            <FrameLayout
+                android:id="@+id/mpsdkReviewDiscountSummaryContainer"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <include layout="@layout/mpsdk_review_discount_summary"/>
+            </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/mpsdkDiscountCodeContainer"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/mpsdkDiscountCodeContainer"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <include layout="@layout/mpsdk_discount_code_input"/>
+            </FrameLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

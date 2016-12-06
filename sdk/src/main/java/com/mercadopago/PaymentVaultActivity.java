@@ -76,6 +76,9 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected CollapsingToolbarLayout mAppBarLayout;
     protected MPTextView mTimerTextView;
 
+    //TODO discounts
+    protected MPTextView mDiscountProductTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -547,5 +550,12 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                 //.setSite(mPaymentVaultPresenter.getSite())
                 //.setDecorationPreference(mDecorationPreference)
                 .startDiscountsActivity();
+    }
+
+    //TODO
+    @Override
+    public void showDirectDiscount(Discount discount, BigDecimal amount) {
+        String discountProduct = "Producto: " + amount.toString() + " $" + discount.getCouponAmount();
+        mDiscountProductTextView.setText(discountProduct);
     }
 }

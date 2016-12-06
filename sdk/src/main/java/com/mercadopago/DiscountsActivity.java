@@ -1,14 +1,25 @@
 package com.mercadopago;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.mercadopago.callbacks.OnConfirmPaymentCallback;
+import com.mercadopago.callbacks.card.CardSecurityCodeEditTextCallback;
+import com.mercadopago.customviews.MPEditText;
 import com.mercadopago.customviews.MPTextView;
+import com.mercadopago.listeners.card.CardSecurityCodeTextWatcher;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
@@ -26,13 +37,17 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected DecorationPreference mDecorationPreference;
 
     //View
-    protected ProgressBar mProgressBar;
-
-    protected FrameLayout mReviewSummary;
+    //protected ProgressBar mProgressBar;
+    protected FrameLayout mReviewDiscountSummaryContainer;
+    protected FrameLayout mDiscountCodeContainer;
+    protected FrameLayout mNextButton;
+    protected FrameLayout mBackButton;
+    protected LinearLayout mDiscountLinearLayout;
     protected MPTextView mReviewSummaryTitle;
     protected MPTextView mReviewSummaryProductAmount;
     protected MPTextView mReviewSummaryDiscountAmount;
     protected MPTextView mReviewSummaryTotalAmount;
+    protected MPEditText mDiscountCodeEditText;
 
     protected DiscountsPresenter mDiscountsPresenter;
 
@@ -80,7 +95,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     protected void onValidStart() {
         mDiscountsPresenter.initializeMercadoPago();
-
         mDiscountsPresenter.initialize();
     }
 
@@ -89,13 +103,21 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     protected void initializeControls() {
-        mProgressBar = (ProgressBar) findViewById(R.id.mpsdkProgressBar);
-        mReviewSummary = (FrameLayout) findViewById(R.id.mpsdkReviewSummary);
+        mDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountLinearLayout);
 
+        mReviewDiscountSummaryContainer = (FrameLayout) findViewById(R.id.mpsdkReviewDiscountSummaryContainer);
+        mDiscountCodeContainer = (FrameLayout) findViewById(R.id.mpsdkDiscountCodeContainer);
+
+        //Review discount summary
         mReviewSummaryTitle = (MPTextView) findViewById(R.id.mpsdkReviewSummaryTitle);
         mReviewSummaryProductAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryProductsAmount);
         mReviewSummaryDiscountAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryDiscountsAmount);
         mReviewSummaryTotalAmount = (MPTextView) findViewById(R.id.mpsdkReviewSummaryTotalAmount);
+
+        //Discount code input
+        mDiscountCodeEditText = (MPEditText) findViewById(R.id.mpsdkDiscountCode);
+        mNextButton = (FrameLayout) findViewById(R.id.mpsdkNextButton);
+        mBackButton = (FrameLayout) findViewById(R.id.mpsdkBackButton);
     }
 
     protected void onInvalidStart(String message) {
@@ -111,7 +133,9 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     public void drawSummary() {
         //TODO volar subtotal
         //TODO que evalúa si mostrar o no descuentos por el couponAmount
-        mReviewSummary.setVisibility(View.VISIBLE);
+        //mDiscountLinearLayout.setBackgroundColor(Color.parseColor("#009EE3"));
+        mDiscountCodeContainer.setVisibility(View.GONE);
+        mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 
         if (mDiscountsPresenter.getDiscount().getAmountOff().equals(new BigDecimal(0))) {
             String title = mDiscountsPresenter.getPercentOff() + " de descuento";
@@ -132,9 +156,59 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     @Override
+    public void askCode() {
+        mReviewDiscountSummaryContainer.setVisibility(View.GONE);
+        mDiscountCodeContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setDiscountCodeListener() {
+        mDiscountCodeEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                onTouchEditText(mDiscountCodeEditText, event);
+                return true;
+            }
+        });
+
+    }
+
+    private void onTouchEditText(MPEditText editText, MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
+        if (action == MotionEvent.ACTION_DOWN) {
+            openKeyboard(editText);
+        }
+    }
+
+    private void openKeyboard(MPEditText ediText) {
+        ediText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(ediText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @Override
+    public void setNextButtonListeners() {
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDiscountsPresenter.validateDiscountCodeInput();
+            }
+        });
+    }
+
+    @Override
+    public void setBackButtonListeners() {
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO somenthing, finish with cancel result
+            }
+        });
+    }
+
+    @Override
     public void showLoadingView() {
-        //LayoutUtil.showProgressLayout(this);
-        mProgressBar.setVisibility(View.VISIBLE);
+        //TODO poner loading
     }
 
     @Override

@@ -47,13 +47,13 @@ public class DiscountsPresenter {
 
     public void initialize() {
 
-        if (mDirectDiscountEnable) {
+        if (false) {//mDirectDiscountEnable) {
             getDirectDiscount();
         }
 
-        if (false) {//mCodeDiscountEnable) {
-            //View.askCode()
-            getCodeDiscount();
+        if (mCodeDiscountEnable) {
+            mDiscountsView.askCode();
+            //getCodeDiscount();
         }
     }
 
@@ -184,6 +184,15 @@ public class DiscountsPresenter {
 
             }
         });
+    }
+
+    public void saveDiscountCode(String discountCode) {
+        this.mDiscountCode = discountCode;
+    }
+
+    public void validateDiscountCodeInput() {
+        //TODO validate
+        Toast.makeText(mContext, "Validate discount code", Toast.LENGTH_SHORT).show();
     }
 
     public Discount getDiscount() {

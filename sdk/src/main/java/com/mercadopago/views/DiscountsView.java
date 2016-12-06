@@ -8,6 +8,14 @@ public interface DiscountsView {
 
     void drawSummary();
 
+    void askCode();
+
+    void setDiscountCodeListener();
+
+    void setNextButtonListeners();
+
+    void setBackButtonListeners();
+
     void showLoadingView();
 
     void finishWithResult();

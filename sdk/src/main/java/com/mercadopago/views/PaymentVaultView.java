@@ -8,9 +8,11 @@ import com.mercadopago.exceptions.MPException;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CustomSearchItem;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentMethodSearchItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -45,4 +47,6 @@ public interface PaymentVaultView {
     void startPaymentMethodsActivity();
 
     void selectPaymentMethod(PaymentMethod selectedPaymentMethod);
+
+    void showDirectDiscount(Discount discount, BigDecimal amount);
 }

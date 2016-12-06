@@ -54,10 +54,10 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="2dp"
-                    android:digits="0123456789 "
                     android:imeOptions="actionNext"
-                    android:inputType="number"
+                    android:textAllCaps="true"
                     android:maxLength="19"
+                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
                     android:singleLine="true"
                     android:textColor="@color/abc_search_url_text_selected"
                     android:textSize="19dp" />
