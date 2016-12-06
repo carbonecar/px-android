@@ -52,7 +52,7 @@ public class DiscountsPresenter {
         }
 
         if (mCodeDiscountEnable) {
-            mDiscountsView.askCode();
+            mDiscountsView.requestDiscountCode();
             //getCodeDiscount();
         }
     }
@@ -190,9 +190,9 @@ public class DiscountsPresenter {
         this.mDiscountCode = discountCode;
     }
 
-    public void validateDiscountCodeInput() {
+    public void validateDiscountCodeInput(String discountCode) {
         //TODO validate
-        Toast.makeText(mContext, "Validate discount code", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Validate discount code " + discountCode, Toast.LENGTH_SHORT).show();
     }
 
     public Discount getDiscount() {

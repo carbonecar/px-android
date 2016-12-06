@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mercadopago.callbacks.OnConfirmPaymentCallback;
@@ -47,6 +48,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected MPTextView mReviewSummaryProductAmount;
     protected MPTextView mReviewSummaryDiscountAmount;
     protected MPTextView mReviewSummaryTotalAmount;
+    protected TextView mNextButtonText;
+    protected TextView mBackButtonText;
     protected MPEditText mDiscountCodeEditText;
 
     protected DiscountsPresenter mDiscountsPresenter;
@@ -118,6 +121,18 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mDiscountCodeEditText = (MPEditText) findViewById(R.id.mpsdkDiscountCode);
         mNextButton = (FrameLayout) findViewById(R.id.mpsdkNextButton);
         mBackButton = (FrameLayout) findViewById(R.id.mpsdkBackButton);
+        mNextButtonText = (MPTextView) findViewById(R.id.mpsdkNextButtonText);
+        mBackButtonText = (MPTextView) findViewById(R.id.mpsdkBackButtonText);
+
+        mNextButtonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence discountCode = mDiscountCodeEditText.getText();
+                mDiscountsPresenter.validateDiscountCodeInput(discountCode.toString());
+            }
+        });
+
+
     }
 
     protected void onInvalidStart(String message) {
@@ -156,59 +171,30 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     @Override
-    public void askCode() {
+    public void requestDiscountCode() {
         mReviewDiscountSummaryContainer.setVisibility(View.GONE);
         mDiscountCodeContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void setDiscountCodeListener() {
-        mDiscountCodeEditText.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                onTouchEditText(mDiscountCodeEditText, event);
-                return true;
-            }
-        });
-
-    }
-
-    private void onTouchEditText(MPEditText editText, MotionEvent event) {
-        int action = MotionEventCompat.getActionMasked(event);
-        if (action == MotionEvent.ACTION_DOWN) {
-            openKeyboard(editText);
-        }
-    }
-
-    private void openKeyboard(MPEditText ediText) {
-        ediText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(ediText, InputMethodManager.SHOW_IMPLICIT);
-    }
-
-    @Override
     public void setNextButtonListeners() {
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        mNextButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDiscountsPresenter.validateDiscountCodeInput();
+                CharSequence discountCode = mNextButtonText.getText();
+                mDiscountsPresenter.validateDiscountCodeInput(discountCode.toString());
             }
         });
     }
 
     @Override
     public void setBackButtonListeners() {
-        mBackButton.setOnClickListener(new View.OnClickListener() {
+        mBackButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO somenthing, finish with cancel result
             }
         });
-    }
-
-    @Override
-    public void showLoadingView() {
-        //TODO poner loading
     }
 
     @Override
