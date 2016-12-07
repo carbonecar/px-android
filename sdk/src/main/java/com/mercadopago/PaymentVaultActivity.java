@@ -3,6 +3,7 @@ package com.mercadopago;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,7 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,6 +47,7 @@ import com.mercadopago.uicontrollers.paymentmethodsearch.PaymentMethodSearchCust
 import com.mercadopago.uicontrollers.paymentmethodsearch.PaymentMethodSearchOption;
 import com.mercadopago.uicontrollers.paymentmethodsearch.PaymentMethodSearchViewController;
 import com.mercadopago.util.ApiUtil;
+import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
@@ -77,7 +81,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected MPTextView mTimerTextView;
 
     //TODO discounts
-    protected MPTextView mDiscountProductTextView;
+    protected LinearLayout mHasDiscountLinearLayout;
+    protected LinearLayout mHasDirectDiscountLinearLayout;
+    protected MPTextView mTotalAmountTextView;
+    protected MPTextView mTotalDescriptionTextView;
+    protected MPTextView mDiscountAmountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +162,13 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected void initializeControls() {
         mTimerTextView = (MPTextView) findViewById(R.id.mpsdkTimerTextView);
 
+        //TODO discounts
+        mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
+        mTotalAmountTextView = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
+        mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
+        mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
+        mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
+
         initializePaymentOptionsRecyclerView();
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
         mAppBarLayout = (CollapsingToolbarLayout) this.findViewById(R.id.mpsdkCollapsingToolbar);
@@ -167,6 +182,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected void onValidStart() {
         MPTracker.getInstance().trackScreen("PAYMENT_METHOD_SEARCH", "2", mPaymentVaultPresenter.getMerchantPublicKey(), mPaymentVaultPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
         showTimer();
+
+        //TODO discounts
+        String productText = "Producto: $ " + mPaymentVaultPresenter.getAmount();
+        mTotalAmountTextView.setText(productText);
+
         mPaymentVaultPresenter.initialize(mPaymentVaultPresenter.getMerchantPublicKey());
     }
 
@@ -192,7 +212,6 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                 onBackPressed();
             }
         });
-
         if (isCustomColorSet()) {
             decorate(toolbar);
             mAppBarLayout.setBackgroundColor(mDecorationPreference.getBaseColor());
@@ -555,7 +574,31 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     //TODO
     @Override
     public void showDirectDiscount(Discount discount, BigDecimal amount) {
-        String discountProduct = "Producto: " + amount.toString() + " $" + discount.getCouponAmount();
-        mDiscountProductTextView.setText(discountProduct);
+        mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mHasDiscountLinearLayout.setVisibility(View.GONE);
+
+        //TODO poner como recurso "Producto"
+        mTotalDescriptionTextView.setText("Producto:");
+        Spanned formattedText = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
+        mTotalAmountTextView.setText(formattedText);
+        mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+
+        BigDecimal result = mPaymentVaultPresenter.getAmount().subtract(discount.getCouponAmount());
+        mDiscountAmountTextView.setVisibility(View.VISIBLE);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(result, discount.getCurrencyId(),false,true);
+        mDiscountAmountTextView.setText(formattedDiscountAmount);
+
+        mPaymentVaultPresenter.setAmount(result);
+    }
+
+    @Override
+    public void showCodeDiscount() {
+        mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
+
+        //TODO poner como recurso "Producto"
+        mTotalDescriptionTextView.setText("Producto:");
+        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
+        mTotalAmountTextView.setText(formattedTotalAmount);
     }
 }

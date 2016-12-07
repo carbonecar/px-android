@@ -153,14 +153,12 @@ public class DiscountsPresenter {
         });
     }
 
-    private void getCodeDiscount() {
-        mMercadoPago.getCodeDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail, "PRUEBA", new Callback<Discount>() {
+    private void getCodeDiscount(String discountCode) {
+        mMercadoPago.getCodeDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
-                Toast.makeText(mContext, discount.getName(), Toast.LENGTH_SHORT).show();
-                //mDiscountsView.drawReview();
                 mDiscount = discount;
-                mDiscountsView.finishWithResult();
+                mDiscountsView.drawSummary();
             }
 
             @Override
@@ -193,6 +191,8 @@ public class DiscountsPresenter {
     public void validateDiscountCodeInput(String discountCode) {
         //TODO validate
         Toast.makeText(mContext, "Validate discount code " + discountCode, Toast.LENGTH_SHORT).show();
+
+        getCodeDiscount(discountCode);
     }
 
     public Discount getDiscount() {

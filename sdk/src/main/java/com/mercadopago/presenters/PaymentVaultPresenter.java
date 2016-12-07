@@ -1,6 +1,9 @@
 package com.mercadopago.presenters;
 
 
+import android.widget.Toast;
+
+import com.google.android.gms.common.api.Api;
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -68,20 +71,20 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
+        //TODO discounts
+        getDirectDiscount();
+
         if (isItemSelected()) {
             showSelectedItemChildren();
         } else {
-            //TODO discounts
-            getDirectDiscount();
-
             initPaymentMethodSearch();
         }
     }
 
     //TODO discounts
-    private void getDirectDiscount() {
+    public void getDirectDiscount() {
         //TODO revisar los get de Discounts activity que es donde están los últimos
-        mMercadoPago.getDirectDiscount(mMerchantPublicKey, mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
+        mMercadoPago.getDirectDiscount("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
@@ -91,6 +94,7 @@ public class PaymentVaultPresenter {
             @Override
             public void failure(ApiException apiException) {
                 //TODO do something
+                mPaymentVaultView.showCodeDiscount();
             }
         });
     }

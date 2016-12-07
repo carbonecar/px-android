@@ -7,6 +7,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +26,7 @@ import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
 import com.mercadopago.uicontrollers.reviewandconfirm.ReviewSummaryView;
+import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
@@ -146,9 +148,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void drawSummary() {
-        //TODO volar subtotal
-        //TODO que evalúa si mostrar o no descuentos por el couponAmount
-        //mDiscountLinearLayout.setBackgroundColor(Color.parseColor("#009EE3"));
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 
@@ -160,10 +159,11 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
             mReviewSummaryTitle.setText(title);
         }
 
-        //TODO agregar el formateo a los números
+        //TODO agregar el formateo de la currency y los decimales
         mReviewSummaryProductAmount.setText(mDiscountsPresenter.getTransactionAmount().toString());
         mReviewSummaryDiscountAmount.setText(mDiscountsPresenter.getCouponAmount().toString());
 
+        //TODO formatear currency y decimales
         BigDecimal total = mDiscountsPresenter.getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
         String totalAmount = total.toString();
 

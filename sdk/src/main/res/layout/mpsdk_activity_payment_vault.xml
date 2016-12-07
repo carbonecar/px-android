@@ -1,4 +1,5 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -62,39 +63,99 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
-
-            <com.mercadopago.customviews.MPTextView
-                android:id="@+id/mpsdkProduct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Producto $ 1.309"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/mpsdk_discount"/>
-
                 <com.mercadopago.customviews.MPTextView
+                    android:id="@+id/mpsdkTotalDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Tengo un descuento"
                     android:onClick="startDiscountsActivity"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:textSize="16dp"
+                    tools:text="Producto:"
+                    app:fontStyle="roboto_regular" />
+
+                <com.mercadopago.customviews.MPTextView
+                    android:id="@+id/mpsdkTotalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:textSize="16dp"
+                    tools:text="$ 1.309"
+                    app:fontStyle="roboto_regular" />
+
+                <com.mercadopago.customviews.MPTextView
+                    android:id="@+id/mpsdkDiscountAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:textColor="@color/mpsdk_color_payer_costs_no_rate"
+                    android:textSize="16dp"
+                    tools:text="$ 1.309"
+                    app:fontStyle="roboto_regular" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:gravity="center" >
+
+                <LinearLayout
+                    android:id="@+id/mpsdkHasDiscount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/mpsdk_discount"/>
+
+                    <com.mercadopago.customviews.MPTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Tengo un descuento"
+                        android:onClick="startDiscountsActivity"
+                        android:clickable="true"
+                        android:textSize="16dp"
+                        app:fontStyle="roboto_regular" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mpsdkHasDirectDiscount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+                    <com.mercadopago.customviews.MPTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Descuento"
+                        android:onClick="startDiscountsActivity"
+                        android:textColor="@color/mpsdk_color_payer_costs_no_rate"
+                        android:textSize="16dp"
+                        android:clickable="true"
+                        app:fontStyle="roboto_regular" />
+                </LinearLayout>
             </LinearLayout>
 
             <View

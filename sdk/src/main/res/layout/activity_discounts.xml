@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_discounts"
     android:layout_width="match_parent"
@@ -10,28 +9,27 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/mpsdkDiscountLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="top">
-            <FrameLayout
-                android:id="@+id/mpsdkReviewDiscountSummaryContainer"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <include layout="@layout/mpsdk_review_discount_summary"/>
-            </FrameLayout>
-
+            android:orientation="vertical">
             <FrameLayout
                 android:id="@+id/mpsdkDiscountCodeContainer"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:visibility="visible">
                 <include layout="@layout/mpsdk_discount_code_input"/>
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/mpsdkReviewDiscountSummaryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+                <include layout="@layout/mpsdk_review_discount_summary"/>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
