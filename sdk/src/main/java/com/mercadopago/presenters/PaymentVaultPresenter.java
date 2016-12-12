@@ -71,8 +71,10 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
+        //TODO volar
+        mPaymentVaultView.showCodeDiscount();
         //TODO discounts
-        getDirectDiscount();
+        //getDirectDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -501,5 +503,15 @@ public class PaymentVaultPresenter {
 
     public void setAccountMoneyEnabled(boolean accountMoneyEnabled) {
         this.mAccountMoneyEnabled = accountMoneyEnabled;
+    }
+
+    //TODO discount
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
+    }
+
+    //TODO discount
+    public Discount getDiscount() {
+        return mDiscount;
     }
 }

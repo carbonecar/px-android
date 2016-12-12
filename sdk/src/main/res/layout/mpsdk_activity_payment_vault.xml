@@ -81,11 +81,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Tengo un descuento"
-                    android:onClick="startDiscountsActivity"
                     android:clickable="true"
                     android:textSize="16dp"
-                    tools:text="Producto:"
-                    app:fontStyle="roboto_regular" />
+                    tools:text="Total:" />
 
                 <com.mercadopago.customviews.MPTextView
                     android:id="@+id/mpsdkTotalAmount"
@@ -94,8 +92,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
                     android:textSize="16dp"
-                    tools:text="$ 1.309"
-                    app:fontStyle="roboto_regular" />
+                    tools:text="$ 1.309" />
 
                 <com.mercadopago.customviews.MPTextView
                     android:id="@+id/mpsdkDiscountAmount"
@@ -106,8 +103,7 @@
                     android:visibility="gone"
                     android:textColor="@color/mpsdk_color_payer_costs_no_rate"
                     android:textSize="16dp"
-                    tools:text="$ 1.309"
-                    app:fontStyle="roboto_regular" />
+                    tools:text="$ 1.309" />
 
             </LinearLayout>
             <LinearLayout
@@ -126,18 +122,27 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="6dp"
                         android:src="@drawable/mpsdk_discount"/>
 
                     <com.mercadopago.customviews.MPTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Tengo un descuento"
+                        android:layout_marginRight="4dp"
                         android:onClick="startDiscountsActivity"
                         android:clickable="true"
-                        android:textSize="16dp"
-                        app:fontStyle="roboto_regular" />
+                        android:text="Tengo un descuento"
+                        android:textColor="#009EE3"
+                        android:textSize="16dp" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/mpsdk_arrow_right_blue"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -148,13 +153,30 @@
                     <com.mercadopago.customviews.MPTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:layout_gravity="center"
                         android:text="Descuento"
-                        android:onClick="startDiscountsActivity"
                         android:textColor="@color/mpsdk_color_payer_costs_no_rate"
                         android:textSize="16dp"
+                        android:clickable="true" />
+
+                    <com.mercadopago.customviews.MPTextView
+                        android:id="@+id/mpsdkDiscountOff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/mpsdk_white"
+                        android:background="@drawable/mpsdk_discount_applied"/>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="2dp"
+                        android:onClick="startDiscountsActivity"
                         android:clickable="true"
-                        app:fontStyle="roboto_regular" />
+                        android:src="@drawable/mpsdk_arrow_right_grey"/>
                 </LinearLayout>
             </LinearLayout>
 

@@ -86,6 +86,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected MPTextView mTotalAmountTextView;
     protected MPTextView mTotalDescriptionTextView;
     protected MPTextView mDiscountAmountTextView;
+    protected MPTextView mDiscountOffTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +169,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
         mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
+        mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
 
         initializePaymentOptionsRecyclerView();
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
@@ -184,7 +186,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         showTimer();
 
         //TODO discounts
-        String productText = "Producto: $ " + mPaymentVaultPresenter.getAmount();
+        String productText = "Total: $ " + mPaymentVaultPresenter.getAmount();
         mTotalAmountTextView.setText(productText);
 
         mPaymentVaultPresenter.initialize(mPaymentVaultPresenter.getMerchantPublicKey());
@@ -402,10 +404,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     //TODO discounts
     protected void resolveDiscountRequest(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            setResult(RESULT_OK, data);
-            finish();
-        }
+        Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+        showDirectDiscount(discount, mPaymentVaultPresenter.getAmount());
     }
 
     @Override
@@ -560,25 +560,47 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     //TODO discounts
     //TODO consejo de Mau, que sea el listener de un botón
     public void startDiscountsActivity(View view){
-        new MercadoPago.StartActivityBuilder()
-                .setActivity(this)
-                //TODO discounts, volver a public key
-                .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
-                .setPayerEmail("matias.romar@mercadolibre.com")
-                .setAmount(mPaymentVaultPresenter.getAmount())
-                //.setSite(mPaymentVaultPresenter.getSite())
-                //.setDecorationPreference(mDecorationPreference)
-                .startDiscountsActivity();
+        if (mPaymentVaultPresenter.getDiscount() != null){
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    //TODO discounts, volver a public key
+                    .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
+                    .setPayerEmail("matias.romar@mercadolibre.com")
+                    .setAmount(mPaymentVaultPresenter.getAmount())
+                    .setDiscount(mPaymentVaultPresenter.getDiscount())
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        } else {
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    //TODO discounts, volver a public key
+                    .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
+                    .setPayerEmail("matias.romar@mercadolibre.com")
+                    .setAmount(mPaymentVaultPresenter.getAmount())
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        }
     }
 
-    //TODO
+    //TODO discounts, revisar el orden de los métodos
     @Override
     public void showDirectDiscount(Discount discount, BigDecimal amount) {
         mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
         mHasDiscountLinearLayout.setVisibility(View.GONE);
 
+        //TODO mejorar
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            String discountOff = "$" + discount.getAmountOff();
+            mDiscountOffTextView.setText(discountOff);
+        } else {
+            String discountOff = discount.getPercentOff() + "%";
+            mDiscountOffTextView.setText(discountOff);
+        }
+
         //TODO poner como recurso "Producto"
-        mTotalDescriptionTextView.setText("Producto:");
+        mTotalDescriptionTextView.setText("Total:");
         Spanned formattedText = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
         mTotalAmountTextView.setText(formattedText);
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -596,8 +618,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
         mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
 
-        //TODO poner como recurso "Producto"
-        mTotalDescriptionTextView.setText("Producto:");
+        //TODO poner como recurso "Total"
+        mTotalDescriptionTextView.setText("Total:");
         Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
         mTotalAmountTextView.setText(formattedTotalAmount);
     }

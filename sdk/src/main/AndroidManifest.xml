@@ -98,6 +98,9 @@
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
+            android:name=".DiscountsActivity"
+            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"/>
+        <activity
             android:name=".VaultActivity"
             android:theme="@style/Theme.MercadoPagoTheme" />
         <!--
@@ -108,7 +111,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".DiscountsActivity"></activity>
     </application>
 
 </manifest>

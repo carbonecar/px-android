@@ -13,18 +13,16 @@
         <FrameLayout
             android:id="@+id/mpsdkDiscountBackground"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/mpsdk_card_background_height"
+            android:layout_height="wrap_content"
             android:background="@color/mpsdk_background_blue">
 
-            <include layout="@layout/mpsdk_form_card_normal_toolbar"/>
-
-            <FrameLayout
-                android:id="@+id/mpsdkDiscountViewContainer"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|top"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="45dp" />
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mpsdk_discount_off"/>
         </FrameLayout>
 
         <FrameLayout
@@ -57,7 +55,7 @@
                     android:imeOptions="actionNext"
                     android:textAllCaps="true"
                     android:maxLength="19"
-                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     android:singleLine="true"
                     android:textColor="@color/abc_search_url_text_selected"
                     android:textSize="19dp" />

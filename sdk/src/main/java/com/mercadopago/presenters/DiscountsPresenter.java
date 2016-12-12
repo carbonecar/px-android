@@ -31,11 +31,10 @@ public class DiscountsPresenter {
     private String mMerchantDiscountsUri;
     private String mDiscountCode;
     private BigDecimal mTransactionAmount;
+    private Discount mDiscount;
 
     private Boolean mDirectDiscountEnable = true;
     private Boolean mCodeDiscountEnable = true;
-
-    private Discount mDiscount;
 
     public DiscountsPresenter(Context context) {
         this.mContext = context;
@@ -47,13 +46,17 @@ public class DiscountsPresenter {
 
     public void initialize() {
 
-        if (false) {//mDirectDiscountEnable) {
-            getDirectDiscount();
-        }
+        if (mDiscount != null) {
+            mDiscountsView.drawSummary();
+        } else {
+            if (false) {//mDirectDiscountEnable) {
+                getDirectDiscount();
+            }
 
-        if (mCodeDiscountEnable) {
-            mDiscountsView.requestDiscountCode();
-            //getCodeDiscount();
+            if (mCodeDiscountEnable) {
+                mDiscountsView.requestDiscountCode();
+                //getCodeDiscount();
+            }
         }
     }
 
@@ -91,6 +94,10 @@ public class DiscountsPresenter {
 
     public void setDicountCode(String discountCode) {
         this.mDiscountCode = discountCode;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
     }
 
     public void setTransactionAmount(BigDecimal transactionAmount) {

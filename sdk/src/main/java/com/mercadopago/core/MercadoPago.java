@@ -553,12 +553,13 @@ public class MercadoPago {
     }
 
     //TODO discounts
-    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount) {
+    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount) {
 
         Intent discountsIntent = new Intent(activity, DiscountsActivity.class);
         discountsIntent.putExtra("merchantPublicKey", key);
         discountsIntent.putExtra("payerEmail", payerEmail);
         discountsIntent.putExtra("amount", amount.toString());
+        discountsIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
         activity.startActivityForResult(discountsIntent, DISCOUNTS_REQUEST_CODE);
     }
@@ -729,6 +730,7 @@ public class MercadoPago {
         private PaymentMethodSearch mPaymentMethodSearch;
         private PaymentPreference mPaymentPreference;
         private PaymentRecovery mPaymentRecovery;
+        private Discount mDiscount;
 
         private Token mToken;
         private Issuer mIssuer;
@@ -825,6 +827,13 @@ public class MercadoPago {
         public StartActivityBuilder setPayerEmail(String payerEmail) {
 
             this.mPayerEmail = payerEmail;
+            return this;
+        }
+
+        //TODO discount
+        public StartActivityBuilder setDiscount(Discount discount) {
+
+            this.mDiscount = discount;
             return this;
         }
 
@@ -1154,7 +1163,7 @@ public class MercadoPago {
             if (this.mPayerEmail == null ) throw new IllegalStateException("email is null");
             if (this.mAmount == null) throw new IllegalStateException("amount is null");
 
-            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount);
+            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount);
         }
 
 

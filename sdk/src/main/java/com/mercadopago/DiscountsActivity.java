@@ -7,6 +7,8 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.mercadopago.customviews.MPEditText;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.listeners.card.CardSecurityCodeTextWatcher;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
 import com.mercadopago.uicontrollers.reviewandconfirm.ReviewSummaryView;
@@ -40,7 +43,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected DecorationPreference mDecorationPreference;
 
     //View
-    //protected ProgressBar mProgressBar;
     protected FrameLayout mReviewDiscountSummaryContainer;
     protected FrameLayout mDiscountCodeContainer;
     protected FrameLayout mNextButton;
@@ -53,6 +55,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected TextView mNextButtonText;
     protected TextView mBackButtonText;
     protected MPEditText mDiscountCodeEditText;
+
+    protected Toolbar mToolbar;
 
     protected DiscountsPresenter mDiscountsPresenter;
 
@@ -92,6 +96,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mDiscountsPresenter.setMerchantBaseUrl(this.getIntent().getStringExtra("merchantBaseUrl"));
         mDiscountsPresenter.setMerchantDiscountsUri(this.getIntent().getStringExtra("merchantDiscountsUri"));
         mDiscountsPresenter.setTransactionAmount(new BigDecimal(this.getIntent().getStringExtra("amount")));
+        mDiscountsPresenter.setDiscount(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class));
     }
 
     protected void setContentView() {
@@ -134,8 +139,30 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
             }
         });
 
-
+        initializeToolbar();
     }
+
+    private void initializeToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.mpsdkToolbar);
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDiscountsPresenter.getDiscount() == null) {
+                    onBackPressed();
+                } else {
+                    finishWithResult();
+                }
+            }
+        });
+    }
+
+
 
     protected void onInvalidStart(String message) {
         ErrorUtil.startErrorActivity(this, message, false);
@@ -148,26 +175,35 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void drawSummary() {
+        mToolbar.setNavigationIcon(R.drawable.mpsdk_close);
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 
         if (mDiscountsPresenter.getDiscount().getAmountOff().equals(new BigDecimal(0))) {
-            String title = mDiscountsPresenter.getPercentOff() + " de descuento";
+            String title = mDiscountsPresenter.getPercentOff() + "% de descuento";
             mReviewSummaryTitle.setText(title);
         } else {
-            String title = mDiscountsPresenter.getAmountOff() + " de descuento";
-            mReviewSummaryTitle.setText(title);
+            StringBuilder formattedTitle = new StringBuilder();
+            formattedTitle.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getAmountOff(), mDiscountsPresenter.getCurrencyId()));
+            formattedTitle.append(" de descuento");
+            Spanned spannedFullText = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getAmountOff(), mDiscountsPresenter.getCurrencyId(), formattedTitle.toString(), false, true);
+            mReviewSummaryTitle.setText(spannedFullText);
         }
 
-        //TODO agregar el formateo de la currency y los decimales
-        mReviewSummaryProductAmount.setText(mDiscountsPresenter.getTransactionAmount().toString());
-        mReviewSummaryDiscountAmount.setText(mDiscountsPresenter.getCouponAmount().toString());
+        Spanned formattedTransactionAmount = CurrenciesUtil.formatNumber(mDiscountsPresenter.getTransactionAmount(),mDiscountsPresenter.getCurrencyId(), false, true);
 
-        //TODO formatear currency y decimales
+        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
+        formattedDiscountAmountBuilder.append("-");
+        formattedDiscountAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId()));
+        Spanned spannedDiscountAmount = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId(), formattedDiscountAmountBuilder.toString(), false, true);
+
+        mReviewSummaryProductAmount.setText(formattedTransactionAmount);
+        mReviewSummaryDiscountAmount.setText(spannedDiscountAmount);
+
         BigDecimal total = mDiscountsPresenter.getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
-        String totalAmount = total.toString();
 
-        mReviewSummaryTotalAmount.setText(totalAmount);
+        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber( total, mDiscountsPresenter.getCurrencyId(), false, true);
+        mReviewSummaryTotalAmount.setText(formattedTotalAmount);
     }
 
     @Override
