@@ -94,11 +94,6 @@ public class GuessingCardActivityTest {
 
     private FakeAPI mFakeAPI;
 
-    @BeforeClass
-    static public void initialize(){
-        Looper.prepare();
-    }
-
     @Before
     public void createValidStartIntent() {
         mMerchantPublicKey = StaticMock.DUMMY_TEST_PUBLIC_KEY;
@@ -1585,7 +1580,7 @@ public class GuessingCardActivityTest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Test
-    public void onRestoreInstanceRestoreVariablesFrontCard() {
+    public void onRestoreInstanceRestoreVariablesFrontCard() throws Throwable {
         addInitCalls();
         addInitCalls();
         final GuessingCardActivity activity = mTestRule.launchActivity(validStartIntent);
@@ -1602,13 +1597,13 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkNextButton)).perform(click());
         onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(card.getSecurityCode()));
 
-        new Handler(activity.getMainLooper()).post(new Runnable() {
+        mTestRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 activity.recreate();
-
             }
         });
+
         sleep();
         onView(withId(R.id.mpsdkCardNumber)).check(matches(withText(card.getNumberWithMask())));
         sleep();
@@ -1630,7 +1625,7 @@ public class GuessingCardActivityTest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Test
-    public void onRestoreInstanceRestoreVariablesBackCard() {
+    public void onRestoreInstanceRestoreVariablesBackCard() throws Throwable {
         addInitCalls();
         addInitCalls();
         final GuessingCardActivity activity = mTestRule.launchActivity(validStartIntent);
@@ -1647,13 +1642,13 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkNextButton)).perform(click());
         onView(withId(R.id.mpsdkCardSecurityCode)).perform(typeText(card.getSecurityCode()));
 
-        new Handler(activity.getMainLooper()).post(new Runnable() {
+        mTestRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 activity.recreate();
-
             }
         });
+
         onView(withId(R.id.mpsdkCardNumber)).check(matches(withText(card.getNumberWithMask())));
         onView(withId(R.id.mpsdkCardNumberTextView)).check(matches(withText(containsString(card.getNumberWithMask()))));
         sleep();
@@ -1673,7 +1668,7 @@ public class GuessingCardActivityTest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Test
-    public void onRestoreInstanceRestoreVariablesIdentificationCard() {
+    public void onRestoreInstanceRestoreVariablesIdentificationCard() throws Throwable {
         addInitCalls();
         addInitCalls();
         sleep();
@@ -1696,13 +1691,13 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkCardIdentificationNumber)).perform(typeText(identificationType.getIdentificationNumber()));
         sleep();
 
-        new Handler(activity.getMainLooper()).post(new Runnable() {
+        mTestRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 activity.recreate();
-
             }
         });
+
         onView(withId(R.id.mpsdkCardNumber)).check(matches(withText(card.getNumberWithMask())));
         onView(withId(R.id.mpsdkCardNumberTextView)).check(matches(withText(containsString(card.getNumberWithMask()))));
         sleep();
@@ -1731,7 +1726,7 @@ public class GuessingCardActivityTest {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Test
-    public void onRestoreInstanceRestoreVariablesIdentificationCardAndBack() {
+    public void onRestoreInstanceRestoreVariablesIdentificationCardAndBack() throws Throwable {
         addInitCalls();
         addInitCalls();
         sleep();
@@ -1754,13 +1749,13 @@ public class GuessingCardActivityTest {
         onView(withId(R.id.mpsdkCardIdentificationNumber)).perform(typeText(identificationType.getIdentificationNumber()));
         sleep();
 
-        new Handler(activity.getMainLooper()).post(new Runnable() {
+        mTestRule.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 activity.recreate();
-
             }
         });
+
         onView(withId(R.id.mpsdkCardNumber)).check(matches(withText(card.getNumberWithMask())));
         onView(withId(R.id.mpsdkCardNumberTextView)).check(matches(withText(containsString(card.getNumberWithMask()))));
         sleep();
@@ -2186,6 +2181,7 @@ public class GuessingCardActivityTest {
     //Timer
     @Test
     public void showCountDownTimerWhenItIsInitialized(){
+        Looper.prepare();
         addBankDealsCall();
         addPaymentMethodsCall();
         addIdentificationTypesCall();
@@ -2196,10 +2192,13 @@ public class GuessingCardActivityTest {
 
         Assert.assertTrue(mTestRule.getActivity().findViewById(R.id.mpsdkTimerTextView).getVisibility() == View.VISIBLE);
         Assert.assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
+        Looper.getMainLooper().quit();
     }
 
+    //TODO fix, it needs looper, but quit is not working
     @Test
     public void finishActivityWhenSetOnFinishCheckoutListener(){
+//        Looper.prepare();
         addBankDealsCall();
         addPaymentMethodsCall();
         addIdentificationTypesCall();
@@ -2210,6 +2209,7 @@ public class GuessingCardActivityTest {
             public void onFinish() {
                 CheckoutTimer.getInstance().finishCheckout();
                 Assert.assertTrue(mTestRule.getActivity().isFinishing());
+//                Looper.myLooper().quit();
             }
         });
 
