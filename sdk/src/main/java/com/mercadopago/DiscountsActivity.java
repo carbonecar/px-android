@@ -1,38 +1,25 @@
 package com.mercadopago;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Spanned;
-import android.view.Gravity;
-import android.view.MotionEvent;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.mercadopago.callbacks.OnConfirmPaymentCallback;
-import com.mercadopago.callbacks.card.CardSecurityCodeEditTextCallback;
 import com.mercadopago.customviews.MPEditText;
 import com.mercadopago.customviews.MPTextView;
-import com.mercadopago.listeners.card.CardSecurityCodeTextWatcher;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Discount;
-import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
-import com.mercadopago.uicontrollers.reviewandconfirm.ReviewSummaryView;
 import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
-import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
@@ -47,11 +34,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected FrameLayout mDiscountCodeContainer;
     protected FrameLayout mNextButton;
     protected FrameLayout mBackButton;
+    protected FrameLayout mErrorContainer;
     protected LinearLayout mDiscountLinearLayout;
     protected MPTextView mReviewSummaryTitle;
     protected MPTextView mReviewSummaryProductAmount;
     protected MPTextView mReviewSummaryDiscountAmount;
     protected MPTextView mReviewSummaryTotalAmount;
+    protected MPTextView mErrorTextView;
     protected TextView mNextButtonText;
     protected TextView mBackButtonText;
     protected MPEditText mDiscountCodeEditText;
@@ -90,13 +79,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mDecorationPreference = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("decorationPreference"), DecorationPreference.class);
 
         mDiscountsPresenter.setMerchantPublicKey(getIntent().getStringExtra("merchantPublicKey"));
-        //TODO no va, porque el AT lo usa el merchant desde su server para ir a la API de descuentos, chequear
-        //mDiscountsPresenter.setMerchantAccessToken(this.getIntent().getStringExtra("merchantAccessToken"));
         mDiscountsPresenter.setPayerEmail(this.getIntent().getStringExtra("payerEmail"));
         mDiscountsPresenter.setMerchantBaseUrl(this.getIntent().getStringExtra("merchantBaseUrl"));
         mDiscountsPresenter.setMerchantDiscountsUri(this.getIntent().getStringExtra("merchantDiscountsUri"));
         mDiscountsPresenter.setTransactionAmount(new BigDecimal(this.getIntent().getStringExtra("amount")));
         mDiscountsPresenter.setDiscount(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class));
+        mDiscountsPresenter.setDirectDiscountEnabled(this.getIntent().getBooleanExtra("directDiscountEnabled", true));
+        mDiscountsPresenter.setCodeDiscountEnabled(this.getIntent().getBooleanExtra("codeDiscountEnabled", true));
     }
 
     protected void setContentView() {
@@ -130,7 +119,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mBackButton = (FrameLayout) findViewById(R.id.mpsdkBackButton);
         mNextButtonText = (MPTextView) findViewById(R.id.mpsdkNextButtonText);
         mBackButtonText = (MPTextView) findViewById(R.id.mpsdkBackButtonText);
-
         mNextButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +126,32 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
                 mDiscountsPresenter.validateDiscountCodeInput(discountCode.toString());
             }
         });
+        mBackButtonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        mDiscountCodeEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                clearErrorView();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mErrorContainer = (FrameLayout) findViewById(R.id.mpsdkErrorContainer);
+        mErrorTextView = (MPTextView) findViewById(R.id.mpsdkErrorTextView);
 
         initializeToolbar();
     }
@@ -162,12 +176,9 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         });
     }
 
-
-
     protected void onInvalidStart(String message) {
         ErrorUtil.startErrorActivity(this, message, false);
     }
-
 
     private boolean isCustomColorSet() {
         return mDecorationPreference != null && mDecorationPreference.hasColors();
@@ -179,6 +190,34 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 
+        showSummaryTitle();
+        showTransactionRow();
+        showDiscountRow();
+        showTotalRow();
+    }
+
+    private void showTotalRow() {
+        BigDecimal total = mDiscountsPresenter.getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
+        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber( total, mDiscountsPresenter.getCurrencyId(), false, true);
+        mReviewSummaryTotalAmount.setText(formattedTotalAmount);
+    }
+
+    private void showDiscountRow() {
+        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
+        Spanned spannedDiscountAmount;
+
+        formattedDiscountAmountBuilder.append("-");
+        formattedDiscountAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId()));
+        spannedDiscountAmount = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId(), formattedDiscountAmountBuilder.toString(), false, true);
+        mReviewSummaryDiscountAmount.setText(spannedDiscountAmount);
+    }
+
+    private void showTransactionRow() {
+        Spanned formattedTransactionAmount = CurrenciesUtil.formatNumber(mDiscountsPresenter.getTransactionAmount(),mDiscountsPresenter.getCurrencyId(), false, true);
+        mReviewSummaryProductAmount.setText(formattedTransactionAmount);
+    }
+
+    private void showSummaryTitle() {
         if (mDiscountsPresenter.getDiscount().getAmountOff().equals(new BigDecimal(0))) {
             String title = mDiscountsPresenter.getPercentOff() + "% de descuento";
             mReviewSummaryTitle.setText(title);
@@ -189,21 +228,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
             Spanned spannedFullText = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getAmountOff(), mDiscountsPresenter.getCurrencyId(), formattedTitle.toString(), false, true);
             mReviewSummaryTitle.setText(spannedFullText);
         }
-
-        Spanned formattedTransactionAmount = CurrenciesUtil.formatNumber(mDiscountsPresenter.getTransactionAmount(),mDiscountsPresenter.getCurrencyId(), false, true);
-
-        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
-        formattedDiscountAmountBuilder.append("-");
-        formattedDiscountAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId()));
-        Spanned spannedDiscountAmount = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId(), formattedDiscountAmountBuilder.toString(), false, true);
-
-        mReviewSummaryProductAmount.setText(formattedTransactionAmount);
-        mReviewSummaryDiscountAmount.setText(spannedDiscountAmount);
-
-        BigDecimal total = mDiscountsPresenter.getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
-
-        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber( total, mDiscountsPresenter.getCurrencyId(), false, true);
-        mReviewSummaryTotalAmount.setText(formattedTotalAmount);
     }
 
     @Override
@@ -213,24 +237,18 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     @Override
-    public void setNextButtonListeners() {
-        mNextButtonText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CharSequence discountCode = mNextButtonText.getText();
-                mDiscountsPresenter.validateDiscountCodeInput(discountCode.toString());
-            }
-        });
+    public void showCodeInputError(String message) {
+        mErrorContainer.setVisibility(View.VISIBLE);
+        mErrorTextView.setText(message);
+        //setErrorState(ERROR_STATE);
     }
 
     @Override
-    public void setBackButtonListeners() {
-        mBackButtonText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO somenthing, finish with cancel result
-            }
-        });
+    public void clearErrorView() {
+        //mButtonContainer.setVisibility(View.VISIBLE);
+        mErrorContainer.setVisibility(View.GONE);
+        mErrorTextView.setText("");
+        //setErrorState(NORMAL_STATE);
     }
 
     @Override
@@ -238,6 +256,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         Intent returnIntent = new Intent();
         returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mDiscountsPresenter.getDiscount()));
         setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    @Override
+    public void finishWithCancelResult() {
+        Intent returnIntent = new Intent();
+        setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
 }

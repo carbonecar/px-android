@@ -5,35 +5,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
     android:orientation="vertical"
     android:gravity="center"
     android:background="#009EE3">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/mpsdkReviewSummaryTitleDiscount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/mpsdk_white">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/mpsdk_round_summary_top">
 
-        <LinearLayout
-            android:id="@+id/mpsdkReviewSummaryTitleDiscount"
+        <com.mercadopago.customviews.MPTextView
+            android:id="@+id/mpsdkReviewSummaryTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#EEEEEE"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="23dp"
+            app:fontStyle="regular"
+            tools:text="$ 100 de descuento"/>
+    </LinearLayout>
 
-            <com.mercadopago.customviews.MPTextView
-                android:id="@+id/mpsdkReviewSummaryTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="23dp"
-                app:fontStyle="regular"
-                tools:text="$ 100 de descuento"/>
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mpsdk_round_summary_bottom"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"

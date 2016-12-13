@@ -32,11 +32,13 @@
                 android:visibility="gone">
                 <include layout="@layout/mpsdk_discount_code_input"/>
             </FrameLayout>
+
             <FrameLayout
                 android:id="@+id/mpsdkReviewDiscountSummaryContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible">
+                android:layout_gravity="center"
+                android:visibility="gone">
                 <include layout="@layout/mpsdk_review_discount_summary"/>
             </FrameLayout>
         </LinearLayout>

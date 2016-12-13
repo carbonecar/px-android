@@ -1,9 +1,6 @@
 package com.mercadopago.presenters;
 
 
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.Api;
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -71,10 +68,8 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
-        //TODO volar
-        mPaymentVaultView.showCodeDiscount();
         //TODO discounts
-        //getDirectDiscount();
+        getDirectDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -86,17 +81,18 @@ public class PaymentVaultPresenter {
     //TODO discounts
     public void getDirectDiscount() {
         //TODO revisar los get de Discounts activity que es donde están los últimos
-        mMercadoPago.getDirectDiscount("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
+        //TODO hay que pasar el payer email
+        mMercadoPago.getDirectDiscount("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-2363874900", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {//"APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
-                mPaymentVaultView.showDirectDiscount(discount, mAmount);
+                mPaymentVaultView.showDiscountDetail(discount, mAmount);
             }
 
             @Override
             public void failure(ApiException apiException) {
-                //TODO do something
-                mPaymentVaultView.showCodeDiscount();
+                //TODO ver que hacer con los errores
+                mPaymentVaultView.showHasDiscount();
             }
         });
     }

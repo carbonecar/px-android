@@ -10,9 +10,11 @@ public interface DiscountsView {
 
     void requestDiscountCode();
 
-    void setNextButtonListeners();
-
-    void setBackButtonListeners();
-
     void finishWithResult();
+
+    void finishWithCancelResult();
+
+    void showCodeInputError(String message);
+
+    void clearErrorView();
 }

@@ -185,10 +185,6 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         MPTracker.getInstance().trackScreen("PAYMENT_METHOD_SEARCH", "2", mPaymentVaultPresenter.getMerchantPublicKey(), mPaymentVaultPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
         showTimer();
 
-        //TODO discounts
-        String productText = "Total: $ " + mPaymentVaultPresenter.getAmount();
-        mTotalAmountTextView.setText(productText);
-
         mPaymentVaultPresenter.initialize(mPaymentVaultPresenter.getMerchantPublicKey());
     }
 
@@ -404,8 +400,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     //TODO discounts
     protected void resolveDiscountRequest(int resultCode, Intent data) {
-        Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
-        showDirectDiscount(discount, mPaymentVaultPresenter.getAmount());
+        if (resultCode == RESULT_OK) {
+            Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+            mPaymentVaultPresenter.setDiscount(discount);
+            showDiscountDetail(discount, mPaymentVaultPresenter.getAmount());
+        }
     }
 
     @Override
@@ -567,6 +566,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                     .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
                     .setPayerEmail("matias.romar@mercadolibre.com")
                     .setAmount(mPaymentVaultPresenter.getAmount())
+                    //send a Discount
                     .setDiscount(mPaymentVaultPresenter.getDiscount())
                     //.setSite(mPaymentVaultPresenter.getSite())
                     //.setDecorationPreference(mDecorationPreference)
@@ -578,6 +578,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                     .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
                     .setPayerEmail("matias.romar@mercadolibre.com")
                     .setAmount(mPaymentVaultPresenter.getAmount())
+                    .setDirectDiscountEnabled(false)
                     //.setSite(mPaymentVaultPresenter.getSite())
                     //.setDecorationPreference(mDecorationPreference)
                     .startDiscountsActivity();
@@ -586,7 +587,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     //TODO discounts, revisar el orden de los métodos
     @Override
-    public void showDirectDiscount(Discount discount, BigDecimal amount) {
+    public void showDiscountDetail(Discount discount, BigDecimal amount) {
         mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
         mHasDiscountLinearLayout.setVisibility(View.GONE);
 
@@ -614,7 +615,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     @Override
-    public void showCodeDiscount() {
+    public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
         mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
 

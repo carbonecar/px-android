@@ -11,6 +11,8 @@ import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * Created by mromar on 11/29/16.
  */
@@ -33,8 +35,8 @@ public class DiscountsPresenter {
     private BigDecimal mTransactionAmount;
     private Discount mDiscount;
 
-    private Boolean mDirectDiscountEnable = true;
-    private Boolean mCodeDiscountEnable = true;
+    private Boolean mDirectDiscountEnabled;
+    private Boolean mCodeDiscountEnabled;
 
     public DiscountsPresenter(Context context) {
         this.mContext = context;
@@ -45,18 +47,21 @@ public class DiscountsPresenter {
     }
 
     public void initialize() {
-
         if (mDiscount != null) {
             mDiscountsView.drawSummary();
         } else {
-            if (false) {//mDirectDiscountEnable) {
-                getDirectDiscount();
-            }
+            initDiscountFlow();
+        }
+    }
 
-            if (mCodeDiscountEnable) {
-                mDiscountsView.requestDiscountCode();
-                //getCodeDiscount();
-            }
+    private void initDiscountFlow() {
+        if (mDirectDiscountEnabled) {
+            getDirectDiscount();
+        } else if (mCodeDiscountEnabled) {
+            mDiscountsView.requestDiscountCode();
+        }
+        else {
+            mDiscountsView.finishWithCancelResult();
         }
     }
 
@@ -70,63 +75,6 @@ public class DiscountsPresenter {
                 .setContext(mContext)
                 .setKey(mPublicKey, MercadoPago.KEY_TYPE_PUBLIC)
                 .build();
-    }
-
-    public void setMerchantPublicKey(String publicKey){
-        this.mPublicKey = publicKey;
-    }
-
-    public void setMerchantAccessToken(String merchantAccessToken) {
-        this.mMerchantAccessToken = merchantAccessToken;
-    }
-
-    public void setMerchantBaseUrl(String merchantBaseUrl) {
-        this.mMerchantBaseUrl = merchantBaseUrl;
-    }
-
-    public void setMerchantDiscountsUri (String merchantDiscountsUri) {
-        this.mMerchantDiscountsUri = merchantDiscountsUri;
-    }
-
-    public void setPayerEmail(String payerEmail){
-        this.mPayerEmail = payerEmail;
-    }
-
-    public void setDicountCode(String discountCode) {
-        this.mDiscountCode = discountCode;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.mDiscount = discount;
-    }
-
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.mTransactionAmount = transactionAmount;
-    }
-
-    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
-    public String getCurrencyId() {
-        return mDiscount.getCurrencyId();
-    }
-
-    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
-    public BigDecimal getTransactionAmount() {
-        return mTransactionAmount;
-    }
-
-    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
-    public BigDecimal getPercentOff() {
-        return mDiscount.getPercentOff();
-    }
-
-    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
-    public BigDecimal getAmountOff() {
-        return mDiscount.getAmountOff();
-    }
-
-    //TODO validar que no sea nulo, esto lo pide en el summary después del getDiscount
-    public BigDecimal getCouponAmount() {
-        return mDiscount.getCouponAmount();
     }
 
     private void getDirectDiscount() {
@@ -191,18 +139,73 @@ public class DiscountsPresenter {
         });
     }
 
-    public void saveDiscountCode(String discountCode) {
-        this.mDiscountCode = discountCode;
-    }
-
     public void validateDiscountCodeInput(String discountCode) {
-        //TODO validate
-        Toast.makeText(mContext, "Validate discount code " + discountCode, Toast.LENGTH_SHORT).show();
-
-        getCodeDiscount(discountCode);
+        if (!isEmpty(discountCode)) {
+            getCodeDiscount(discountCode);
+        }
+        else {
+            mDiscountsView.showCodeInputError("No se ingresó codigo");
+        }
     }
 
     public Discount getDiscount() {
         return this.mDiscount;
     }
+
+    public void setMerchantPublicKey(String publicKey){
+        this.mPublicKey = publicKey;
+    }
+
+    public void setMerchantAccessToken(String merchantAccessToken) {
+        this.mMerchantAccessToken = merchantAccessToken;
+    }
+
+    public void setMerchantBaseUrl(String merchantBaseUrl) {
+        this.mMerchantBaseUrl = merchantBaseUrl;
+    }
+
+    public void setMerchantDiscountsUri (String merchantDiscountsUri) {
+        this.mMerchantDiscountsUri = merchantDiscountsUri;
+    }
+
+    public void setPayerEmail(String payerEmail){
+        this.mPayerEmail = payerEmail;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
+    }
+
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.mTransactionAmount = transactionAmount;
+    }
+
+    public void setDirectDiscountEnabled(Boolean directDiscountEnabled) {
+        this.mDirectDiscountEnabled = directDiscountEnabled;
+    }
+
+    public void setCodeDiscountEnabled(Boolean codeDiscountEnabled) {
+        this.mCodeDiscountEnabled = codeDiscountEnabled;
+    }
+
+    public String getCurrencyId() {
+        return mDiscount.getCurrencyId();
+    }
+
+    public BigDecimal getTransactionAmount() {
+        return mTransactionAmount;
+    }
+
+    public BigDecimal getPercentOff() {
+        return mDiscount.getPercentOff();
+    }
+
+    public BigDecimal getAmountOff() {
+        return mDiscount.getAmountOff();
+    }
+
+    public BigDecimal getCouponAmount() {
+        return mDiscount.getCouponAmount();
+    }
+
 }

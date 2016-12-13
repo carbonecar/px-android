@@ -333,7 +333,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                 }
             }
         }
-
     }
 
     private void analizeLowRes() {

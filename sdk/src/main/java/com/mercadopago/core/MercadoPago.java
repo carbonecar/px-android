@@ -553,12 +553,13 @@ public class MercadoPago {
     }
 
     //TODO discounts
-    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount) {
+    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount, Boolean directDiscountEnabled) {
 
         Intent discountsIntent = new Intent(activity, DiscountsActivity.class);
         discountsIntent.putExtra("merchantPublicKey", key);
         discountsIntent.putExtra("payerEmail", payerEmail);
         discountsIntent.putExtra("amount", amount.toString());
+        discountsIntent.putExtra("directDiscountEnabled", directDiscountEnabled);
         discountsIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
         activity.startActivityForResult(discountsIntent, DISCOUNTS_REQUEST_CODE);
@@ -745,6 +746,9 @@ public class MercadoPago {
         private List<PaymentType> mPaymentTypesList;
         private CardInfo mCardInfo;
 
+        //TODO discount
+        private Boolean mDirectDiscountEnabled;
+
         public StartActivityBuilder() {
 
             mActivity = null;
@@ -837,6 +841,13 @@ public class MercadoPago {
             return this;
         }
 
+        //TODO discount
+        public StartActivityBuilder setDirectDiscountEnabled(Boolean directDiscountEnabled) {
+
+            this.mDirectDiscountEnabled = directDiscountEnabled;
+            return this;
+        }
+
         public StartActivityBuilder setIssuers(List<Issuer> issuers) {
 
             this.mIssuers = issuers;
@@ -850,6 +861,7 @@ public class MercadoPago {
         }
 
         public StartActivityBuilder setCardInfo(CardInfo cardInfo) {
+
             this.mCardInfo = cardInfo;
             return this;
         }
@@ -1163,7 +1175,7 @@ public class MercadoPago {
             if (this.mPayerEmail == null ) throw new IllegalStateException("email is null");
             if (this.mAmount == null) throw new IllegalStateException("amount is null");
 
-            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount);
+            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount, this.mDirectDiscountEnabled);
         }
 
 

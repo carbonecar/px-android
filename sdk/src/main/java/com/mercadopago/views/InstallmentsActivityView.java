@@ -1,8 +1,10 @@
 package com.mercadopago.views;
 
 import com.mercadopago.model.ApiException;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.PayerCost;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
