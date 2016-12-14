@@ -90,12 +90,14 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
     private void startMercadoPagoCheckout() {
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
-
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPublicKey)
                 .setCheckoutPreferenceId(mCheckoutPreference.getId())
                 .setDecorationPreference(decorationPreference) //Optional
+                .setMerchantBaseUrl(ExamplesUtils.DUMMY_MERCHANT_BASE_URL)
+                .setMerchantGetCustomerUri(ExamplesUtils.DUMMY_MERCHANT_GET_CUSTOMER_URI)
+                .setMerchantAccessToken(ExamplesUtils.DUMMY_MERCHANT_ACCESS_TOKEN)
                 .startCheckoutActivity();
     }
 
