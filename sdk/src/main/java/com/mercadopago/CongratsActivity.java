@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.mercadopago.customviews.MPTextView;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.mptracker.MPTracker;
@@ -37,6 +38,7 @@ public class CongratsActivity extends MercadoPagoActivity {
     protected Payment mPayment;
     protected PaymentMethod mPaymentMethod;
     protected String mMerchantPublicKey;
+    protected Discount mDiscount;
 
     //Local values
     private boolean mBackPressedOnce;
@@ -46,6 +48,7 @@ public class CongratsActivity extends MercadoPagoActivity {
         mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mPayment = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("payment"), Payment.class);
         mPaymentMethod = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("paymentMethod"), PaymentMethod.class);
+        mDiscount = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("discount"), Discount.class);
     }
 
     @Override

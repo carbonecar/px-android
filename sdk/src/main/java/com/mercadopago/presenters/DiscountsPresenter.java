@@ -109,6 +109,8 @@ public class DiscountsPresenter {
     }
 
     private void getCodeDiscount(String discountCode) {
+        //mDiscountsView.showLoadingView();
+
         mMercadoPago.getCodeDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -118,12 +120,13 @@ public class DiscountsPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                Toast.makeText(mContext, apiException.getMessage(), Toast.LENGTH_SHORT).show();
 
-                //TODO si el código es incorrecto, mostrar
-                if (apiException.getMessage().equals("doesn't find a campaign with the given code")) {
-                    Toast.makeText(mContext, "No existe código", Toast.LENGTH_SHORT).show();
-                    //TODO código incorrecto
+                if (apiException.getError().equals("campaign-code-doesnt-match")) {
+                    mDiscountsView.showCodeInputError("Código incorrecto");
+                } else if (apiException.getError().equals("campaign-doesnt-match")) {
+                    mDiscountsView.showCodeInputError("No existe campaña");
+                } else if (apiException.getError().equals("run out of uses")) {
+                    mDiscountsView.showCodeInputError("Cantidad de usos completadas");
                 }
 
 //                setFailureRecovery(new FailureRecovery() {
@@ -144,6 +147,7 @@ public class DiscountsPresenter {
             getCodeDiscount(discountCode);
         }
         else {
+            //TODO poner como recurso
             mDiscountsView.showCodeInputError("No se ingresó codigo");
         }
     }

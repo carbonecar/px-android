@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.mercadopago.core.MercadoPago;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.util.ErrorUtil;
@@ -18,7 +19,7 @@ public class PaymentResultActivity extends Activity {
     //Params
     protected Payment mPayment;
     protected PaymentMethod mPaymentMethod;
-
+    protected Discount mDiscount;
     private String mMerchantPublicKey;
 
     @Override
@@ -39,6 +40,7 @@ public class PaymentResultActivity extends Activity {
         mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mPayment = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("payment"), Payment.class);
         mPaymentMethod = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("paymentMethod"), PaymentMethod.class);
+        mDiscount = JsonUtil.getInstance().fromJson(getIntent().getExtras().getString("discount"), Discount.class);
     }
 
     protected void validateActivityParameters() throws IllegalStateException {
@@ -94,12 +96,23 @@ public class PaymentResultActivity extends Activity {
     }
 
     private void startCongratsActivity() {
-        new MercadoPago.StartActivityBuilder()
-                .setPublicKey(mMerchantPublicKey)
-                .setActivity(this)
-                .setPayment(mPayment)
-                .setPaymentMethod(mPaymentMethod)
-                .startCongratsActivity();
+        //TODO mejorar
+        if (mDiscount != null) {
+            new MercadoPago.StartActivityBuilder()
+                    .setPublicKey(mMerchantPublicKey)
+                    .setActivity(this)
+                    .setPayment(mPayment)
+                    .setPaymentMethod(mPaymentMethod)
+                    .setDiscount(mDiscount)
+                    .startCongratsActivity();
+        } else {
+            new MercadoPago.StartActivityBuilder()
+                    .setPublicKey(mMerchantPublicKey)
+                    .setActivity(this)
+                    .setPayment(mPayment)
+                    .setPaymentMethod(mPaymentMethod)
+                    .startCongratsActivity();
+        }
     }
 
     private void startCallForAuthorizeActivity() {

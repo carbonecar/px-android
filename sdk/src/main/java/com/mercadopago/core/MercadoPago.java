@@ -359,22 +359,24 @@ public class MercadoPago {
         activity.startActivityForResult(checkoutIntent, CHECKOUT_REQUEST_CODE);
     }
 
-    private static void startPaymentResultActivity(Activity activity, String merchantPublicKey, Payment payment, PaymentMethod paymentMethod) {
+    private static void startPaymentResultActivity(Activity activity, String merchantPublicKey, Payment payment, PaymentMethod paymentMethod, Discount discount) {
 
         Intent resultIntent = new Intent(activity, PaymentResultActivity.class);
         resultIntent.putExtra("merchantPublicKey", merchantPublicKey);
         resultIntent.putExtra("payment", JsonUtil.getInstance().toJson(payment));
         resultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        resultIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
         activity.startActivityForResult(resultIntent, PAYMENT_RESULT_REQUEST_CODE);
     }
 
-    private static void startCongratsActivity(Activity activity, String merchantPublicKey, Payment payment, PaymentMethod paymentMethod) {
+    private static void startCongratsActivity(Activity activity, String merchantPublicKey, Payment payment, PaymentMethod paymentMethod, Discount discount) {
 
         Intent congratsIntent = new Intent(activity, CongratsActivity.class);
         congratsIntent.putExtra("merchantPublicKey", merchantPublicKey);
         congratsIntent.putExtra("payment", JsonUtil.getInstance().toJson(payment));
         congratsIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        congratsIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
         activity.startActivityForResult(congratsIntent, CONGRATS_REQUEST_CODE);
     }
@@ -748,6 +750,7 @@ public class MercadoPago {
 
         //TODO discount
         private Boolean mDirectDiscountEnabled;
+        private Boolean mCodeDiscountEnabled;
 
         public StartActivityBuilder() {
 
@@ -845,6 +848,13 @@ public class MercadoPago {
         public StartActivityBuilder setDirectDiscountEnabled(Boolean directDiscountEnabled) {
 
             this.mDirectDiscountEnabled = directDiscountEnabled;
+            return this;
+        }
+
+        //TODO discount
+        public StartActivityBuilder setCodeDiscountEnabled(Boolean codeDiscountEnabled) {
+
+            this.mCodeDiscountEnabled = codeDiscountEnabled;
             return this;
         }
 
@@ -997,7 +1007,7 @@ public class MercadoPago {
             if (this.mKeyType == null) throw new IllegalStateException("key type is null");
 
             if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
-                MercadoPago.startPaymentResultActivity(this.mActivity, this.mKey, this.mPayment, this.mPaymentMethod);
+                MercadoPago.startPaymentResultActivity(this.mActivity, this.mKey, this.mPayment, this.mPaymentMethod, this.mDiscount);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }
@@ -1007,13 +1017,12 @@ public class MercadoPago {
 
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mPayment == null) throw new IllegalStateException("payment is null");
-            if (this.mPaymentMethod == null)
-                throw new IllegalStateException("payment method is null");
+            if (this.mPaymentMethod == null) throw new IllegalStateException("payment method is null");
             if (this.mKey == null) throw new IllegalStateException("key is null");
             if (this.mKeyType == null) throw new IllegalStateException("key type is null");
 
             if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
-                MercadoPago.startCongratsActivity(this.mActivity, this.mKey, this.mPayment, this.mPaymentMethod);
+                MercadoPago.startCongratsActivity(this.mActivity, this.mKey, this.mPayment, this.mPaymentMethod, this.mDiscount);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }
