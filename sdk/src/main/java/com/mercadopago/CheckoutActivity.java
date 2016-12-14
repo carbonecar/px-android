@@ -176,7 +176,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
         mReviewPaymentOffRecyclerView.setNestedScrollingEnabled(false);
         mReviewProductRecyclerView.setNestedScrollingEnabled(false);
         mReviewSummaryContainer = (FrameLayout) findViewById(R.id.mpsdkReviewSummaryContainer);
-        mConfirmButton = (FrameLayout) findViewById(R.id.mpsdkReviewSummaryConfirmButton);
+        mConfirmButton = (FrameLayout) findViewById(R.id.mpsdkCheckoutConfirmButton);
         mConfirmTextButton = (MPTextView) findViewById(R.id.mpsdkConfirmText);
         mCancelButton = (FrameLayout) findViewById(R.id.mpsdkReviewCancelButton);
         mCancelTextView = (MPTextView) findViewById(R.id.mpsdkCancelText);

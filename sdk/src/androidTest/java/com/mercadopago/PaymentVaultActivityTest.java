@@ -82,11 +82,6 @@ public class PaymentVaultActivityTest {
     private Intent validStartIntent;
     private FakeAPI mFakeAPI;
 
-    @BeforeClass
-    static public void initialize() {
-        Looper.prepare();
-    }
-
     @Before
     public void setupStartIntent() {
 
@@ -959,6 +954,9 @@ public class PaymentVaultActivityTest {
     //Timer
     @Test
     public void showCountDownTimerWhenItIsInitialized() {
+        if(Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
@@ -975,10 +973,12 @@ public class PaymentVaultActivityTest {
 
         Assert.assertTrue(mTestRule.getActivity().findViewById(R.id.mpsdkTimerTextView).getVisibility() == View.VISIBLE);
         Assert.assertTrue(CheckoutTimer.getInstance().isTimerEnabled());
+        Looper.myLooper().quit();
     }
 
     @Test
     public void finishActivityWhenSetOnFinishCheckoutListener() {
+        Looper.prepare();
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
@@ -995,6 +995,7 @@ public class PaymentVaultActivityTest {
             public void onFinish() {
                 CheckoutTimer.getInstance().finishCheckout();
                 Assert.assertTrue(mTestRule.getActivity().isFinishing());
+                Looper.myLooper().quit();
             }
         });
 
