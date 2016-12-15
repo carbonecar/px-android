@@ -62,7 +62,7 @@
                     android:id="@+id/mpsdkHasDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible">
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -95,7 +95,7 @@
                     android:id="@+id/mpsdkHasDirectDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:visibility="visible">
                     <com.mercadopago.customviews.MPTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -117,6 +117,7 @@
                         android:background="@drawable/mpsdk_discount_applied"/>
 
                     <ImageView
+                        android:id="@+id/mpsdkDiscountArrow"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginTop="2dp"
@@ -127,7 +128,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/mpsdkTopEmailSeparator"
+                android:id="@+id/mpsdkDiscountSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/mpsdk_separator"

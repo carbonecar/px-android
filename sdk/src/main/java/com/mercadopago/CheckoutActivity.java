@@ -464,10 +464,6 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
             //TODO discounts, borrar
             mDiscount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
-//            if (mDiscount != null) {
-//                createPayment();
-//            }
-
 
             mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
             mSelectedPayerCost = JsonUtil.getInstance().fromJson(data.getStringExtra("payerCost"), PayerCost.class);
@@ -847,12 +843,23 @@ public class CheckoutActivity extends MercadoPagoActivity {
     }
 
     private void startPaymentResultActivity() {
-        new MercadoPago.StartActivityBuilder()
-                .setPublicKey(mMerchantPublicKey)
-                .setActivity(getActivity())
-                .setPayment(mCreatedPayment)
-                .setPaymentMethod(mSelectedPaymentMethod)
-                .startPaymentResultActivity();
+        //TODO mejorar
+        if (mDiscount != null) {
+            new MercadoPago.StartActivityBuilder()
+                    .setPublicKey(mMerchantPublicKey)
+                    .setActivity(getActivity())
+                    .setPayment(mCreatedPayment)
+                    .setPaymentMethod(mSelectedPaymentMethod)
+                    .setDiscount(mDiscount)
+                    .startPaymentResultActivity();
+        } else {
+            new MercadoPago.StartActivityBuilder()
+                    .setPublicKey(mMerchantPublicKey)
+                    .setActivity(getActivity())
+                    .setPayment(mCreatedPayment)
+                    .setPaymentMethod(mSelectedPaymentMethod)
+                    .startPaymentResultActivity();
+        }
     }
 
     private Long createNewTransactionId() {

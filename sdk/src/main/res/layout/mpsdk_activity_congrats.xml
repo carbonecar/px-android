@@ -107,6 +107,14 @@
                         android:textColor="@color/mpsdk_base_text"
                         tools:text="$ 800"/>
 
+                <LinearLayout
+                    android:id="@+id/mpsdkDiscountRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+                <include layout="@layout/mpsdk_discount_row"/>
+                </LinearLayout>
+
                     <ImageView
                         android:id="@+id/mpsdkPaymentMethodImage"
                         android:layout_width="40dp"

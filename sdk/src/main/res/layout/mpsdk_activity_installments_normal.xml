@@ -28,19 +28,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mpsdkActivityInstallmentsView"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/mpsdk_discount_row"/>
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
-            android:background="@color/mpsdk_white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:descendantFocusability="afterDescendants"/>
-    </FrameLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mpsdkActivityInstallmentsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                android:background="@color/mpsdk_white"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:descendantFocusability="afterDescendants"/>
+        </FrameLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

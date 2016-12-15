@@ -43,6 +43,45 @@
                     android:layout_marginTop="45dp" />
             </FrameLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:background="@color/mpsdk_color_payer_costs_no_rate"
+                android:gravity="center">
+
+                <com.mercadopago.customviews.MPTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center"
+                    android:text="Descuento"
+                    android:textColor="@color/mpsdk_white"
+                    android:textSize="16dp"
+                    android:clickable="true" />
+
+                <com.mercadopago.customviews.MPTextView
+                    android:id="@+id/mpsdkDiscountOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/mpsdk_color_payer_costs_no_rate"
+                    android:background="@drawable/mpsdk_discount_applied_white"
+                    tools:text="25%"/>
+
+                <ImageView
+                    android:id="@+id/mpsdkDiscountArrow"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="2dp"
+                    android:onClick="startDiscountsActivity"
+                    android:clickable="true"
+                    android:src="@drawable/mpsdk_arrow_right_white"/>
+                
+            </LinearLayout>
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -54,7 +93,6 @@
                     android:background="@color/mpsdk_white">
                     <include layout="@layout/mpsdk_form_card_input"/>
                 </LinearLayout>
-
             </FrameLayout>
 
             <FrameLayout
