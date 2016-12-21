@@ -1,6 +1,8 @@
 package com.mercadopago.presenters;
 
 
+import android.view.View;
+
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -56,6 +58,7 @@ public class PaymentVaultPresenter {
 
     //TODO discounts
     private Discount mDiscount;
+    private String mPayerEmail;
 
     public void attachView(PaymentVaultView paymentVaultView) {
         this.mPaymentVaultView = paymentVaultView;
@@ -69,7 +72,7 @@ public class PaymentVaultPresenter {
                 .build();
 
         //TODO discounts
-        getDirectDiscount();
+        //getDirectDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -80,9 +83,9 @@ public class PaymentVaultPresenter {
 
     //TODO discounts
     public void getDirectDiscount() {
-        //TODO revisar los get de Discounts activity que es donde están los últimos
-        //TODO hay que pasar el payer email
-        mMercadoPago.getDirectDiscount("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-2363874900", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {//"APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
+        mPaymentVaultView.showDiscountRow();
+        //TODO validar que si llega acá payerEmail y Amount sean correctos
+        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
@@ -95,6 +98,9 @@ public class PaymentVaultPresenter {
                 mPaymentVaultView.showHasDiscount();
             }
         });
+
+        //TODO borrar ésta línea y descomentar lo de arriba, lo hice para probar el failure
+        //mPaymentVaultView.showHasDiscount();
     }
 
     public void validateParameters() throws IllegalStateException {
@@ -510,4 +516,15 @@ public class PaymentVaultPresenter {
     public Discount getDiscount() {
         return mDiscount;
     }
+
+    //TODO discounts
+    public void setPayerEmail(String payerEmail) {
+        this.mPayerEmail = payerEmail;
+    }
+
+    //TODO discounts
+    public String getPayerEmail() {
+        return mPayerEmail;
+    }
+
 }

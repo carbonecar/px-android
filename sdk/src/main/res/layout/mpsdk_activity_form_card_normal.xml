@@ -44,6 +44,7 @@
             </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/mpsdkDiscountDetail"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:orientation="horizontal"
@@ -79,7 +80,7 @@
                     android:onClick="startDiscountsActivity"
                     android:clickable="true"
                     android:src="@drawable/mpsdk_arrow_right_white"/>
-                
+
             </LinearLayout>
 
             <FrameLayout

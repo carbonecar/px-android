@@ -12,15 +12,9 @@ import retrofit2.http.Query;
 
 public interface DiscountService {
 
-    //TODO cambiar url a la de descuentos y los parámetros
-    //TODO volar el objeto discountIntent, no sirve
-    //TODO cambiar access_token por public_key, está así para probar el servicio nada más
     @GET("/discount_campaigns")
-    MPCall<Discount> getDirectDiscount(@Query("access_token") String publicKey, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail);
+    MPCall<Discount> getDirectDiscount(@Query("public_key") String publicKey, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail);
 
-    //TODO cambiar url a la de descuentos y los parámetros
-    //TODO volar el objeto discountIntent, no sirve
-    //TODO cambiar access_token por public_key, está así para probar el servicio nada más
     @GET("/discount_campaigns")
-    MPCall<Discount> getCodeDiscount(@Query("access_token") String publicKey, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail, @Query("coupon_code") String couponCode);
+    MPCall<Discount> getCodeDiscount(@Query("public_key") String publicKey, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail, @Query("coupon_code") String couponCode);
 }

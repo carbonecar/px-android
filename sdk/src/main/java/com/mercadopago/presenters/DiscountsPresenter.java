@@ -80,8 +80,7 @@ public class DiscountsPresenter {
     private void getDirectDiscount() {
         //mDiscountsView.showLoadingView();
 
-        //TODO no hace falta pasar la PK, la tengo en MercadoPago
-        mMercadoPago.getDirectDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
@@ -111,7 +110,7 @@ public class DiscountsPresenter {
     private void getCodeDiscount(String discountCode) {
         //mDiscountsView.showLoadingView();
 
-        mMercadoPago.getCodeDiscount(mPublicKey, mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
+        mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;

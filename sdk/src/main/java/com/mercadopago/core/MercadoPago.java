@@ -221,28 +221,24 @@ public class MercadoPago {
     }
 
     //TODO discounts
-    //TODO volar el paso del accessToken por parámetro y ver si vuelo el paso del amount
-    public void getDirectDiscount(String publicKey, String amount, String payerEmail, final Callback<Discount> callback) {
+    public void getDirectDiscount(String amount, String payerEmail, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             DiscountService service = mRetrofit.create(DiscountService.class);
-            //TODO cambiar accessToken por this.mKey
-            service.getDirectDiscount(publicKey, amount, payerEmail).enqueue(callback);
+            service.getDirectDiscount(this.mKey, amount, payerEmail).enqueue(callback);
         } else {
             throw new RuntimeException("Unsupported key type for this method");
         }
     }
 
     //TODO discounts
-    //TODO volar el paso del accessToken por parámetro y ver si vuelo el paso del amount
-    public void getCodeDiscount(String publicKey, String amount, String payerEmail, String couponCode, final Callback<Discount> callback) {
+    public void getCodeDiscount(String amount, String payerEmail, String couponCode, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             DiscountService service = mRetrofit.create(DiscountService.class);
-            //TODO cambiar accessToken por this.mKey
-            service.getCodeDiscount(publicKey, amount, payerEmail, couponCode).enqueue(callback);
+            service.getCodeDiscount(this.mKey, amount, payerEmail, couponCode).enqueue(callback);
         } else {
             throw new RuntimeException("Unsupported key type for this method");
         }
@@ -578,11 +574,13 @@ public class MercadoPago {
         activity.startActivityForResult(paymentMethodsIntent, PAYMENT_METHODS_REQUEST_CODE);
     }
 
+    //TODO discounts modifique la firma para pasarle el payerEmail
+    //TODO validar parámetros como payer emial en todos lados
     private static void startPaymentVaultActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl,
                                                   String merchantGetCustomerUri, String merchantAccessToken, BigDecimal amount,
                                                   Site site, Boolean installmentsEnabled, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, PaymentMethodSearch paymentMethodSearch, List<Card> cards,
-                                                  String payerAccessToken, Boolean accountMoneyEnabled) {
+                                                  String payerAccessToken, Boolean accountMoneyEnabled,String payerEmail) {
 
         Intent vaultIntent = new Intent(activity, PaymentVaultActivity.class);
         vaultIntent.putExtra("merchantPublicKey", merchantPublicKey);
@@ -603,6 +601,9 @@ public class MercadoPago {
         vaultIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         vaultIntent.putExtra("payerAccessToken", payerAccessToken);
         vaultIntent.putExtra("accountMoneyEnabled", accountMoneyEnabled);
+
+        //TODO discounts
+        vaultIntent.putExtra("payerEmail", payerEmail);
 
         activity.startActivityForResult(vaultIntent, PAYMENT_VAULT_REQUEST_CODE);
     }
@@ -1215,7 +1216,7 @@ public class MercadoPago {
                         this.mMerchantGetCustomerUri, this.mMerchantAccessToken,
                         this.mAmount, this.mSite, this.mInstallmentsEnabled, this.mShowBankDeals,
                         this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodSearch,
-                        this.mCards, this.mPayerAccessToken, this.mAccountMoneyEnabled);
+                        this.mCards, this.mPayerAccessToken, this.mAccountMoneyEnabled, this.mPayerEmail);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }

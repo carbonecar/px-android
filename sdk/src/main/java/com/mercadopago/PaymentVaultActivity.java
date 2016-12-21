@@ -83,6 +83,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     //TODO discounts
     protected LinearLayout mHasDiscountLinearLayout;
     protected LinearLayout mHasDirectDiscountLinearLayout;
+    protected LinearLayout mDiscountRowLinearLayout;
     protected MPTextView mTotalAmountTextView;
     protected MPTextView mTotalDescriptionTextView;
     protected MPTextView mDiscountAmountTextView;
@@ -124,6 +125,9 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mPaymentVaultPresenter.setMerchantAccessToken(this.getIntent().getStringExtra("merchantAccessToken"));
         mPaymentVaultPresenter.setPayerAccessToken(this.getIntent().getStringExtra("payerAccessToken"));
         mPaymentVaultPresenter.setAccountMoneyEnabled(this.getIntent().getBooleanExtra("accountMoneyEnabled", false));
+
+        //TODO discounts
+        mPaymentVaultPresenter.setPayerEmail(this.getIntent().getStringExtra("payerEmail"));
 
         if (getIntent().getStringExtra("paymentPreference") != null) {
             mPaymentVaultPresenter.setPaymentPreference(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("paymentPreference"), PaymentPreference.class));
@@ -170,6 +174,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
         mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
+        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
 
         initializePaymentOptionsRecyclerView();
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
@@ -566,9 +571,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         if (mPaymentVaultPresenter.getDiscount() != null){
             new MercadoPago.StartActivityBuilder()
                     .setActivity(this)
-                    //TODO discounts, volver a public key
-                    .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
-                    .setPayerEmail("matias.romar@mercadolibre.com")
+                    .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
+                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                     .setAmount(mPaymentVaultPresenter.getAmount())
                     //send a Discount
                     .setDiscount(mPaymentVaultPresenter.getDiscount())
@@ -578,9 +582,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         } else {
             new MercadoPago.StartActivityBuilder()
                     .setActivity(this)
-                    //TODO discounts, volver a public key
-                    .setPublicKey("APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490")//"TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490")//mPaymentVaultPresenter.getMerchantPublicKey())
-                    .setPayerEmail("matias.romar@mercadolibre.com")
+                    .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
+                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                     .setAmount(mPaymentVaultPresenter.getAmount())
                     .setDirectDiscountEnabled(false)
                     //.setSite(mPaymentVaultPresenter.getSite())
@@ -618,6 +621,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mPaymentVaultPresenter.setAmount(result);
     }
 
+    //TODO discounts
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
@@ -628,4 +632,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
         mTotalAmountTextView.setText(formattedTotalAmount);
     }
+
+    //TODO discounts
+    public void showDiscountRow() {
+        mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
+    }
+
+
 }

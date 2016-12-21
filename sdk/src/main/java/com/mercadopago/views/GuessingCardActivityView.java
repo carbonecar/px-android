@@ -2,8 +2,10 @@ package com.mercadopago.views;
 
 import com.mercadopago.controllers.PaymentMethodGuessingController;
 import com.mercadopago.model.ApiException;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.IdentificationType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -46,4 +48,7 @@ public interface GuessingCardActivityView {
     void initializeTitle();
     void setCardholderName(String cardholderName);
     void setIdentificationNumber(String identificationNumber);
+
+    //TODO discounts
+    void showDiscountDetail(Discount discount, BigDecimal amount);
 }

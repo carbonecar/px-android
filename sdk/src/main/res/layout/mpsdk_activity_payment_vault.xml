@@ -61,8 +61,10 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <LinearLayout
+            android:id="@+id/mpsdkDiscountRow"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
             <include layout="@layout/mpsdk_discount_row"/>
         </LinearLayout>
 

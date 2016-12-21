@@ -47,6 +47,7 @@ import com.mercadopago.model.BankDeal;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.CardToken;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Identification;
 import com.mercadopago.model.IdentificationType;
 import com.mercadopago.model.PaymentMethod;
@@ -70,6 +71,7 @@ import com.mercadopago.util.ScaleUtil;
 import com.mercadopago.views.GuessingCardActivityView;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -163,6 +165,10 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     private String mCurrentEditingEditText;
     private String mCardSideState;
 
+    //TODO discounts
+    private LinearLayout mDiscountDetailLinearLayout;
+    private MPTextView mDiscountOffTextView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,6 +193,10 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     private void getActivityParameters() {
         String publicKey = this.getIntent().getStringExtra("merchantPublicKey");
         PaymentRecovery paymentRecovery = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("paymentRecovery"), PaymentRecovery.class);
+
+        //TODO discounts
+        BigDecimal transactionAmount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("transactionAmount"), BigDecimal.class);
+
         Token token = null;
         PaymentMethod paymentMethod = null;
 
@@ -216,6 +226,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mPresenter.setIdentificationNumberRequired(identificationNumberRequired);
         mPresenter.setPaymentPreference(paymentPreference);
         mPresenter.setPaymentRecovery(paymentRecovery);
+
+        //TODO discounts
+        mPresenter.setTransactionAmount(transactionAmount);
     }
 
     @Override
@@ -379,6 +392,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         }
 
         mErrorState = NORMAL_STATE;
+        mPresenter.loadDiscounts();
         mPresenter.loadPaymentMethods();
     }
 
@@ -422,6 +436,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mScrollView = (ScrollView) findViewById(R.id.mpsdkScrollViewContainer);
         mInputContainer.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
+
+        //TODO discounts
+        mDiscountDetailLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
+
+
         fullScrollDown();
     }
 
@@ -1452,5 +1471,23 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     @Override
     public void onFinish() {
         this.finish();
+    }
+
+
+    //TODO discounts
+    @Override
+    public void showDiscountDetail(Discount discount, BigDecimal amount) {
+        //TODO do somenthing
+        mDiscountDetailLinearLayout.setVisibility(View.VISIBLE);
+
+        //TODO mejorar
+        //TODO validar que Discount no sea nulo porque va a romper todo
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            String discountOff = "$" + discount.getAmountOff();
+            mDiscountOffTextView.setText(discountOff);
+        } else {
+            String discountOff = discount.getPercentOff() + "%";
+            mDiscountOffTextView.setText(discountOff);
+        }
     }
 }

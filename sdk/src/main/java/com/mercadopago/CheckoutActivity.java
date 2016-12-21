@@ -371,9 +371,13 @@ public class CheckoutActivity extends MercadoPagoActivity {
     }
 
     protected void startPaymentVaultActivity() {
+
+        //TODO discounts sacar hardcodeo de PK, la pk hardcodeada tiene descuentos, user de test
+        //TODO envio el email para chequear descuento
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey(mMerchantPublicKey)
+                .setPublicKey("APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d")//mMerchantPublicKey)
+                .setPayerEmail("matias.romar@mercadolibre.com")
                 .setSite(mSite)
                 .setAmount(mCheckoutPreference.getAmount())
                 .setPaymentMethodSearch(mPaymentMethodSearch)

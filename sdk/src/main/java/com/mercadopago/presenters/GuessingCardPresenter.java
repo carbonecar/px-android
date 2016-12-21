@@ -13,6 +13,7 @@ import com.mercadopago.model.BankDeal;
 import com.mercadopago.model.CardInformation;
 import com.mercadopago.model.CardToken;
 import com.mercadopago.model.Cardholder;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Identification;
 import com.mercadopago.model.IdentificationType;
 import com.mercadopago.model.PaymentMethod;
@@ -26,6 +27,7 @@ import com.mercadopago.uicontrollers.card.CardView;
 import com.mercadopago.uicontrollers.card.FrontCardView;
 import com.mercadopago.views.GuessingCardActivityView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +83,10 @@ public class GuessingCardPresenter {
     private List<BankDeal> mBankDealsList;
     private boolean showPaymentTypes;
     private List<PaymentType> mPaymentTypesList;
+
+    //TODO discouns
+    private Discount mDiscount;
+    private BigDecimal mTransactionAmount;
 
     public GuessingCardPresenter(Context context) {
         this.mContext = context;
@@ -308,6 +314,36 @@ public class GuessingCardPresenter {
         } else {
             return mPaymentMethodGuessingController.getPaymentTypeId();
         }
+    }
+
+    //TODO discounts
+    public void loadDiscounts() {
+        //TODO revisar los get de Discounts activity que es donde están los últimos
+        //TODO hay que pasar el payer email
+        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {//"APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                mView.showDiscountDetail(discount, mTransactionAmount);
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                ApiException apiException1 = apiException;
+                //TODO ver que hacer con los errores
+                //TODO mandarlo a que al final del flujo pida código
+            }
+        });
+    }
+
+    //TODO discounts
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.mTransactionAmount = transactionAmount;
+    }
+
+    //TODO discounts
+    public Discount getDiscount() {
+        return mDiscount;
     }
 
     public void loadPaymentMethods() {
