@@ -72,7 +72,7 @@ public class PaymentVaultPresenter {
                 .build();
 
         //TODO discounts
-        //getDirectDiscount();
+        getDirectDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -84,23 +84,23 @@ public class PaymentVaultPresenter {
     //TODO discounts
     public void getDirectDiscount() {
         mPaymentVaultView.showDiscountRow();
-        //TODO validar que si llega acá payerEmail y Amount sean correctos
-        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
-            @Override
-            public void success(Discount discount) {
-                mDiscount = discount;
-                mPaymentVaultView.showDiscountDetail(discount, mAmount);
-            }
-
-            @Override
-            public void failure(ApiException apiException) {
-                //TODO ver que hacer con los errores
-                mPaymentVaultView.showHasDiscount();
-            }
-        });
+//        //TODO validar que si llega acá payerEmail y Amount sean correctos
+//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                mPaymentVaultView.showDiscountDetail(discount, mAmount);
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                //TODO ver que hacer con los errores
+//                mPaymentVaultView.showHasDiscount();
+//            }
+//        });
 
         //TODO borrar ésta línea y descomentar lo de arriba, lo hice para probar el failure
-        //mPaymentVaultView.showHasDiscount();
+        mPaymentVaultView.showHasDiscount();
     }
 
     public void validateParameters() throws IllegalStateException {

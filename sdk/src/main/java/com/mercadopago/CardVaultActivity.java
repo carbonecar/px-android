@@ -183,7 +183,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                     .setActivity(mActivity)
                     .setPublicKey(mPresenter.getPublicKey())
                     .setAmount(mPresenter.getAmount())
-                    .setPayerEmail(mPresenter.get)
+                    .setPayerEmail(mPresenter.getPayerEmail())
                     .setPaymentPreference(mPresenter.getPaymentPreference())
                     .setSupportedPaymentMethods(mPresenter.getPaymentMethodList())
                     .setDecorationPreference(mDecorationPreference)

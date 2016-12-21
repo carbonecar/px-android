@@ -495,10 +495,11 @@ public class MercadoPago {
 
     }
 
+    //TODO discounts agregué payerEmail y amount
     private static void startGuessingCardActivity(Activity activity, String key, Boolean requireSecurityCode,
                                                   Boolean requireIssuer, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, List<PaymentMethod> paymentMethodList,
-                                                  PaymentRecovery paymentRecovery, Card card) {
+                                                  PaymentRecovery paymentRecovery, Card card, BigDecimal transactionAmount, String payerEmail) {
 
         Intent guessingCardIntent = new Intent(activity, GuessingCardActivity.class);
         guessingCardIntent.putExtra("merchantPublicKey", key);
@@ -524,6 +525,11 @@ public class MercadoPago {
         guessingCardIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
 
         guessingCardIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+
+        //TODO discounts agregado
+        guessingCardIntent.putExtra("payerEmail", payerEmail);
+        guessingCardIntent.putExtra("transactionAmount", JsonUtil.getInstance().toJson(transactionAmount));
+
 
         activity.startActivityForResult(guessingCardIntent, GUESSING_CARD_REQUEST_CODE);
     }
@@ -1160,6 +1166,7 @@ public class MercadoPago {
                     mCardInfo, mDecorationPreference);
         }
 
+        //TODO discounts agregué payerEmail y amount
         public void startGuessingCardActivity() {
 
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
@@ -1168,9 +1175,10 @@ public class MercadoPago {
 
             MercadoPago.startGuessingCardActivity(this.mActivity, this.mKey, this.mRequireSecurityCode,
                     this.mRequireIssuer, this.mShowBankDeals, this.mPaymentPreference, this.mDecorationPreference,
-                    this.mPaymentMethodList, this.mPaymentRecovery, this.mCard);
+                    this.mPaymentMethodList, this.mPaymentRecovery, this.mCard, this.mAmount, this.mPayerEmail);
         }
 
+        //TODO discounts agregué payerEmail
         public void startCardVaultActivity() {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mKey == null) throw new IllegalStateException("key is null");
@@ -1180,7 +1188,7 @@ public class MercadoPago {
             }
 
             MercadoPago.startCardVaultActivity(this.mActivity, this.mKey, this.mAmount, this.mSite, this.mInstallmentsEnabled,
-                    this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodList, this.mPaymentRecovery, this.mCard);
+                    this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodList, this.mPaymentRecovery, this.mCard, this.mPayerEmail);
         }
 
         //TODO discounts
@@ -1192,7 +1200,6 @@ public class MercadoPago {
 
             MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount, this.mDirectDiscountEnabled);
         }
-
 
         public void startPaymentMethodsActivity() {
 

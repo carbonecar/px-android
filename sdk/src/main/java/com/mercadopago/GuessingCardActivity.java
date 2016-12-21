@@ -168,6 +168,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     //TODO discounts
     private LinearLayout mDiscountDetailLinearLayout;
     private MPTextView mDiscountOffTextView;
+    private MPTextView mHasDiscountTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -196,6 +197,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         //TODO discounts
         BigDecimal transactionAmount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("transactionAmount"), BigDecimal.class);
+        String payerEmail = this.getIntent().getStringExtra("payerEmail");
 
         Token token = null;
         PaymentMethod paymentMethod = null;
@@ -229,6 +231,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         //TODO discounts
         mPresenter.setTransactionAmount(transactionAmount);
+        mPresenter.setPayerEmail(payerEmail);
     }
 
     @Override
@@ -388,11 +391,13 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             mTimerTextView.setVisibility(View.VISIBLE);
             mTimerTextView.setText(CheckoutTimer.getInstance().getCurrentTime());
         } else {
+            //TODO discounts, descomentar
             mPresenter.loadBankDeals();
         }
 
         mErrorState = NORMAL_STATE;
-        mPresenter.loadDiscounts();
+        //TODO discounts descomentar
+        //mPresenter.loadDiscounts();
         mPresenter.loadPaymentMethods();
     }
 
@@ -439,7 +444,8 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         //TODO discounts
         mDiscountDetailLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
-
+        mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
+        mHasDiscountTextView = (MPTextView) findViewById(R.id.mpsdkHasDiscountText);
 
         fullScrollDown();
     }
@@ -1433,6 +1439,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             } else if (resultCode == RESULT_CANCELED) {
                 finish();
             }
+            //TODO discounts
+        } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
+            resolveDiscountRequest(resultCode, data);
         } else if (requestCode == ErrorUtil.ERROR_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 mPresenter.recoverFromFailure();
@@ -1440,6 +1449,14 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                 setResult(resultCode, data);
                 finish();
             }
+        }
+    }
+
+    //TODO discounts
+    private void resolveDiscountRequest(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+            mPresenter.setDiscount(discount);
         }
     }
 
@@ -1473,11 +1490,36 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         this.finish();
     }
 
+    //TODO discounts
+    //TODO consejo de Mau, que sea el listener de un botón
+    public void startDiscountsActivity(View view){
+        if (mPresenter.getDiscount() != null){
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    .setPublicKey(mPresenter.getPublicKey())
+                    .setPayerEmail(mPresenter.getPayerEmail())
+                    .setAmount(mPresenter.getTransactionAmount())
+                    //send a Discount
+                    .setDiscount(mPresenter.getDiscount())
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        } else {
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    .setPublicKey(mPresenter.getPublicKey())
+                    .setPayerEmail(mPresenter.getPayerEmail())
+                    .setAmount(mPresenter.getTransactionAmount())
+                    .setDirectDiscountEnabled(false)
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        }
+    }
 
     //TODO discounts
     @Override
     public void showDiscountDetail(Discount discount, BigDecimal amount) {
-        //TODO do somenthing
         mDiscountDetailLinearLayout.setVisibility(View.VISIBLE);
 
         //TODO mejorar
@@ -1489,5 +1531,13 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             String discountOff = discount.getPercentOff() + "%";
             mDiscountOffTextView.setText(discountOff);
         }
+    }
+
+    //TODO discounts
+    @Override
+    public void showHasDiscount() {
+        mDiscountDetailLinearLayout.setVisibility(View.GONE);
+        hideBankDeals();
+        mHasDiscountTextView.setVisibility(View.VISIBLE);
     }
 }

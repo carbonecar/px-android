@@ -48,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:background="@color/mpsdk_color_payer_costs_no_rate"
                 android:gravity="center">
 

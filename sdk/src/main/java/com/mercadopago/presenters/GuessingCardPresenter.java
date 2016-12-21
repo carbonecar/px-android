@@ -87,6 +87,7 @@ public class GuessingCardPresenter {
     //TODO discouns
     private Discount mDiscount;
     private BigDecimal mTransactionAmount;
+    private String mPayerEmail;
 
     public GuessingCardPresenter(Context context) {
         this.mContext = context;
@@ -318,22 +319,23 @@ public class GuessingCardPresenter {
 
     //TODO discounts
     public void loadDiscounts() {
-        //TODO revisar los get de Discounts activity que es donde están los últimos
-        //TODO hay que pasar el payer email
-        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {//"APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490", mAmount.toString(), "matias.romar@mercadolibre.com",new Callback<Discount>() {
-            @Override
-            public void success(Discount discount) {
-                mDiscount = discount;
-                mView.showDiscountDetail(discount, mTransactionAmount);
-            }
+//        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                mView.showDiscountDetail(discount, mTransactionAmount);
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                mView.showHasDiscount();
+//                //TODO ver que hacer con los errores
+//                //TODO mandarlo a que al final del flujo pida código
+//            }
+//        });
 
-            @Override
-            public void failure(ApiException apiException) {
-                ApiException apiException1 = apiException;
-                //TODO ver que hacer con los errores
-                //TODO mandarlo a que al final del flujo pida código
-            }
-        });
+        //TODO borrar y descomnetar lo de arriba, está así para probar el failure
+        mView.showHasDiscount();
     }
 
     //TODO discounts
@@ -344,6 +346,26 @@ public class GuessingCardPresenter {
     //TODO discounts
     public Discount getDiscount() {
         return mDiscount;
+    }
+
+    //TODO discounts
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
+    }
+
+    //TODO discounts
+    public void setPayerEmail(String payerEmail) {
+        this.mPayerEmail = payerEmail;
+    }
+
+    //TODO discounts
+    public String getPayerEmail() {
+        return mPayerEmail;
+    }
+
+    //TODO discounts
+    public BigDecimal getTransactionAmount() {
+        return mTransactionAmount;
     }
 
     public void loadPaymentMethods() {

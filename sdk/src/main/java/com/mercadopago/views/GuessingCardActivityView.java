@@ -51,4 +51,5 @@ public interface GuessingCardActivityView {
 
     //TODO discounts
     void showDiscountDetail(Discount discount, BigDecimal amount);
+    void showHasDiscount();
 }
