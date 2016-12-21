@@ -79,6 +79,10 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         PaymentRecovery paymentRecovery = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("paymentRecovery"), PaymentRecovery.class);
         BigDecimal amountValue = null;
         String amount = getIntent().getStringExtra("amount");
+
+        //TODO discounts agregué el payerEmail, validarlo
+        String payerEmail = getIntent().getStringExtra("payerEmail");
+
         if (amount != null) {
             amountValue = new BigDecimal(amount);
         }
@@ -105,6 +109,9 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         mPresenter.setAmount(amountValue);
         mPresenter.setPaymentMethodList(paymentMethods);
         mPresenter.setPaymentPreference(paymentPreference);
+
+        //TODO discounts agregado
+        mPresenter.setPayerEmail(payerEmail);
     }
 
     private void setContentView() {
@@ -168,7 +175,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);
     }
 
-    //TODO discounts agregar monto
+    //TODO discounts agregué el payerEmail
     private void startGuessingCardActivity() {
         runOnUiThread(new Runnable() {
             public void run() {
@@ -176,6 +183,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                     .setActivity(mActivity)
                     .setPublicKey(mPresenter.getPublicKey())
                     .setAmount(mPresenter.getAmount())
+                    .setPayerEmail(mPresenter.get)
                     .setPaymentPreference(mPresenter.getPaymentPreference())
                     .setSupportedPaymentMethods(mPresenter.getPaymentMethodList())
                     .setDecorationPreference(mDecorationPreference)

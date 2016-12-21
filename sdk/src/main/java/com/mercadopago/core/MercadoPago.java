@@ -528,9 +528,11 @@ public class MercadoPago {
         activity.startActivityForResult(guessingCardIntent, GUESSING_CARD_REQUEST_CODE);
     }
 
+    //TODO discounts agregué el payer email como parámetro
+    //TODO validar en todos lados que el payerEmail sea correcto
     private static void startCardVaultActivity(Activity activity, String key, BigDecimal amount, Site site, Boolean installmentsEnabled,
                                                PaymentPreference paymentPreference, DecorationPreference decorationPreference,
-                                               List<PaymentMethod> paymentMethodList, PaymentRecovery paymentRecovery, Card card) {
+                                               List<PaymentMethod> paymentMethodList, PaymentRecovery paymentRecovery, Card card, String payerEmail) {
 
         Intent cardVaultIntent = new Intent(activity, CardVaultActivity.class);
         cardVaultIntent.putExtra("merchantPublicKey", key);
@@ -546,6 +548,9 @@ public class MercadoPago {
         cardVaultIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
         cardVaultIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         cardVaultIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
+
+        //TODO discounts agregado
+        cardVaultIntent.putExtra("payerEmail",payerEmail);
 
         activity.startActivityForResult(cardVaultIntent, CARD_VAULT_REQUEST_CODE);
     }

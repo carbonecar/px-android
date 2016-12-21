@@ -55,6 +55,9 @@ public class CardVaultPresenter {
     protected CardToken mCardToken;
     protected Card mCard;
 
+    //TODO discounts
+    protected String mPayerEmail;
+
     public CardVaultPresenter(Context context) {
         this.mContext = context;
     }
@@ -174,6 +177,16 @@ public class CardVaultPresenter {
         } else {
             mBin = mCardInfo.getFirstSixDigits();
         }
+    }
+
+    //TODO discounts
+    public void setPayerEmail(String payerEmail) {
+        this.mPayerEmail = payerEmail;
+    }
+
+    //TODO discounts
+    public String getPayerEmail() {
+        return this.mPayerEmail;
     }
 
     public CardInfo getCardInfo() {

@@ -473,12 +473,15 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     @Override
     public void startCardFlow() {
+
+        //TODO discounts agregué el seteo del payerEmail
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
                 .setPaymentPreference(mPaymentVaultPresenter.getPaymentPreference())
                 .setDecorationPreference(mDecorationPreference)
                 .setAmount(mPaymentVaultPresenter.getAmount())
+                .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                 .setSite(mPaymentVaultPresenter.getSite())
                 .setInstallmentsEnabled(mInstallmentsEnabled)
                 .setSupportedPaymentMethods(mPaymentVaultPresenter.getPaymentMethodSearch().getPaymentMethods())
