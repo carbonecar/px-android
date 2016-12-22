@@ -397,7 +397,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         mErrorState = NORMAL_STATE;
         //TODO discounts descomentar
-        //mPresenter.loadDiscounts();
+        //mPresenter.loadDiscount();
         mPresenter.loadPaymentMethods();
     }
 

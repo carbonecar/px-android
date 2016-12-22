@@ -62,7 +62,7 @@
                     android:id="@+id/mpsdkHasDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:visibility="visible">
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -95,7 +95,7 @@
                     android:id="@+id/mpsdkHasDirectDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible">
+                    android:visibility="gone">
                     <com.mercadopago.customviews.MPTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

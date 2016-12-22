@@ -2,6 +2,7 @@ package com.mercadopago;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,20 +10,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.adapters.PayerCostsAdapter;
 import com.mercadopago.callbacks.OnSelectedCallback;
 import com.mercadopago.controllers.CheckoutTimer;
+import com.mercadopago.core.MercadoPago;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.listeners.RecyclerItemClickListener;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
@@ -35,6 +40,7 @@ import com.mercadopago.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.uicontrollers.card.FrontCardView;
 import com.mercadopago.util.ApiUtil;
 import com.mercadopago.util.ColorsUtil;
+import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.ScaleUtil;
@@ -71,6 +77,17 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     protected FrontCardView mFrontCardView;
     protected MPTextView mTimerTextView;
 
+    //TODO discounts
+    protected LinearLayout mHasDiscountLinearLayout;
+    protected LinearLayout mHasDirectDiscountLinearLayout;
+    protected LinearLayout mDiscountRowLinearLayout;
+    protected MPTextView mTotalAmountTextView;
+    protected MPTextView mTotalDescriptionTextView;
+    protected MPTextView mDiscountAmountTextView;
+    protected MPTextView mDiscountOffTextView;
+    protected Boolean isFirstTimeDiscount = true;
+    protected BigDecimal totalAmount;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +119,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         if (this.getIntent().getStringExtra("amount") != null) {
             amount = new BigDecimal(this.getIntent().getStringExtra("amount"));
         }
-
         Site site = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("site"), Site.class);
         List<PayerCost> payerCosts;
         try {
@@ -121,10 +137,17 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             mDecorationPreference = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("decorationPreference"), DecorationPreference.class);
         }
 
+        //TODO discounts, validar, siempre tiene que venir éste parámetro
+        String payerEmail = this.getIntent().getStringExtra("payerEmail");
+
         mPresenter.setPaymentMethod(paymentMethod);
         mPresenter.setPublicKey(publicKey);
         mPresenter.setIssuer(issuer);
         mPresenter.setAmount(amount);
+
+        //TODO discounts agregué payer email
+        mPresenter.setPayerEmail(payerEmail);
+
         mPresenter.setSite(site);
         mPresenter.setPayerCosts(payerCosts);
         mPresenter.setPaymentPreference(paymentPreference);
@@ -178,6 +201,10 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         decorate();
         showTimer();
         initializeAdapter();
+
+        //TODO discounts
+        mPresenter.loadDiscount();
+
         mPresenter.loadPayerCosts();
     }
 
@@ -221,6 +248,16 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             mNormalToolbar = (Toolbar) findViewById(R.id.mpsdkRegularToolbar);
             mNormalToolbar.setVisibility(View.VISIBLE);
         }
+
+        //TODO discounts
+        mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
+        mTotalAmountTextView = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
+        mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
+        mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
+        mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
+        mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
+        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
+
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -384,9 +421,34 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         if (requestCode == ErrorUtil.ERROR_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 mPresenter.recoverFromFailure();
-            } else {
+            }
+            //TODO discounts
+        } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
+            resolveDiscountRequest(resultCode, data);
+        } else {
                 setResult(resultCode, data);
                 finish();
+            }
+    }
+
+    //TODO discounts
+    protected void resolveDiscountRequest(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (mPresenter.getDiscount() == null) {
+                Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+                mPresenter.setDiscount(discount);
+
+                showDiscountDetail(discount, mPresenter.getAmount());
+
+                if (isFirstTimeDiscount) {
+                    isFirstTimeDiscount = false;
+                    totalAmount = mPresenter.getAmount();
+                    
+                    mPresenter.setPayerCosts(null);
+                    BigDecimal result = mPresenter.getAmount().subtract(discount.getCouponAmount());
+                    mPresenter.setAmount(result);
+                    mPresenter.loadPayerCosts();
+                }
             }
         }
     }
@@ -399,5 +461,77 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void onFinish() {
         this.finish();
+    }
+
+    //TODO discounts
+    //TODO consejo de Mau, que sea el listener de un botón
+    public void startDiscountsActivity(View view){
+        if (mPresenter.getDiscount() != null){
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    .setPublicKey(mPresenter.getPublicKey())
+                    .setPayerEmail(mPresenter.getPayerEmail())
+                    .setAmount(totalAmount)
+                    //send a Discount
+                    .setDiscount(mPresenter.getDiscount())
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        } else {
+            new MercadoPago.StartActivityBuilder()
+                    .setActivity(this)
+                    .setPublicKey(mPresenter.getPublicKey())
+                    .setPayerEmail(mPresenter.getPayerEmail())
+                    .setAmount(totalAmount)
+                    .setDirectDiscountEnabled(false)
+                    //.setSite(mPaymentVaultPresenter.getSite())
+                    //.setDecorationPreference(mDecorationPreference)
+                    .startDiscountsActivity();
+        }
+    }
+
+    //TODO discounts, revisar el orden de los métodos
+    @Override
+    public void showDiscountDetail(Discount discount, BigDecimal amount) {
+        mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mHasDiscountLinearLayout.setVisibility(View.GONE);
+
+        //TODO mejorar
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            String discountOff = "$" + discount.getAmountOff();
+            mDiscountOffTextView.setText(discountOff);
+        } else {
+            String discountOff = discount.getPercentOff() + "%";
+            mDiscountOffTextView.setText(discountOff);
+        }
+
+        //TODO poner como recurso "Producto"
+        mTotalDescriptionTextView.setText("Total:");
+        Spanned formattedText = CurrenciesUtil.formatNumber(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId(),false,true);
+        mTotalAmountTextView.setText(formattedText);
+        mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+
+        BigDecimal result = mPresenter.getAmount().subtract(discount.getCouponAmount());
+        mDiscountAmountTextView.setVisibility(View.VISIBLE);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(result, discount.getCurrencyId(),false,true);
+        mDiscountAmountTextView.setText(formattedDiscountAmount);
+    }
+
+    //TODO discounts
+    @Override
+    public void showHasDiscount() {
+        mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
+
+        //TODO poner como recurso "Total"
+        mTotalDescriptionTextView.setText("Total:");
+        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId(),false,true);
+        mTotalAmountTextView.setText(formattedTotalAmount);
+    }
+
+    //TODO discounts
+    @Override
+    public void showDiscountRow() {
+        mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
     }
 }

@@ -318,7 +318,8 @@ public class GuessingCardPresenter {
     }
 
     //TODO discounts
-    public void loadDiscounts() {
+    //TODO falta hacer que pise el transactionAmount una vez obtenido el descuento y así continue el flujo con el nuevo amount
+    public void loadDiscount() {
 //        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
 //            @Override
 //            public void success(Discount discount) {

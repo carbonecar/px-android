@@ -31,7 +31,12 @@ public class PayerCostsAdapter extends  RecyclerView.Adapter<PayerCostsAdapter.V
     }
 
     public void addResults(List<PayerCost> list) {
-        mInstallmentsList.addAll(list);
+        //TODO discounts
+        //TODO preguntar a Vale porque usó addAll. Al calcular de nuevo las cuotas con el descuento
+        //mInstallmentsList.addAll(list);
+        //TODO nuevo
+        mInstallmentsList = list;
+
         notifyDataSetChanged();
     }
 

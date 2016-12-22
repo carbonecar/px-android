@@ -427,11 +427,12 @@ public class MercadoPago {
         activity.startActivityForResult(paymentMethodsIntent, CUSTOMER_CARDS_REQUEST_CODE);
     }
 
+    //TODO discounts, agregué el payerEmail
     private static void startInstallmentsActivity(Activity activity, BigDecimal amount, Site site,
                                                   String publicKey, List<PayerCost> payerCosts,
                                                   PaymentPreference paymentPreference, Issuer issuer,
                                                   PaymentMethod paymentMethod, DecorationPreference decorationPreference,
-                                                  CardInfo cardInfo) {
+                                                  CardInfo cardInfo, BigDecimal transactionAmount, String payerEmail) {
         Intent intent = new Intent(activity, InstallmentsActivity.class);
 
         if (amount != null) {
@@ -445,6 +446,10 @@ public class MercadoPago {
         intent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
         intent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         intent.putExtra("cardInfo", JsonUtil.getInstance().toJson(cardInfo));
+
+        //TODO discounts
+        intent.putExtra("payerEmail", payerEmail);
+        intent.putExtra("transactionAmount", JsonUtil.getInstance().toJson(transactionAmount));
 
         activity.startActivityForResult(intent, INSTALLMENTS_REQUEST_CODE);
     }
@@ -1111,6 +1116,7 @@ public class MercadoPago {
             MercadoPago.startCustomerCardsActivity(this.mActivity, this.mCards);
         }
 
+        //TODO discounts agregué payer email y amount
         public void startInstallmentsActivity() {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mSite == null) throw new IllegalStateException("site is null");
@@ -1124,7 +1130,7 @@ public class MercadoPago {
 
             MercadoPago.startInstallmentsActivity(mActivity, mAmount, mSite,
                     mKey, mPayerCosts, mPaymentPreference, mIssuer, mPaymentMethod, mDecorationPreference,
-                    mCardInfo);
+                    mCardInfo, mAmount, mPayerEmail);
         }
 
         public void startIssuersActivity() {

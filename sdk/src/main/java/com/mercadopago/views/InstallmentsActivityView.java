@@ -21,4 +21,9 @@ public interface InstallmentsActivityView {
     void showHeader();
     void showApiExceptionError(ApiException exception);
     void initializeInstallments(List<PayerCost> payerCostList);
+
+    //TODO discounts
+    void showDiscountDetail(Discount discount, BigDecimal amount);
+    void showHasDiscount();
+    void showDiscountRow();
 }

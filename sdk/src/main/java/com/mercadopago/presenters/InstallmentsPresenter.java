@@ -9,6 +9,7 @@ import com.mercadopago.controllers.PaymentMethodGuessingController;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CardInfo;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Installment;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
@@ -46,6 +47,10 @@ public class InstallmentsPresenter {
     private List<PayerCost> mPayerCosts;
     private PaymentPreference mPaymentPreference;
     private CardInfo mCardInfo;
+
+    //TODO discounts
+    private Discount mDiscount;
+    private String mPayerEmail;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -163,6 +168,50 @@ public class InstallmentsPresenter {
 
     private boolean werePayerCostsSet() {
         return mPayerCosts != null;
+    }
+
+    //TODO discounts
+    //TODO falta hacer que pise el transactionAmount una vez obtenido el descuento y así continue el flujo con el nuevo amount
+    public void loadDiscount() {
+        //TODO hacer que la row por default esté en gone. No el linear layout del xml del installments. Sino la row
+        mView.showDiscountRow();
+//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                mView.showDiscountDetail(discount, mAmount);
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                mView.showHasDiscount();
+//                //TODO ver que hacer con los errores
+//                //TODO mandarlo a que al final del flujo pida código
+//            }
+//        });
+
+            //TODO borrar y descomnetar lo de arriba, está así para probar el failure
+            mView.showHasDiscount();
+    }
+
+    //TODO discounts
+    public void setPayerEmail(String payerEmail) {
+        this.mPayerEmail = payerEmail;
+    }
+
+    //TODO discounts
+    public Discount getDiscount() {
+        return this.mDiscount;
+    }
+
+    //TODO discounts
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
+    }
+
+    //TODO discounts
+    public String getPayerEmail() {
+        return mPayerEmail;
     }
 
     public void loadPayerCosts() {
