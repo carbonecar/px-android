@@ -1491,30 +1491,21 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     }
 
     //TODO discounts
-    //TODO consejo de Mau, que sea el listener de un botón
     public void startDiscountsActivity(View view){
-        if (mPresenter.getDiscount() != null){
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
+        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
+
+        mercadoPagoBuilder.setActivity(this)
                     .setPublicKey(mPresenter.getPublicKey())
                     .setPayerEmail(mPresenter.getPayerEmail())
-                    .setAmount(mPresenter.getTransactionAmount())
-                    //send a Discount
-                    .setDiscount(mPresenter.getDiscount())
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+                    .setAmount(mPresenter.getTransactionAmount());
+        
+        if (mPresenter.getDiscount() != null) {
+            mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
         } else {
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
-                    .setPublicKey(mPresenter.getPublicKey())
-                    .setPayerEmail(mPresenter.getPayerEmail())
-                    .setAmount(mPresenter.getTransactionAmount())
-                    .setDirectDiscountEnabled(false)
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+            mercadoPagoBuilder.setDirectDiscountEnabled(false);
         }
+
+        mercadoPagoBuilder.startDiscountsActivity();
     }
 
     //TODO discounts

@@ -569,30 +569,20 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     //TODO discounts
-    //TODO consejo de Mau, que sea el listener de un botón
     public void startDiscountsActivity(View view){
-        if (mPaymentVaultPresenter.getDiscount() != null){
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
+        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
+
+        mercadoPagoBuilder.setActivity(this)
                     .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
                     .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
-                    .setAmount(mPaymentVaultPresenter.getAmount())
-                    //send a Discount
-                    .setDiscount(mPaymentVaultPresenter.getDiscount())
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+                    .setAmount(mPaymentVaultPresenter.getAmount());
+
+        if (mPaymentVaultPresenter.getDiscount() != null) {
+            mercadoPagoBuilder.setDiscount(mPaymentVaultPresenter.getDiscount());
         } else {
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
-                    .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
-                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
-                    .setAmount(mPaymentVaultPresenter.getAmount())
-                    .setDirectDiscountEnabled(false)
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+            mercadoPagoBuilder.setDirectDiscountEnabled(false);
         }
+        mercadoPagoBuilder.startDiscountsActivity();
     }
 
     //TODO discounts, revisar el orden de los métodos

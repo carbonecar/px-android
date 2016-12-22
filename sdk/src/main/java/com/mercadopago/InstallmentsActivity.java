@@ -443,7 +443,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
                 if (isFirstTimeDiscount) {
                     isFirstTimeDiscount = false;
                     totalAmount = mPresenter.getAmount();
-                    
+
                     mPresenter.setPayerCosts(null);
                     BigDecimal result = mPresenter.getAmount().subtract(discount.getCouponAmount());
                     mPresenter.setAmount(result);
@@ -464,30 +464,21 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     }
 
     //TODO discounts
-    //TODO consejo de Mau, que sea el listener de un botón
     public void startDiscountsActivity(View view){
-        if (mPresenter.getDiscount() != null){
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
-                    .setPublicKey(mPresenter.getPublicKey())
-                    .setPayerEmail(mPresenter.getPayerEmail())
-                    .setAmount(totalAmount)
-                    //send a Discount
-                    .setDiscount(mPresenter.getDiscount())
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
+
+        mercadoPagoBuilder.setActivity(this)
+                .setPublicKey(mPresenter.getPublicKey())
+                .setPayerEmail(mPresenter.getPayerEmail())
+                .setAmount(totalAmount);
+
+        if (mPresenter.getDiscount() != null) {
+            mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
         } else {
-            new MercadoPago.StartActivityBuilder()
-                    .setActivity(this)
-                    .setPublicKey(mPresenter.getPublicKey())
-                    .setPayerEmail(mPresenter.getPayerEmail())
-                    .setAmount(totalAmount)
-                    .setDirectDiscountEnabled(false)
-                    //.setSite(mPaymentVaultPresenter.getSite())
-                    //.setDecorationPreference(mDecorationPreference)
-                    .startDiscountsActivity();
+            mercadoPagoBuilder.setDirectDiscountEnabled(false);
         }
+
+        mercadoPagoBuilder.startDiscountsActivity();
     }
 
     //TODO discounts, revisar el orden de los métodos
