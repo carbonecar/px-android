@@ -469,8 +469,14 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
 
         mercadoPagoBuilder.setActivity(this)
                 .setPublicKey(mPresenter.getPublicKey())
-                .setPayerEmail(mPresenter.getPayerEmail())
-                .setAmount(totalAmount);
+                .setPayerEmail(mPresenter.getPayerEmail());
+
+        if (!isFirstTimeDiscount) {
+            mercadoPagoBuilder.setAmount(totalAmount);
+        } else {
+            mercadoPagoBuilder.setAmount(mPresenter.getAmount());
+        }
+
 
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());

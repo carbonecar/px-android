@@ -1498,7 +1498,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                     .setPublicKey(mPresenter.getPublicKey())
                     .setPayerEmail(mPresenter.getPayerEmail())
                     .setAmount(mPresenter.getTransactionAmount());
-        
+
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
         } else {
