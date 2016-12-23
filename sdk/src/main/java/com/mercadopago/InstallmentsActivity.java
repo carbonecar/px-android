@@ -203,7 +203,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         initializeAdapter();
 
         //TODO discounts
-        mPresenter.loadDiscount();
+        //mPresenter.loadDiscount();
 
         mPresenter.loadPayerCosts();
     }

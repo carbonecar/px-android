@@ -107,9 +107,9 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
     @Override
     public void drawSummary() {
         decorateButton();
-        //Productos
+        //Products
         mProductsText.setText(getFormattedAmount(mAmount));
-        //Descuentos
+        //Discounts
         if (hasDiscount()) {
             showDiscountRow();
         } else {
@@ -121,7 +121,7 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
         } else {
             mSubtotalRow.setVisibility(View.GONE);
         }
-        //TODO discount, agregué si payment method es null
+        //TODO discount, agregué si payment method es null, ESTO LO HICE CUANDO QUERIA USAR EL MISMO SUMMARY
         if (mPaymentMethod != null && MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
         //if (MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
             //Pagas
@@ -144,9 +144,18 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
     }
 
     private void showDiscountRow() {
-        String discountText = mContext.getResources().getString(R.string.mpsdk_review_summary_discounts,
-                String.valueOf(mDiscountPercentage));
+        String discountText;
+
+        if (mDiscountPercentage != null) {
+            discountText = mContext.getResources().getString(R.string.mpsdk_review_summary_discount_with_percent_off,
+                    String.valueOf(mDiscountPercentage));
+        } else {
+            discountText = mContext.getResources().getString(R.string.mpsdk_review_summary_discount_with_amount_off);
+        }
+
         mDiscountPercentageText.setText(discountText);
+
+        //TODO discounts agregar menos al descuento
         mDiscountsText.setText(getFormattedAmount(mDiscountAmount));
     }
 
@@ -162,7 +171,7 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
     }
 
     private boolean hasDiscount() {
-        return mDiscountPercentage != null && mDiscountAmount != null && mCurrencyId != null;
+        return (mDiscountPercentage != null || mDiscountAmount != null) && mCurrencyId != null;
     }
 
     private Spanned getFormattedAmount(BigDecimal amount) {

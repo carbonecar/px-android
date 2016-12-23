@@ -1,6 +1,10 @@
 package com.mercadopago.model;
 
+import android.content.Intent;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.math.BigDecimal;
 
 public class PaymentIntent {
 
@@ -15,6 +19,29 @@ public class PaymentIntent {
     private String publicKey;
     private String email;
     private Payer payer;
+
+    //TODO discounts
+//    @SerializedName("coupon_amount")
+//    private BigDecimal couponAmount;
+//    @SerializedName("campaign_id")
+//    private Long campaignId;
+//    @SerializedName("coupon_code")
+//    private String couponCode;
+
+//    //TODO discounts
+//    public void setCouponAmount(BigDecimal couponAmount) {
+//        this.couponAmount = couponAmount;
+//    }
+//
+//    //TODO discounts
+//    public void setCampaignId(Long campaignId) {
+//        this.campaignId = campaignId;
+//    }
+//
+//    //TODO discounts
+//    public void setCouponCode(String couponCode) {
+//        this.couponCode = couponCode;
+//    }
 
     public Integer getInstallments() {
         return installments;

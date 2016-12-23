@@ -72,7 +72,7 @@ public class PaymentVaultPresenter {
                 .build();
 
         //TODO discounts
-        //getDirectDiscount();
+        getDirectDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();

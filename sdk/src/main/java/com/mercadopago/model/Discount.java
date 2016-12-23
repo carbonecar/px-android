@@ -10,6 +10,15 @@ public class Discount {
     private BigDecimal amountOff;
     private BigDecimal couponAmount;
     private String currencyId;
+    private String code;
+
+    public String getCode() {
+        return this.code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public BigDecimal getAmountOff() {
         return amountOff;
@@ -20,7 +29,7 @@ public class Discount {
     }
 
     public BigDecimal getCouponAmount() {
-        return couponAmount;
+        return this.couponAmount;
     }
 
     public void setCouponAmount(BigDecimal couponAmount) {
@@ -36,7 +45,7 @@ public class Discount {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -44,7 +53,7 @@ public class Discount {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -52,7 +61,7 @@ public class Discount {
     }
 
     public BigDecimal getPercentOff() {
-        return percentOff;
+        return this.percentOff;
     }
 
     public void setPercentOff(BigDecimal percentOff) {
