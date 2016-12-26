@@ -23,6 +23,10 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 import com.mercadopago.adapters.ReviewPaymentOffAdapter;
 import com.mercadopago.adapters.ReviewPaymentOnAdapter;
 import com.mercadopago.adapters.ReviewProductAdapter;
@@ -32,7 +36,6 @@ import com.mercadopago.callbacks.OnChangePaymentMethodCallback;
 import com.mercadopago.callbacks.OnConfirmPaymentCallback;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MerchantServer;
-import com.mercadopago.customviews.MPButton;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.exceptions.CheckoutPreferenceException;
 import com.mercadopago.exceptions.ExceptionHandler;
@@ -89,6 +92,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected String mMerchantBaseUrl;
     protected String mMerchantGetCustomerUri;
     protected String mMerchantAccessToken;
+    protected Boolean mSkipCongratsEnabled;
 
     //Local vars
     protected MercadoPago mMercadoPago;
@@ -117,7 +121,6 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected MPTextView mTermsAndConditionsTextView;
     protected MPTextView mCancelTextView;
     protected MPTextView mTotalAmountTextView;
-    protected MPButton mPayButton;
     protected RelativeLayout mPayerCostLayout;
     protected Boolean mBackPressedOnce;
     protected Snackbar mSnackbar;
@@ -151,6 +154,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected FrameLayout mReviewSummaryContainer;
     protected NestedScrollView mScrollView;
     protected String mCustomerId;
+    protected Boolean mBinaryModeEnabled;
 
     @Override
     protected void setContentView() {
@@ -164,6 +168,8 @@ public class CheckoutActivity extends MercadoPagoActivity {
         mMerchantGetCustomerUri = this.getIntent().getStringExtra("merchantGetCustomerUri");
         mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
         mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
+        mSkipCongratsEnabled = this.getIntent().getBooleanExtra("skipCongratsEnabled", false);
+        mBinaryModeEnabled = this.getIntent().getBooleanExtra("binaryModeEnabled", false);
     }
 
     @Override
@@ -809,7 +815,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
             @Override
             public void success(Payment payment) {
                 mCreatedPayment = payment;
-                startPaymentResultActivity();
+                checkStartPaymentResultActivity(payment);
                 cleanTransactionId();
             }
 
@@ -831,6 +837,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
         paymentIntent.setPrefId(mCheckoutPreference.getId());
         paymentIntent.setPublicKey(mMerchantPublicKey);
         paymentIntent.setPaymentMethodId(mSelectedPaymentMethod.getId());
+        paymentIntent.setBinaryMode(mBinaryModeEnabled);
         Payer payer = mCheckoutPreference.getPayer();
         if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
             payer.setId(mCustomerId);
@@ -854,6 +861,19 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
         paymentIntent.setTransactionId(mTransactionId);
         return paymentIntent;
+    }
+
+    private void checkStartPaymentResultActivity(Payment payment) {
+        if (hasToSkipPaymentResultActivity(payment)) {
+            finishWithPaymentResult();
+        } else {
+            startPaymentResultActivity();
+        }
+    }
+
+    private boolean hasToSkipPaymentResultActivity(Payment payment) {
+        return mSkipCongratsEnabled && (payment != null) && (!isEmpty(payment.getStatus())) &&
+                (payment.getStatus().equals(Payment.StatusCodes.STATUS_APPROVED));
     }
 
     private void startPaymentResultActivity() {

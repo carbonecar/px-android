@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import com.mercadopago.BankDealsActivity;
 import com.mercadopago.BuildConfig;
 import com.mercadopago.CallForAuthorizeActivity;
@@ -64,6 +65,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -271,7 +273,8 @@ public class MercadoPago {
             String separator = ",";
             String excludedPaymentTypesAppended = getListAsString(excludedPaymentTypes, separator);
             String excludedPaymentMethodsAppended = getListAsString(excludedPaymentMethods, separator);
-            service.getPaymentMethodSearch(this.mKey, amount, excludedPaymentTypesAppended, excludedPaymentMethodsAppended, payerIntent, PAYMENT_METHODS_OPTIONS_API_VERSION).enqueue(callback);
+
+            service.getPaymentMethodSearch(Locale.getDefault().getLanguage(), this.mKey, amount, excludedPaymentTypesAppended, excludedPaymentMethodsAppended, payerIntent, PAYMENT_METHODS_OPTIONS_API_VERSION).enqueue(callback);
         } else {
             throw new RuntimeException("Unsupported key type for this method");
         }
@@ -282,7 +285,7 @@ public class MercadoPago {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_INSTRUCTIONS", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             PaymentService service = mRetrofit.create(PaymentService.class);
-            service.getPaymentResult(paymentId, this.mKey, paymentTypeId, PAYMENT_RESULT_API_VERSION).enqueue(callback);
+            service.getPaymentResult(Locale.getDefault().getLanguage(), paymentId, this.mKey, paymentTypeId, PAYMENT_RESULT_API_VERSION).enqueue(callback);
         } else {
             throw new RuntimeException("Unsupported key type for this method");
         }
@@ -314,7 +317,7 @@ public class MercadoPago {
         activity.startActivityForResult(bankDealsIntent, BANK_DEALS_REQUEST_CODE);
     }
 
-    private static void startCheckoutActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl, String merchantGetCustomerUri, String merchantAccessToken, String checkoutPreferenceId, Boolean showBankDeals, DecorationPreference decorationPreference) {
+    private static void startCheckoutActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl, String merchantGetCustomerUri, String merchantAccessToken, String checkoutPreferenceId, Boolean showBankDeals, Boolean binaryModeEnabled, Boolean skipCongratsEnabled, DecorationPreference decorationPreference) {
 
         Intent checkoutIntent = new Intent(activity, CheckoutActivity.class);
         checkoutIntent.putExtra("merchantPublicKey", merchantPublicKey);
@@ -323,7 +326,9 @@ public class MercadoPago {
         checkoutIntent.putExtra("merchantBaseUrl", merchantBaseUrl);
         checkoutIntent.putExtra("merchantGetCustomerUri", merchantGetCustomerUri);
         checkoutIntent.putExtra("merchantAccessToken", merchantAccessToken);
+        checkoutIntent.putExtra("skipCongratsEnabled", skipCongratsEnabled);
         checkoutIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
+        checkoutIntent.putExtra("binaryModeEnabled", binaryModeEnabled);
         activity.startActivityForResult(checkoutIntent, CHECKOUT_REQUEST_CODE);
     }
 
@@ -499,7 +504,7 @@ public class MercadoPago {
     }
 
     private static void startCardVaultActivity(Activity activity, String key, BigDecimal amount, Site site, Boolean installmentsEnabled,
-                                               PaymentPreference paymentPreference, DecorationPreference decorationPreference,
+                                               Boolean showBankDeals, PaymentPreference paymentPreference, DecorationPreference decorationPreference,
                                                List<PaymentMethod> paymentMethodList, PaymentRecovery paymentRecovery, Card card) {
 
         Intent cardVaultIntent = new Intent(activity, CardVaultActivity.class);
@@ -512,6 +517,8 @@ public class MercadoPago {
         cardVaultIntent.putExtra("site", JsonUtil.getInstance().toJson(site));
 
         cardVaultIntent.putExtra("installmentsEnabled", installmentsEnabled);
+
+        cardVaultIntent.putExtra("showBankDeals", showBankDeals);
 
         cardVaultIntent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
 
@@ -690,6 +697,7 @@ public class MercadoPago {
         private Boolean mRequireIssuer;
         private Boolean mRequireSecurityCode;
         private Boolean mShowBankDeals;
+        private Boolean mSkipCongratsEnabled;
         private PaymentMethodSearch mPaymentMethodSearch;
         private PaymentPreference mPaymentPreference;
         private PaymentRecovery mPaymentRecovery;
@@ -707,6 +715,7 @@ public class MercadoPago {
         private List<PaymentType> mPaymentTypesList;
         private CardInfo mCardInfo;
         private Integer mMaxSavedCards;
+        private Boolean mBinaryModeEnabled;
 
         public StartActivityBuilder() {
 
@@ -849,6 +858,11 @@ public class MercadoPago {
             return this;
         }
 
+        public StartActivityBuilder setSkipCongratsEnabled(Boolean skipCongratsEnabled) {
+            this.mSkipCongratsEnabled = skipCongratsEnabled;
+            return this;
+        }
+
         public StartActivityBuilder setPaymentMethodSearch(PaymentMethodSearch paymentMethodSearch) {
             this.mPaymentMethodSearch = paymentMethodSearch;
             return this;
@@ -894,6 +908,11 @@ public class MercadoPago {
             return this;
         }
 
+        public StartActivityBuilder setBinaryModeEnabled(Boolean binaryModeEnabled) {
+            this.mBinaryModeEnabled = binaryModeEnabled;
+            return this;
+        }
+
         @Deprecated
         public StartActivityBuilder setSupportedPaymentTypes(List<String> supportedPaymentTypes) {
             this.mSupportedPaymentTypes = supportedPaymentTypes;
@@ -923,7 +942,7 @@ public class MercadoPago {
 
             if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
                 MercadoPago.startCheckoutActivity(this.mActivity, this.mKey, this.mMerchantBaseUrl, this.mMerchantGetCustomerUri, this.mMerchantAccessToken,
-                        this.mCheckoutPreferenceId, this.mShowBankDeals, this.mDecorationPreference);
+                        this.mCheckoutPreferenceId, this.mShowBankDeals, this.mBinaryModeEnabled, this.mSkipCongratsEnabled, this.mDecorationPreference);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }
@@ -1106,7 +1125,7 @@ public class MercadoPago {
                 if (this.mSite == null) throw new IllegalStateException("site is null");
             }
 
-            MercadoPago.startCardVaultActivity(this.mActivity, this.mKey, this.mAmount, this.mSite, this.mInstallmentsEnabled,
+            MercadoPago.startCardVaultActivity(this.mActivity, this.mKey, this.mAmount, this.mSite, this.mInstallmentsEnabled, this.mShowBankDeals,
                     this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodList, this.mPaymentRecovery, this.mCard);
         }
 

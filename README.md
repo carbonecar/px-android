@@ -12,7 +12,7 @@ The MercadoPago Android SDK makes it easy to collect your user's credit card det
 
 Add this line to your app's `build.gradle` inside the `dependencies` section:
 
-    compile ('com.mercadopago:sdk:2.2.0-beta@aar') { transitive = true }
+    compile ('com.mercadopago:sdk:2.3.5@aar') { transitive = true }
 
 ###Eclipse
 
@@ -29,7 +29,7 @@ If you're planning on optimizing your app with ProGuard, make sure that you excl
 
 ## Documentation
 
-+ [Read more about this integration.](https://github.com/mercadopago/px-android)
++ [See the GitHub project.](https://github.com/mercadopago/px-android)
 + [See our Github Page's Documentation!](http://mercadopago.github.io/px-android/)
 + [Check out MercadoPago Developers Site!](http://www.mercadopago.com.ar/developers)
 
