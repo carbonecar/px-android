@@ -85,9 +85,10 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected LinearLayout mHasDirectDiscountLinearLayout;
     protected LinearLayout mDiscountRowLinearLayout;
     protected MPTextView mTotalAmountTextView;
-    protected MPTextView mTotalDescriptionTextView;
     protected MPTextView mDiscountAmountTextView;
     protected MPTextView mDiscountOffTextView;
+    protected Boolean mHasToSubtractDiscount = true;
+    protected BigDecimal mTotalAmountWithDiscount = new BigDecimal(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
         //TODO discounts
         mPaymentVaultPresenter.setPayerEmail(this.getIntent().getStringExtra("payerEmail"));
+        mPaymentVaultPresenter.setDiscount(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class));
 
         if (getIntent().getStringExtra("paymentPreference") != null) {
             mPaymentVaultPresenter.setPaymentPreference(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("paymentPreference"), PaymentPreference.class));
@@ -168,13 +170,12 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mTimerTextView = (MPTextView) findViewById(R.id.mpsdkTimerTextView);
 
         //TODO discounts
-        mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
         mTotalAmountTextView = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
         mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
         mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
-        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
+        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mspdkDiscountRow);
 
         initializePaymentOptionsRecyclerView();
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
@@ -306,6 +307,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         return customViewControllers;
     }
 
+    //TODO discounts falta agregar el seto del discount
     @Override
     public void startSavedCardFlow(Card card) {
         new MercadoPago.StartActivityBuilder()
@@ -474,7 +476,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     @Override
     public void startCardFlow() {
 
-        //TODO discounts agregué el seteo del payerEmail
+        //TODO discounts agregué el seteo del payerEmail y la posibilicad de levantarlo con descuento
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
@@ -484,6 +486,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                 .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                 .setSite(mPaymentVaultPresenter.getSite())
                 .setInstallmentsEnabled(mInstallmentsEnabled)
+                .setDiscount(mPaymentVaultPresenter.getDiscount())
                 .setSupportedPaymentMethods(mPaymentVaultPresenter.getPaymentMethodSearch().getPaymentMethods())
                 .startCardVaultActivity();
         animatePaymentMethodSelection();
@@ -574,54 +577,74 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
         mercadoPagoBuilder.setActivity(this)
                     .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
-                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
-                    .setAmount(mPaymentVaultPresenter.getAmount());
+                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail());
+
+        if (mPaymentVaultPresenter.getAmountWithoutDiscount() == null) {
+            mercadoPagoBuilder.setAmount(mPaymentVaultPresenter.getAmount());
+        } else {
+            mercadoPagoBuilder.setAmount(mPaymentVaultPresenter.getAmountWithoutDiscount());
+        }
 
         if (mPaymentVaultPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPaymentVaultPresenter.getDiscount());
         } else {
             mercadoPagoBuilder.setDirectDiscountEnabled(false);
         }
+
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
-    //TODO discounts, revisar el orden de los métodos
+    //TODO discounts
     @Override
     public void showDiscountDetail(Discount discount, BigDecimal amount) {
         mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mDiscountAmountTextView.setVisibility(View.VISIBLE);
         mHasDiscountLinearLayout.setVisibility(View.GONE);
 
-        //TODO mejorar
-        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            String discountOff = "$" + discount.getAmountOff();
-            mDiscountOffTextView.setText(discountOff);
-        } else {
-            String discountOff = discount.getPercentOff() + "%";
-            mDiscountOffTextView.setText(discountOff);
+        setDiscountOff(discount);
+        setTotalAmountWithDiscount(discount);
+        setTotalAmount();
+    }
+
+    //TODO discount
+    private void setTotalAmountWithDiscount(Discount discount) {
+        if (mHasToSubtractDiscount) {
+            mHasToSubtractDiscount = false;
+            mTotalAmountWithDiscount = mPaymentVaultPresenter.getAmount().subtract(discount.getCouponAmount());
+            mPaymentVaultPresenter.setAmountWithoutDiscount(mPaymentVaultPresenter.getAmount());
+            mPaymentVaultPresenter.setAmount(mTotalAmountWithDiscount);
         }
 
-        //TODO poner como recurso "Producto"
-        mTotalDescriptionTextView.setText("Total:");
-        Spanned formattedText = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mTotalAmountWithDiscount, discount.getCurrencyId(),false,true);
+        mDiscountAmountTextView.setText(formattedDiscountAmount);
+    }
+
+    //TODO discount
+    private void setTotalAmount() {
+        Spanned formattedText = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmountWithoutDiscount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
+
         mTotalAmountTextView.setText(formattedText);
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    }
 
-        BigDecimal result = mPaymentVaultPresenter.getAmount().subtract(discount.getCouponAmount());
-        mDiscountAmountTextView.setVisibility(View.VISIBLE);
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(result, discount.getCurrencyId(),false,true);
-        mDiscountAmountTextView.setText(formattedDiscountAmount);
+    //TODO discount
+    private void setDiscountOff(Discount discount) {
+        String discountOff;
 
-        mPaymentVaultPresenter.setAmount(result);
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            discountOff = "$" + discount.getAmountOff();
+            mDiscountOffTextView.setText(discountOff);
+        } else {
+            discountOff = discount.getPercentOff() + "%";
+            mDiscountOffTextView.setText(discountOff);
+        }
     }
 
     //TODO discounts
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
-        mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
 
-        //TODO poner como recurso "Total"
-        mTotalDescriptionTextView.setText("Total:");
         Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
         mTotalAmountTextView.setText(formattedTotalAmount);
     }

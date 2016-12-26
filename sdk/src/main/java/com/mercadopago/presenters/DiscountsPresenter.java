@@ -143,7 +143,6 @@ public class DiscountsPresenter {
 
     public void validateDiscountCodeInput(String discountCode) {
         if (!isEmpty(discountCode)) {
-            mDiscount.setCode(discountCode);
             getCodeDiscount(discountCode);
         }
         else {

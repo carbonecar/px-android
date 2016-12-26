@@ -10,6 +10,7 @@ import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.CardToken;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
@@ -57,6 +58,7 @@ public class CardVaultPresenter {
 
     //TODO discounts
     protected String mPayerEmail;
+    protected Discount mDiscount;
 
     public CardVaultPresenter(Context context) {
         this.mContext = context;
@@ -187,6 +189,16 @@ public class CardVaultPresenter {
     //TODO discounts
     public String getPayerEmail() {
         return this.mPayerEmail;
+    }
+
+    //TODO disocunts
+    public void setDiscount(Discount discount) {
+        this.mDiscount = discount;
+    }
+
+    //TODO discounts
+    public Discount getDiscount() {
+        return mDiscount;
     }
 
     public CardInfo getCardInfo() {

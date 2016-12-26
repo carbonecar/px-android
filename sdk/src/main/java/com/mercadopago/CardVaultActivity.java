@@ -17,6 +17,7 @@ import com.mercadopago.model.Card;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.model.CardToken;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
@@ -82,6 +83,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
 
         //TODO discounts agregué el payerEmail, validarlo
         String payerEmail = getIntent().getStringExtra("payerEmail");
+        Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"),Discount.class);
 
         if (amount != null) {
             amountValue = new BigDecimal(amount);
@@ -112,6 +114,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
 
         //TODO discounts agregado
         mPresenter.setPayerEmail(payerEmail);
+        mPresenter.setDiscount(discount);
     }
 
     private void setContentView() {
@@ -175,7 +178,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);
     }
 
-    //TODO discounts agregué el payerEmail
+    //TODO discounts agregué el payerEmail y discount
     private void startGuessingCardActivity() {
         runOnUiThread(new Runnable() {
             public void run() {
@@ -184,6 +187,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                     .setPublicKey(mPresenter.getPublicKey())
                     .setAmount(mPresenter.getAmount())
                     .setPayerEmail(mPresenter.getPayerEmail())
+                    .setDiscount(mPresenter.getDiscount())
                     .setPaymentPreference(mPresenter.getPaymentPreference())
                     .setSupportedPaymentMethods(mPresenter.getPaymentMethodList())
                     .setDecorationPreference(mDecorationPreference)

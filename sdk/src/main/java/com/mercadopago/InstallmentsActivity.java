@@ -250,7 +250,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         }
 
         //TODO discounts
-        mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
+        //mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
         mTotalAmountTextView = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
         mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);

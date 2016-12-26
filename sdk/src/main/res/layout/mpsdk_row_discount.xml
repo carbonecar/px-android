@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/mspdkDiscountRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -21,13 +23,12 @@
                 android:orientation="horizontal">
 
                 <com.mercadopago.customviews.MPTextView
-                    android:id="@+id/mpsdkTotalDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:clickable="true"
-                    android:textSize="16dp"
-                    tools:text="Total:" />
+                    android:text="Total:"
+                    android:textSize="16dp" />
 
                 <com.mercadopago.customviews.MPTextView
                     android:id="@+id/mpsdkTotalAmount"
@@ -62,7 +63,7 @@
                     android:id="@+id/mpsdkHasDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible">
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -88,7 +89,6 @@
                         android:onClick="startDiscountsActivity"
                         android:clickable="true"
                         android:src="@drawable/mpsdk_arrow_right_blue"/>
-
                 </LinearLayout>
 
                 <LinearLayout

@@ -104,7 +104,7 @@ public class CongratsActivity extends MercadoPagoActivity {
         mDiscountRow = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
         mDiscountOff = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
         mDiscountArrow = (ImageView) findViewById(R.id.mpsdkDiscountArrow);
-        mTotalDescription = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
+        //mTotalDescription = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
         mTotalAmount = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
         mDiscountAmount = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
         mDiscountSeparator = findViewById(R.id.mpsdkDiscountSeparator);

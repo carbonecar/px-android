@@ -149,6 +149,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     //TODO discounts ordenar
     protected Discount mDiscount;
+    protected String mPayerEmail;
 
     @Override
     protected void setContentView() {
@@ -158,13 +159,17 @@ public class CheckoutActivity extends MercadoPagoActivity {
     @Override
     protected void getActivityParameters() {
         //236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d  //prefID con AT de produ de cuenta de test
+        //"APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d   //PK de test de usuriario de test
+        //"matias.romar@mercadolibre.com"
+        mPayerEmail = "matias.romar@mercadolibre.com";
+        mMerchantPublicKey = "APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d";
+        mCheckoutPreferenceId = "236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d";
 
-
-        mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
+        //mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mMerchantBaseUrl = this.getIntent().getStringExtra("merchantBaseUrl");
         mMerchantGetCustomerUri = this.getIntent().getStringExtra("merchantGetCustomerUri");
         mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
-        mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
+        //mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
     }
 
     @Override
@@ -375,11 +380,10 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected void startPaymentVaultActivity() {
 
         //TODO discounts sacar hardcodeo de PK, la pk hardcodeada tiene descuentos, user de test
-        //TODO envio el email para chequear descuento
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")//"APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d")//mMerchantPublicKey)
-                .setPayerEmail("matias.romar@mercadolibre.com")
+                .setPublicKey(mMerchantPublicKey)
+                .setPayerEmail(mPayerEmail)
                 .setSite(mSite)
                 .setAmount(mCheckoutPreference.getAmount())
                 .setPaymentMethodSearch(mPaymentMethodSearch)

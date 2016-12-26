@@ -1,8 +1,6 @@
 package com.mercadopago.presenters;
 
 
-import android.view.View;
-
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -41,24 +39,23 @@ public class PaymentVaultPresenter {
 
     private PaymentVaultView mPaymentVaultView;
 
-    private String mMerchantPublicKey;
     private Site mSite;
     private MercadoPago mMercadoPago;
     private PaymentMethodSearchItem mSelectedSearchItem;
     private PaymentMethodSearch mPaymentMethodSearch;
     private List<CustomSearchItem> mCustomSearchItems;
     private List<Card> mSavedCards;
+    private String mMerchantPublicKey;
+    private String mPayerAccessToken;
     private String mMerchantBaseUrl;
     private String mMerchantGetCustomerUri;
     private String mMerchantAccessToken;
+    private String mPayerEmail;
     private PaymentPreference mPaymentPreference;
     private BigDecimal mAmount;
-    private String mPayerAccessToken;
+    private BigDecimal mAmountWithoutDiscount;
     private Boolean mAccountMoneyEnabled;
-
-    //TODO discounts
     private Discount mDiscount;
-    private String mPayerEmail;
 
     public void attachView(PaymentVaultView paymentVaultView) {
         this.mPaymentVaultView = paymentVaultView;
@@ -72,7 +69,7 @@ public class PaymentVaultPresenter {
                 .build();
 
         //TODO discounts
-        getDirectDiscount();
+        loadAvailableCampaign();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -82,8 +79,48 @@ public class PaymentVaultPresenter {
     }
 
     //TODO discounts
-    public void getDirectDiscount() {
+    private void loadAvailableCampaign() {
+        if (mDiscount == null) {
+            getAvailableCampaign();
+        } else {
+            mPaymentVaultView.showDiscountDetail(mDiscount, mAmount);
+        }
+    }
+
+    //TODO discounts
+    private void getAvailableCampaign() {
+//        mMercadoPago.getAvailabilityCampaigns(new Callback<List<Campaign>>() {
+//            @Override
+//            public void success(List campaigns) {
+//                mPaymentVaultView.showDiscountRow();
+//                if (hasDirectDiscount(campaigns)) {
+//                    getDirectDiscount();
+//                } else {
+//                    mPaymentVaultView.showHasDiscount();
+//                }
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                //TODO por default la row está escondida, si no hay camapañas no hacer nada, si es error de api actuar
+//            }
+//        });
+
+        //TODO borrar y descomentar lo de arriba, es para probar el success
         mPaymentVaultView.showDiscountRow();
+        getDirectDiscount();
+        //TODO borrar y descomentar lo de arriba, es para probar el failure
+//        mPaymentVaultView.showDiscountRow();
+//        mPaymentVaultView.showHasDiscount();
+    }
+
+//    private Boolean hasDirectDiscount(List campaigns) {
+//        //TODO discounts, recorrer lista
+//        return true;
+//    }
+
+    //TODO discounts
+    public void getDirectDiscount() {
         //TODO validar que si llega acá payerEmail y Amount sean correctos
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
@@ -95,12 +132,19 @@ public class PaymentVaultPresenter {
             @Override
             public void failure(ApiException apiException) {
                 //TODO ver que hacer con los errores
-                mPaymentVaultView.showHasDiscount();
             }
         });
 
         //TODO borrar ésta línea y descomentar lo de arriba, lo hice para probar el failure
         //mPaymentVaultView.showHasDiscount();
+    }
+
+    public void setAmountWithoutDiscount(BigDecimal amountWithoutDiscount) {
+        this.mAmountWithoutDiscount = amountWithoutDiscount;
+    }
+
+    public BigDecimal getAmountWithoutDiscount() {
+        return this.mAmountWithoutDiscount;
     }
 
     public void validateParameters() throws IllegalStateException {
