@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.adapters.IdentificationTypesAdapter;
@@ -402,8 +403,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         //TODO discounts descomentar
         if (mPresenter.getDiscount() == null) {
-            //mPresenter.loadDiscount();
+            mPresenter.loadDiscount();
         }
+
         mPresenter.loadPaymentMethods();
     }
 

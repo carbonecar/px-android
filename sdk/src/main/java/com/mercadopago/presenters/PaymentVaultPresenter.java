@@ -55,7 +55,11 @@ public class PaymentVaultPresenter {
     private BigDecimal mAmount;
     private BigDecimal mAmountWithoutDiscount;
     private Boolean mAccountMoneyEnabled;
+
+    //TODO discounts
     private Discount mDiscount;
+    private BigDecimal mTotalAmountWithDiscount;
+    private Boolean mHasToSubtractDiscount = true;
 
     public void attachView(PaymentVaultView paymentVaultView) {
         this.mPaymentVaultView = paymentVaultView;
@@ -69,7 +73,7 @@ public class PaymentVaultPresenter {
                 .build();
 
         //TODO discounts
-        loadAvailableCampaign();
+        loadDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -79,45 +83,13 @@ public class PaymentVaultPresenter {
     }
 
     //TODO discounts
-    private void loadAvailableCampaign() {
+    private void loadDiscount() {
         if (mDiscount == null) {
-            getAvailableCampaign();
+            getDirectDiscount();
         } else {
             mPaymentVaultView.showDiscountDetail(mDiscount, mAmount);
         }
     }
-
-    //TODO discounts
-    private void getAvailableCampaign() {
-//        mMercadoPago.getAvailabilityCampaigns(new Callback<List<Campaign>>() {
-//            @Override
-//            public void success(List campaigns) {
-//                mPaymentVaultView.showDiscountRow();
-//                if (hasDirectDiscount(campaigns)) {
-//                    getDirectDiscount();
-//                } else {
-//                    mPaymentVaultView.showHasDiscount();
-//                }
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                //TODO por default la row está escondida, si no hay camapañas no hacer nada, si es error de api actuar
-//            }
-//        });
-
-        //TODO borrar y descomentar lo de arriba, es para probar el success
-        mPaymentVaultView.showDiscountRow();
-        getDirectDiscount();
-        //TODO borrar y descomentar lo de arriba, es para probar el failure
-//        mPaymentVaultView.showDiscountRow();
-//        mPaymentVaultView.showHasDiscount();
-    }
-
-//    private Boolean hasDirectDiscount(List campaigns) {
-//        //TODO discounts, recorrer lista
-//        return true;
-//    }
 
     //TODO discounts
     public void getDirectDiscount() {
@@ -125,18 +97,27 @@ public class PaymentVaultPresenter {
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
+                applyAmountDiscount();
+                mPaymentVaultView.showDiscountRow();
                 mDiscount = discount;
                 mPaymentVaultView.showDiscountDetail(discount, mAmount);
             }
 
             @Override
             public void failure(ApiException apiException) {
-                //TODO ver que hacer con los errores
+                mPaymentVaultView.showDiscountRow();
+                mPaymentVaultView.showHasDiscount();
             }
         });
+    }
 
-        //TODO borrar ésta línea y descomentar lo de arriba, lo hice para probar el failure
-        //mPaymentVaultView.showHasDiscount();
+    public void applyAmountDiscount() {
+        if (mHasToSubtractDiscount) {
+            mHasToSubtractDiscount = false;
+            mTotalAmountWithDiscount = mAmount.subtract( mDiscount.getCouponAmount());
+            this.setAmountWithoutDiscount(mAmount);
+            this.setAmount(mTotalAmountWithDiscount);
+        }
     }
 
     public void setAmountWithoutDiscount(BigDecimal amountWithoutDiscount) {

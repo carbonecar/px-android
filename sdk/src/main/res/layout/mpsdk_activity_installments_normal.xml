@@ -38,10 +38,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
-                android:id="@+id/mpsdkDiscountRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:orientation="vertical">
                 <include layout="@layout/mpsdk_row_discount"/>
             </LinearLayout>

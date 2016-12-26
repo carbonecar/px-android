@@ -134,6 +134,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
             startSecurityCodeActivity();
 
         } else if (savedCardAvailable()) {
+            //TODO agregar set de descuento
             mPresenter.setCardInfo(new CardInfo(mPresenter.getCard()));
             mPresenter.setPaymentMethod(mPresenter.getCard().getPaymentMethod());
             mPresenter.setIssuer(mPresenter.getCard().getIssuer());
@@ -316,6 +317,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                 .setPaymentMethod(mPresenter.getPaymentMethod())
                 .setAmount(mPresenter.getAmount())
                 .setPayerEmail(mPresenter.getPayerEmail())
+                .setDiscount(mPresenter.getDiscount())
                 .setIssuer(mPresenter.getIssuer())
                 .setPaymentPreference(mPresenter.getPaymentPreference())
                 .setSite(mPresenter.getSite())

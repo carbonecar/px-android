@@ -87,8 +87,6 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     protected MPTextView mTotalAmountTextView;
     protected MPTextView mDiscountAmountTextView;
     protected MPTextView mDiscountOffTextView;
-    protected Boolean mHasToSubtractDiscount = true;
-    protected BigDecimal mTotalAmountWithDiscount = new BigDecimal(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +173,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
         mDiscountAmountTextView = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
-        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mspdkDiscountRow);
+        mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
 
         initializePaymentOptionsRecyclerView();
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
@@ -404,12 +402,14 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         }
     }
 
-
     //TODO discounts
     protected void resolveDiscountRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
             mPaymentVaultPresenter.setDiscount(discount);
+
+
+
             showDiscountDetail(discount, mPaymentVaultPresenter.getAmount());
         }
     }
@@ -573,6 +573,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     //TODO discounts
     public void startDiscountsActivity(View view){
+        mPaymentVaultPresenter.applyAmountDiscount();
+
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
@@ -608,14 +610,14 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
     //TODO discount
     private void setTotalAmountWithDiscount(Discount discount) {
-        if (mHasToSubtractDiscount) {
-            mHasToSubtractDiscount = false;
-            mTotalAmountWithDiscount = mPaymentVaultPresenter.getAmount().subtract(discount.getCouponAmount());
-            mPaymentVaultPresenter.setAmountWithoutDiscount(mPaymentVaultPresenter.getAmount());
-            mPaymentVaultPresenter.setAmount(mTotalAmountWithDiscount);
-        }
+//        if (mHasToSubtractDiscount) {
+//            mHasToSubtractDiscount = false;
+//            mTotalAmountWithDiscount = mPaymentVaultPresenter.getAmount().subtract(discount.getCouponAmount());
+//            mPaymentVaultPresenter.setAmountWithoutDiscount(mPaymentVaultPresenter.getAmount());
+//            mPaymentVaultPresenter.setAmount(mTotalAmountWithDiscount);
+//        }
 
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mTotalAmountWithDiscount, discount.getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmountWithoutDiscount(), discount.getCurrencyId(),false,true);
         mDiscountAmountTextView.setText(formattedDiscountAmount);
     }
 

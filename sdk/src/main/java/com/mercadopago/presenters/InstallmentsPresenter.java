@@ -51,6 +51,7 @@ public class InstallmentsPresenter {
     //TODO discounts
     private Discount mDiscount;
     private String mPayerEmail;
+    private BigDecimal mAmountWithoutDiscount;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -171,9 +172,7 @@ public class InstallmentsPresenter {
     }
 
     //TODO discounts
-    //TODO falta hacer que pise el transactionAmount una vez obtenido el descuento y así continue el flujo con el nuevo amount
     public void loadDiscount() {
-        //TODO hacer que la row por default esté en gone. No el linear layout del xml del installments. Sino la row
         mView.showDiscountRow();
 //        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
 //            @Override
@@ -186,7 +185,6 @@ public class InstallmentsPresenter {
 //            public void failure(ApiException apiException) {
 //                mView.showHasDiscount();
 //                //TODO ver que hacer con los errores
-//                //TODO mandarlo a que al final del flujo pida código
 //            }
 //        });
 
@@ -212,6 +210,16 @@ public class InstallmentsPresenter {
     //TODO discounts
     public String getPayerEmail() {
         return mPayerEmail;
+    }
+
+    //TODO discounts
+    public void setAmountWithoutDiscount(BigDecimal amountWithoutDiscount) {
+        this.mAmountWithoutDiscount = amountWithoutDiscount;
+    }
+
+    //TODO discounts
+    public BigDecimal getAmountWithoutDiscount() {
+        return this.mAmountWithoutDiscount;
     }
 
     public void loadPayerCosts() {

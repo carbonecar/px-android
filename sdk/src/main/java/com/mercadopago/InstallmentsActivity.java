@@ -82,11 +82,11 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     protected LinearLayout mHasDirectDiscountLinearLayout;
     protected LinearLayout mDiscountRowLinearLayout;
     protected MPTextView mTotalAmountTextView;
-    protected MPTextView mTotalDescriptionTextView;
     protected MPTextView mDiscountAmountTextView;
     protected MPTextView mDiscountOffTextView;
-    protected Boolean isFirstTimeDiscount = true;
+    protected Boolean mHasToSubtractDiscount = true;
     protected BigDecimal totalAmount;
+    protected BigDecimal mTotalAmountWithDiscount = new BigDecimal(0);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,6 +138,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         }
 
         //TODO discounts, validar, siempre tiene que venir éste parámetro
+        Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
 
         mPresenter.setPaymentMethod(paymentMethod);
@@ -147,6 +148,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
 
         //TODO discounts agregué payer email
         mPresenter.setPayerEmail(payerEmail);
+        mPresenter.setDiscount(discount);
 
         mPresenter.setSite(site);
         mPresenter.setPayerCosts(payerCosts);
@@ -203,7 +205,11 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         initializeAdapter();
 
         //TODO discounts
-        //mPresenter.loadDiscount();
+        if (mPresenter.getDiscount() == null) {
+            mPresenter.loadDiscount();
+        } else {
+            showDiscountDetail(mPresenter.getDiscount(), mPresenter.getAmount());
+        }
 
         mPresenter.loadPayerCosts();
     }
@@ -439,16 +445,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
                 mPresenter.setDiscount(discount);
 
                 showDiscountDetail(discount, mPresenter.getAmount());
-
-                if (isFirstTimeDiscount) {
-                    isFirstTimeDiscount = false;
-                    totalAmount = mPresenter.getAmount();
-
-                    mPresenter.setPayerCosts(null);
-                    BigDecimal result = mPresenter.getAmount().subtract(discount.getCouponAmount());
-                    mPresenter.setAmount(result);
-                    mPresenter.loadPayerCosts();
-                }
             }
         }
     }
@@ -471,12 +467,11 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
                 .setPublicKey(mPresenter.getPublicKey())
                 .setPayerEmail(mPresenter.getPayerEmail());
 
-        if (!isFirstTimeDiscount) {
-            mercadoPagoBuilder.setAmount(totalAmount);
-        } else {
+        if (mPresenter.getAmountWithoutDiscount() == null) {
             mercadoPagoBuilder.setAmount(mPresenter.getAmount());
+        } else {
+            mercadoPagoBuilder.setAmount(mPresenter.getAmountWithoutDiscount());
         }
-
 
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
@@ -487,41 +482,59 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
-    //TODO discounts, revisar el orden de los métodos
+    //TODO discounts
     @Override
     public void showDiscountDetail(Discount discount, BigDecimal amount) {
+        showDiscountRow();
+
         mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
+        mDiscountAmountTextView.setVisibility(View.VISIBLE);
         mHasDiscountLinearLayout.setVisibility(View.GONE);
 
-        //TODO mejorar
-        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            String discountOff = "$" + discount.getAmountOff();
-            mDiscountOffTextView.setText(discountOff);
-        } else {
-            String discountOff = discount.getPercentOff() + "%";
-            mDiscountOffTextView.setText(discountOff);
+        setDiscountOff(discount);
+        setTotalAmountWithDiscount(discount);
+        setTotalAmount();
+    }
+
+    //TODO discount
+    private void setTotalAmountWithDiscount(Discount discount) {
+        if (mHasToSubtractDiscount) {
+            mHasToSubtractDiscount = false;
+            mTotalAmountWithDiscount = mPresenter.getAmount().subtract(discount.getCouponAmount());
+            mPresenter.setAmountWithoutDiscount(mPresenter.getAmount());
+            mPresenter.setAmount(mTotalAmountWithDiscount);
         }
 
-        //TODO poner como recurso "Producto"
-        mTotalDescriptionTextView.setText("Total:");
-        Spanned formattedText = CurrenciesUtil.formatNumber(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mTotalAmountWithDiscount, discount.getCurrencyId(),false,true);
+        mDiscountAmountTextView.setText(formattedDiscountAmount);
+    }
+
+    //TODO discount
+    private void setTotalAmount() {
+        Spanned formattedText = CurrenciesUtil.formatNumber(mPresenter.getAmountWithoutDiscount(), mPresenter.getSite().getCurrencyId(),false,true);
+
         mTotalAmountTextView.setText(formattedText);
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    }
 
-        BigDecimal result = mPresenter.getAmount().subtract(discount.getCouponAmount());
-        mDiscountAmountTextView.setVisibility(View.VISIBLE);
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(result, discount.getCurrencyId(),false,true);
-        mDiscountAmountTextView.setText(formattedDiscountAmount);
+    //TODO discount
+    private void setDiscountOff(Discount discount) {
+        String discountOff;
+
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            discountOff = "$" + discount.getAmountOff();
+            mDiscountOffTextView.setText(discountOff);
+        } else {
+            discountOff = discount.getPercentOff() + "%";
+            mDiscountOffTextView.setText(discountOff);
+        }
     }
 
     //TODO discounts
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
-        mHasDirectDiscountLinearLayout.setVisibility(View.GONE);
 
-        //TODO poner como recurso "Total"
-        mTotalDescriptionTextView.setText("Total:");
         Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId(),false,true);
         mTotalAmountTextView.setText(formattedTotalAmount);
     }
