@@ -536,7 +536,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
 
         mFakeAPI.addResponseToQueue(paymentMethodSearch, 200, "");
         mFakeAPI.addResponseToQueue(customer, 200, "");
@@ -557,7 +557,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
         Card card = customer.getCards().get(0);
         customer.getCards().add(card);
         customer.getCards().add(card);
@@ -581,7 +581,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
         Card card = customer.getCards().get(0);
         customer.getCards().add(card);
         customer.getCards().add(card);
@@ -633,7 +633,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
 
         mFakeAPI.addResponseToQueue(paymentMethodSearch, 200, "");
 
@@ -651,7 +651,7 @@ public class PaymentVaultActivityTest {
     public void ifBothSavedCardsListAndMerchantServerInfoSetDoNotMakeApiCall() {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
 
         Gson gson = new Gson();
         validStartIntent.putExtra("cards", gson.toJson(customer.getCards()));
@@ -679,7 +679,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(3);
 
         mFakeAPI.addResponseToQueue(paymentMethodSearch, 200, "");
 
@@ -698,7 +698,7 @@ public class PaymentVaultActivityTest {
         PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance()
                 .fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
 
-        final Customer customer = StaticMock.getCustomer();
+        final Customer customer = StaticMock.getCustomer(3);
 
         mFakeAPI.addResponseToQueue(paymentMethodSearch, 200, "");
         mFakeAPI.addResponseToQueue(customer, 200, "");

@@ -1148,7 +1148,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         validStartIntent.putExtra("merchantBaseUrl", "http://www.api.merchant.com");
@@ -1169,7 +1169,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         mFakeAPI.addResponseToQueue("", 400, "");
@@ -1209,7 +1209,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         mFakeAPI.addResponseToQueue("", 400, "");
@@ -1244,7 +1244,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         validStartIntent.putExtra("merchantBaseUrl", "http://www.api.merchant.com");
@@ -1258,7 +1258,6 @@ public class CheckoutActivityTest {
         intended(allOf(hasComponent(PaymentVaultActivity.class.getName()), hasExtra("cards", cardsJson)));
     }
 
-    //TODO cambiar el json de customer 
     @Test
     public void ifPaymentPreferenceSetAndCustomerCardsAvailableFilterThem() {
         CheckoutPreference preference = StaticMock.getCheckoutPreference();
@@ -1273,7 +1272,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         validStartIntent.putExtra("merchantBaseUrl", "http://www.api.merchant.com");
@@ -1294,7 +1293,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(1);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         validStartIntent.putExtra("merchantBaseUrl", "http://www.api.merchant.com");
@@ -1344,7 +1343,7 @@ public class CheckoutActivityTest {
         String paymentMethodSearchJson = StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson();
         mFakeAPI.addResponseToQueue(paymentMethodSearchJson, 200, "");
 
-        Customer customer = StaticMock.getCustomer();
+        Customer customer = StaticMock.getCustomer(2);
         mFakeAPI.addResponseToQueue(customer, 200, "");
 
         validStartIntent.putExtra("merchantBaseUrl", "http://www.api.merchant.com");
@@ -1597,7 +1596,6 @@ public class CheckoutActivityTest {
     @Test
     public void ifSkipCongratsSetTrueAndAcceptedPaymentDontStartPaymentResultActivity() {
         validStartIntent.putExtra("skipCongratsEnabled", true);
-        CheckoutActivity activity = mTestRule.launchActivity(validStartIntent);
 
         CheckoutPreference preference = StaticMock.getCheckoutPreference();
         mFakeAPI.addResponseToQueue(preference, 200, "");
@@ -1633,7 +1631,6 @@ public class CheckoutActivityTest {
     @Test
     public void ifSkipCongratsSetTrueAndRejectedPaymentDoStartPaymentResultActivity() {
         validStartIntent.putExtra("skipCongratsEnabled", true);
-        CheckoutActivity activity = mTestRule.launchActivity(validStartIntent);
 
         CheckoutPreference preference = StaticMock.getCheckoutPreference();
         mFakeAPI.addResponseToQueue(preference, 200, "");
@@ -1668,7 +1665,6 @@ public class CheckoutActivityTest {
     @Test
     public void ifSkipCongratsSetFalseAndAcceptedPaymentDoStartPaymentResultActivity() {
         validStartIntent.putExtra("skipCongratsEnabled", false);
-        CheckoutActivity activity = mTestRule.launchActivity(validStartIntent);
 
         CheckoutPreference preference = StaticMock.getCheckoutPreference();
         mFakeAPI.addResponseToQueue(preference, 200, "");
@@ -1703,7 +1699,6 @@ public class CheckoutActivityTest {
     @Test
     public void ifSkipCongratsSetFalseAndRejectedPaymentDoStartPaymentResultActivity() {
         validStartIntent.putExtra("skipCongratsEnabled", false);
-        CheckoutActivity activity = mTestRule.launchActivity(validStartIntent);
 
         CheckoutPreference preference = StaticMock.getCheckoutPreference();
         mFakeAPI.addResponseToQueue(preference, 200, "");
