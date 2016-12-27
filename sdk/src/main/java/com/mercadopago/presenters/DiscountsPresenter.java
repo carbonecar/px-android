@@ -114,6 +114,7 @@ public class DiscountsPresenter {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
+                applyAmountDiscount();
                 mDiscountsView.drawSummary();
             }
 
@@ -139,6 +140,10 @@ public class DiscountsPresenter {
 
             }
         });
+    }
+
+    public void applyAmountDiscount() {
+        mDiscount.setTransactionAmount(mTransactionAmount);
     }
 
     public void validateDiscountCodeInput(String discountCode) {

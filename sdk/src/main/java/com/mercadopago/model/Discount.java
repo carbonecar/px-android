@@ -11,6 +11,25 @@ public class Discount {
     private BigDecimal couponAmount;
     private String currencyId;
     private String code;
+    private BigDecimal transactionAmount;
+    private BigDecimal transactionAmountWithDiscount;
+
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.transactionAmount = transactionAmount;
+        setTransactionAmountWithDiscount(transactionAmount);
+    }
+
+    private void setTransactionAmountWithDiscount(BigDecimal totalAmount) {
+        this.transactionAmountWithDiscount = totalAmount.subtract(couponAmount);
+    }
+
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
+    }
+
+    public BigDecimal getTransactionAmountWithDiscount() {
+        return transactionAmountWithDiscount;
+    }
 
     public String getCode() {
         return this.code;

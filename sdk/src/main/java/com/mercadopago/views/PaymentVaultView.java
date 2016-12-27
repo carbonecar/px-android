@@ -48,8 +48,9 @@ public interface PaymentVaultView {
 
     void selectPaymentMethod(PaymentMethod selectedPaymentMethod);
 
-    //TODO discounts
-    void showDiscountDetail(Discount discount, BigDecimal amount);
+    void showDiscountDetail(Discount discount);
+
     void showHasDiscount();
+
     void showDiscountRow();
 }

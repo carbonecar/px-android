@@ -10,7 +10,6 @@ public class PaymentIntent {
 
     private Long transactionId;
     private Integer installments;
-    @SerializedName("issuer_id")
     private Long issuerId;
     private String paymentMethodId;
     private String prefId;
@@ -18,30 +17,22 @@ public class PaymentIntent {
     private String tokenId;
     private String publicKey;
     private String email;
+    private String couponCode;
     private Payer payer;
+    private Float couponAmount;
+    private Integer campaignId;
 
-    //TODO discounts
-//    @SerializedName("coupon_amount")
-//    private BigDecimal couponAmount;
-//    @SerializedName("campaign_id")
-//    private Long campaignId;
-//    @SerializedName("coupon_code")
-//    private String couponCode;
+    public void setCouponAmount(Float couponAmount) {
+        this.couponAmount = couponAmount;
+    }
 
-//    //TODO discounts
-//    public void setCouponAmount(BigDecimal couponAmount) {
-//        this.couponAmount = couponAmount;
-//    }
-//
-//    //TODO discounts
-//    public void setCampaignId(Long campaignId) {
-//        this.campaignId = campaignId;
-//    }
-//
-//    //TODO discounts
-//    public void setCouponCode(String couponCode) {
-//        this.couponCode = couponCode;
-//    }
+    public void setCampaignId(Integer campaignId) {
+        this.campaignId = campaignId;
+    }
+
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
+    }
 
     public Integer getInstallments() {
         return installments;

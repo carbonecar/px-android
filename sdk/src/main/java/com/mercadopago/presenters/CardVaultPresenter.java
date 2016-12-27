@@ -56,7 +56,7 @@ public class CardVaultPresenter {
     protected CardToken mCardToken;
     protected Card mCard;
 
-    //TODO discounts
+    //Discount
     protected String mPayerEmail;
     protected Discount mDiscount;
 
@@ -181,22 +181,18 @@ public class CardVaultPresenter {
         }
     }
 
-    //TODO discounts
     public void setPayerEmail(String payerEmail) {
         this.mPayerEmail = payerEmail;
     }
 
-    //TODO discounts
     public String getPayerEmail() {
         return this.mPayerEmail;
     }
 
-    //TODO disocunts
     public void setDiscount(Discount discount) {
         this.mDiscount = discount;
     }
 
-    //TODO discounts
     public Discount getDiscount() {
         return mDiscount;
     }

@@ -108,7 +108,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     private boolean isCustomColorSet() {
         return mDecorationPreference != null && mDecorationPreference.hasColors();
     }
-    
+
     private void getActivityParameters() {
         PaymentMethod paymentMethod = JsonUtil.getInstance().fromJson(
                 this.getIntent().getStringExtra("paymentMethod"), PaymentMethod.class);
@@ -137,7 +137,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             mDecorationPreference = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("decorationPreference"), DecorationPreference.class);
         }
 
-        //TODO discounts, validar, siempre tiene que venir éste parámetro
         Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
 
@@ -145,11 +144,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mPresenter.setPublicKey(publicKey);
         mPresenter.setIssuer(issuer);
         mPresenter.setAmount(amount);
-
-        //TODO discounts agregué payer email
         mPresenter.setPayerEmail(payerEmail);
         mPresenter.setDiscount(discount);
-
         mPresenter.setSite(site);
         mPresenter.setPayerCosts(payerCosts);
         mPresenter.setPaymentPreference(paymentPreference);
@@ -461,6 +457,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
 
     //TODO discounts
     public void startDiscountsActivity(View view){
+        mPresenter.applyAmountDiscount();
+
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
@@ -493,25 +491,18 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
 
         setDiscountOff(discount);
         setTotalAmountWithDiscount(discount);
-        setTotalAmount();
+        setTotalAmount(discount);
     }
 
     //TODO discount
     private void setTotalAmountWithDiscount(Discount discount) {
-        if (mHasToSubtractDiscount) {
-            mHasToSubtractDiscount = false;
-            mTotalAmountWithDiscount = mPresenter.getAmount().subtract(discount.getCouponAmount());
-            mPresenter.setAmountWithoutDiscount(mPresenter.getAmount());
-            mPresenter.setAmount(mTotalAmountWithDiscount);
-        }
-
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mTotalAmountWithDiscount, discount.getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(),false,true);
         mDiscountAmountTextView.setText(formattedDiscountAmount);
     }
 
     //TODO discount
-    private void setTotalAmount() {
-        Spanned formattedText = CurrenciesUtil.formatNumber(mPresenter.getAmountWithoutDiscount(), mPresenter.getSite().getCurrencyId(),false,true);
+    private void setTotalAmount(Discount discount) {
+        Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(),false,true);
 
         mTotalAmountTextView.setText(formattedText);
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);

@@ -80,8 +80,6 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         PaymentRecovery paymentRecovery = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("paymentRecovery"), PaymentRecovery.class);
         BigDecimal amountValue = null;
         String amount = getIntent().getStringExtra("amount");
-
-        //TODO discounts agregué el payerEmail, validarlo
         String payerEmail = getIntent().getStringExtra("payerEmail");
         Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"),Discount.class);
 
@@ -111,8 +109,6 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         mPresenter.setAmount(amountValue);
         mPresenter.setPaymentMethodList(paymentMethods);
         mPresenter.setPaymentPreference(paymentPreference);
-
-        //TODO discounts agregado
         mPresenter.setPayerEmail(payerEmail);
         mPresenter.setDiscount(discount);
     }
@@ -134,7 +130,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
             startSecurityCodeActivity();
 
         } else if (savedCardAvailable()) {
-            //TODO agregar set de descuento
+            //TODO discounts agregar set de descuento
             mPresenter.setCardInfo(new CardInfo(mPresenter.getCard()));
             mPresenter.setPaymentMethod(mPresenter.getCard().getPaymentMethod());
             mPresenter.setIssuer(mPresenter.getCard().getIssuer());
@@ -316,8 +312,8 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                 .setPublicKey(mPresenter.getPublicKey())
                 .setPaymentMethod(mPresenter.getPaymentMethod())
                 .setAmount(mPresenter.getAmount())
-                .setPayerEmail(mPresenter.getPayerEmail())
-                .setDiscount(mPresenter.getDiscount())
+//                .setPayerEmail(mPresenter.getPayerEmail())
+//                .setDiscount(mPresenter.getDiscount())
                 .setIssuer(mPresenter.getIssuer())
                 .setPaymentPreference(mPresenter.getPaymentPreference())
                 .setSite(mPresenter.getSite())

@@ -196,11 +196,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         String publicKey = this.getIntent().getStringExtra("merchantPublicKey");
         PaymentRecovery paymentRecovery = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("paymentRecovery"), PaymentRecovery.class);
 
-        //TODO discounts
         BigDecimal transactionAmount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("transactionAmount"), BigDecimal.class);
         Discount discount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("discount"), Discount.class);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
-
 
         Token token = null;
         PaymentMethod paymentMethod = null;
@@ -231,8 +229,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mPresenter.setIdentificationNumberRequired(identificationNumberRequired);
         mPresenter.setPaymentPreference(paymentPreference);
         mPresenter.setPaymentRecovery(paymentRecovery);
-
-        //TODO discounts
         mPresenter.setTransactionAmount(transactionAmount);
         mPresenter.setDiscount(discount);
         mPresenter.setPayerEmail(payerEmail);

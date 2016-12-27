@@ -110,6 +110,8 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected OnChangePaymentMethodCallback mChangePaymentMethodCallback;
     protected OnConfirmPaymentCallback mConfirmCallback;
 
+    protected Discount mDiscount;
+
     //Controls
     protected Toolbar mToolbar;
     protected MPTextView mTermsAndConditionsTextView;
@@ -147,10 +149,6 @@ public class CheckoutActivity extends MercadoPagoActivity {
     protected NestedScrollView mScrollView;
     protected String mCustomerId;
 
-    //TODO discounts ordenar
-    protected Discount mDiscount;
-    protected String mPayerEmail;
-
     @Override
     protected void setContentView() {
         setContentView(R.layout.mpsdk_activity_collapsing_checkout);
@@ -158,18 +156,21 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     @Override
     protected void getActivityParameters() {
+        //TODO discounts, borrar
         //236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d  //prefID con AT de produ de cuenta de test
         //"APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d   //PK de produ de usuriario de test
         //TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1       //PK de test de user de test
+        //TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490 //AT de test de user de test
         //"matias.romar@mercadolibre.com"
-        mPayerEmail = "matias.romar@mercadolibre.com";
+        //mPayerEmail = "matias.romar@mercadolibre.com";
         mMerchantPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
-        mCheckoutPreferenceId = "236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d";
+        mCheckoutPreferenceId = "236387490-8cc00347-60c4-4524-b9bf-ff6c14126551";
+        mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";//APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490";
 
         //mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mMerchantBaseUrl = this.getIntent().getStringExtra("merchantBaseUrl");
         mMerchantGetCustomerUri = this.getIntent().getStringExtra("merchantGetCustomerUri");
-        mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
+        //mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
         //mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
     }
 
@@ -379,12 +380,10 @@ public class CheckoutActivity extends MercadoPagoActivity {
     }
 
     protected void startPaymentVaultActivity() {
-
-        //TODO discounts sacar hardcodeo de PK, la pk hardcodeada tiene descuentos, user de test
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
                 .setPublicKey(mMerchantPublicKey)
-                .setPayerEmail(mPayerEmail)
+                .setPayerEmail(mCheckoutPreference.getPayer().getEmail())
                 .setSite(mSite)
                 .setAmount(mCheckoutPreference.getAmount())
                 .setPaymentMethodSearch(mPaymentMethodSearch)
@@ -472,8 +471,6 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     private void resolvePaymentVaultRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-
-            //TODO discounts, borrar
             mDiscount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
 
             mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
@@ -645,26 +642,24 @@ public class CheckoutActivity extends MercadoPagoActivity {
     }
 
     private void drawSummary() {
+        ReviewSummaryView summaryView;
         mReviewSummaryContainer.removeAllViews();
 
         if (mDiscount != null) {
             //TODO discount, si es amountOff distinto de cero pasar ese, sino pasar el porcentaje
             //TODO discounts, validar si con solo pasar couponAmount en vez de amountOff y así evito pasar el porcentaje
-            ReviewSummaryView summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
+            summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
                     mCheckoutPreference.getAmount(), mSelectedPayerCost, mSelectedPaymentMethod, null, mDiscount.getCouponAmount(),
                     mConfirmCallback, mDecorationPreference);
-            summaryView.inflateInParent(mReviewSummaryContainer, true);
-            summaryView.initializeControls();
-            summaryView.drawSummary();
         } else {
-            //TODO discounts, este es el que estaba
-            ReviewSummaryView summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
+            summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
                     mCheckoutPreference.getAmount(), mSelectedPayerCost, mSelectedPaymentMethod, null, null,
                     mConfirmCallback, mDecorationPreference);
-            summaryView.inflateInParent(mReviewSummaryContainer, true);
-            summaryView.initializeControls();
-            summaryView.drawSummary();
         }
+
+        summaryView.inflateInParent(mReviewSummaryContainer, true);
+        summaryView.initializeControls();
+        summaryView.drawSummary();
     }
 
     private void setToolbarTitle() {
@@ -810,93 +805,31 @@ public class CheckoutActivity extends MercadoPagoActivity {
                 && (mSavedCards == null || mSavedCards.isEmpty());
     }
 
-    //TODO discount
     protected void createPayment() {
         mScrollView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
-        //PaymentIntent paymentIntent = createPaymentIntent();
 
-        //TODO if agregado
-//        if (mDiscount != null) {
-//            PaymentIntent paymentIntent = createDiscountPaymentIntent();
-//            mMercadoPago.createPayment(paymentIntent, new Callback<Payment>() {
-//                @Override
-//                public void success(Payment payment) {
-//                    mCreatedPayment = payment;
-//                    startPaymentResultActivity();
-//                    cleanTransactionId();
-//                }
-//
-//                @Override
-//                public void failure(ApiException apiException) {
-//                    setFailureRecovery(new FailureRecovery() {
-//                        @Override
-//                        public void recover() {
-//                            createPayment();
-//                        }
-//                    });
-//                    resolvePaymentFailure(apiException);
-//                }
-//            });
-//        } else {
-            PaymentIntent paymentIntent = createPaymentIntent();
-            mMercadoPago.createPayment(paymentIntent, new Callback<Payment>() {
-                @Override
-                public void success(Payment payment) {
-                    mCreatedPayment = payment;
-                    startPaymentResultActivity();
-                    cleanTransactionId();
-                }
+        PaymentIntent paymentIntent = createPaymentIntent();
+        mMercadoPago.createPayment(paymentIntent, new Callback<Payment>() {
+            @Override
+            public void success(Payment payment) {
+                mCreatedPayment = payment;
+                startPaymentResultActivity();
+                cleanTransactionId();
+            }
 
-                @Override
-                public void failure(ApiException apiException) {
-                    setFailureRecovery(new FailureRecovery() {
-                        @Override
-                        public void recover() {
-                            createPayment();
-                        }
-                    });
-                    resolvePaymentFailure(apiException);
-                }
-            });
-        //}
+            @Override
+            public void failure(ApiException apiException) {
+                setFailureRecovery(new FailureRecovery() {
+                    @Override
+                    public void recover() {
+                        createPayment();
+                    }
+                });
+                resolvePaymentFailure(apiException);
+            }
+        });
     }
-
-    //TODO discounts, se puede usar el createPayment y que si mDiscount es != null agregue los campos correspondientes
-//    private PaymentIntent createDiscountPaymentIntent() {
-//        PaymentIntent paymentIntent = new PaymentIntent();
-//        paymentIntent.setPrefId(mCheckoutPreference.getId());
-//        paymentIntent.setPublicKey(mMerchantPublicKey);
-//        paymentIntent.setPaymentMethodId(mSelectedPaymentMethod.getId());
-//        Payer payer = mCheckoutPreference.getPayer();
-//        if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
-//            payer.setId(mCustomerId);
-//        }
-//
-//        paymentIntent.setPayer(payer);
-//
-//        if (mCreatedToken != null) {
-//            paymentIntent.setTokenId(mCreatedToken.getId());
-//        }
-//        if (mSelectedPayerCost != null) {
-//            paymentIntent.setInstallments(mSelectedPayerCost.getInstallments());
-//        }
-//        if (mSelectedIssuer != null) {
-//            paymentIntent.setIssuerId(mSelectedIssuer.getId());
-//        }
-//
-//        if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
-//            mTransactionId = createNewTransactionId();
-//        }
-//
-//        //TODO discount
-//        paymentIntent.setCampaignId(mDiscount.getId());
-//        paymentIntent.setCouponAmount(mDiscount.getCouponAmount());
-//        //paymentIntent.setCouponCode(mDiscount.getCode());
-//
-//        paymentIntent.setTransactionId(mTransactionId);
-//        return paymentIntent;
-//    }
 
     private PaymentIntent createPaymentIntent() {
         PaymentIntent paymentIntent = new PaymentIntent();
@@ -924,28 +857,23 @@ public class CheckoutActivity extends MercadoPagoActivity {
             mTransactionId = createNewTransactionId();
         }
 
+        if (mDiscount != null) {
+            paymentIntent.setCampaignId(mDiscount.getId().intValue());
+            paymentIntent.setCouponAmount(mDiscount.getCouponAmount().floatValue());
+            paymentIntent.setCouponCode(mDiscount.getCode());
+        }
+
         paymentIntent.setTransactionId(mTransactionId);
         return paymentIntent;
     }
 
     private void startPaymentResultActivity() {
-        //TODO mejorar
-        if (mDiscount != null) {
-            new MercadoPago.StartActivityBuilder()
-                    .setPublicKey(mMerchantPublicKey)
-                    .setActivity(getActivity())
-                    .setPayment(mCreatedPayment)
-                    .setPaymentMethod(mSelectedPaymentMethod)
-                    .setDiscount(mDiscount)
-                    .startPaymentResultActivity();
-        } else {
-            new MercadoPago.StartActivityBuilder()
-                    .setPublicKey(mMerchantPublicKey)
-                    .setActivity(getActivity())
-                    .setPayment(mCreatedPayment)
-                    .setPaymentMethod(mSelectedPaymentMethod)
-                    .startPaymentResultActivity();
-        }
+        new MercadoPago.StartActivityBuilder()
+                .setPublicKey(mMerchantPublicKey)
+                .setActivity(getActivity())
+                .setPayment(mCreatedPayment)
+                .setPaymentMethod(mSelectedPaymentMethod)
+                .startPaymentResultActivity();
     }
 
     private Long createNewTransactionId() {

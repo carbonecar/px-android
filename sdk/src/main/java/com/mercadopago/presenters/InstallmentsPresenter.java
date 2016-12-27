@@ -52,6 +52,9 @@ public class InstallmentsPresenter {
     private Discount mDiscount;
     private String mPayerEmail;
     private BigDecimal mAmountWithoutDiscount;
+    private Boolean mHasToSubtractDiscount = true;
+    private BigDecimal mTotalAmountWithDiscount;
+    private BigDecimal mTotalAmountWithoutDiscount;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -177,6 +180,7 @@ public class InstallmentsPresenter {
 //        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
 //            @Override
 //            public void success(Discount discount) {
+//                applyAmountDiscount()
 //                mDiscount = discount;
 //                mView.showDiscountDetail(discount, mAmount);
 //            }
@@ -187,9 +191,23 @@ public class InstallmentsPresenter {
 //                //TODO ver que hacer con los errores
 //            }
 //        });
+    }
 
-            //TODO borrar y descomnetar lo de arriba, está así para probar el failure
-            mView.showHasDiscount();
+    public void applyAmountDiscount() {
+        if (mHasToSubtractDiscount) {
+            mHasToSubtractDiscount = false;
+            mTotalAmountWithDiscount = mAmount.subtract( mDiscount.getCouponAmount());
+            this.setTotalAmountWithoutDiscount(mAmount);
+            this.setAmount(mTotalAmountWithDiscount);
+        }
+    }
+
+    public void setTotalAmountWithoutDiscount(BigDecimal totalAmountWithoutDiscount) {
+        this.mTotalAmountWithoutDiscount = totalAmountWithoutDiscount;
+    }
+
+    public BigDecimal getTotalAmountWithoutDiscount() {
+        return this.mTotalAmountWithoutDiscount;
     }
 
     //TODO discounts

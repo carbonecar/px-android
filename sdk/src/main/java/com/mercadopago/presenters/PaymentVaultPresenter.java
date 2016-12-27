@@ -41,6 +41,7 @@ public class PaymentVaultPresenter {
 
     private Site mSite;
     private MercadoPago mMercadoPago;
+    private Discount mDiscount;
     private PaymentMethodSearchItem mSelectedSearchItem;
     private PaymentMethodSearch mPaymentMethodSearch;
     private List<CustomSearchItem> mCustomSearchItems;
@@ -53,12 +54,7 @@ public class PaymentVaultPresenter {
     private String mPayerEmail;
     private PaymentPreference mPaymentPreference;
     private BigDecimal mAmount;
-    private BigDecimal mAmountWithoutDiscount;
     private Boolean mAccountMoneyEnabled;
-
-    //TODO discounts
-    private Discount mDiscount;
-    private BigDecimal mTotalAmountWithDiscount;
     private Boolean mHasToSubtractDiscount = true;
 
     public void attachView(PaymentVaultView paymentVaultView) {
@@ -72,7 +68,6 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
-        //TODO discounts
         loadDiscount();
 
         if (isItemSelected()) {
@@ -82,30 +77,27 @@ public class PaymentVaultPresenter {
         }
     }
 
-    //TODO discounts
     private void loadDiscount() {
         if (mDiscount == null) {
             getDirectDiscount();
         } else {
-            mPaymentVaultView.showDiscountDetail(mDiscount, mAmount);
+            mPaymentVaultView.showDiscountDetail(mDiscount);
         }
     }
 
-    //TODO discounts
     public void getDirectDiscount() {
         //TODO validar que si llega acá payerEmail y Amount sean correctos
+        mPaymentVaultView.showDiscountRow();
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
                 applyAmountDiscount();
-                mPaymentVaultView.showDiscountRow();
-                mPaymentVaultView.showDiscountDetail(discount, mAmount);
+                mPaymentVaultView.showDiscountDetail(discount);
             }
 
             @Override
             public void failure(ApiException apiException) {
-                mPaymentVaultView.showDiscountRow();
                 mPaymentVaultView.showHasDiscount();
             }
         });
@@ -114,18 +106,9 @@ public class PaymentVaultPresenter {
     public void applyAmountDiscount() {
         if (mHasToSubtractDiscount) {
             mHasToSubtractDiscount = false;
-            mTotalAmountWithDiscount = mAmount.subtract( mDiscount.getCouponAmount());
-            this.setAmountWithoutDiscount(mAmount);
-            this.setAmount(mTotalAmountWithDiscount);
+            mDiscount.setTransactionAmount(mAmount);
+            this.setAmount(mDiscount.getTransactionAmountWithDiscount());
         }
-    }
-
-    public void setAmountWithoutDiscount(BigDecimal amountWithoutDiscount) {
-        this.mAmountWithoutDiscount = amountWithoutDiscount;
-    }
-
-    public BigDecimal getAmountWithoutDiscount() {
-        return this.mAmountWithoutDiscount;
     }
 
     public void validateParameters() throws IllegalStateException {
@@ -532,22 +515,18 @@ public class PaymentVaultPresenter {
         this.mAccountMoneyEnabled = accountMoneyEnabled;
     }
 
-    //TODO discount
     public void setDiscount(Discount discount) {
         this.mDiscount = discount;
     }
 
-    //TODO discount
     public Discount getDiscount() {
         return mDiscount;
     }
 
-    //TODO discounts
     public void setPayerEmail(String payerEmail) {
         this.mPayerEmail = payerEmail;
     }
 
-    //TODO discounts
     public String getPayerEmail() {
         return mPayerEmail;
     }

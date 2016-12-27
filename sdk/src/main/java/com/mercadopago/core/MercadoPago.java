@@ -220,7 +220,6 @@ public class MercadoPago {
         }
     }
 
-    //TODO discounts
     public void getDirectDiscount(String amount, String payerEmail, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
@@ -232,7 +231,6 @@ public class MercadoPago {
         }
     }
 
-    //TODO discounts
     public void getCodeDiscount(String amount, String payerEmail, String couponCode, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
@@ -427,7 +425,6 @@ public class MercadoPago {
         activity.startActivityForResult(paymentMethodsIntent, CUSTOMER_CARDS_REQUEST_CODE);
     }
 
-    //TODO discounts, agregué el payerEmail
     private static void startInstallmentsActivity(Activity activity, BigDecimal amount, Site site,
                                                   String publicKey, List<PayerCost> payerCosts,
                                                   PaymentPreference paymentPreference, Issuer issuer,
@@ -447,8 +444,6 @@ public class MercadoPago {
         intent.putExtra("paymentPreference", JsonUtil.getInstance().toJson(paymentPreference));
         intent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         intent.putExtra("cardInfo", JsonUtil.getInstance().toJson(cardInfo));
-
-        //TODO discounts
         intent.putExtra("payerEmail", payerEmail);
         intent.putExtra("transactionAmount", JsonUtil.getInstance().toJson(transactionAmount));
         intent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
@@ -502,7 +497,6 @@ public class MercadoPago {
 
     }
 
-    //TODO discounts agregué payerEmail y amount
     private static void startGuessingCardActivity(Activity activity, String key, Boolean requireSecurityCode,
                                                   Boolean requireIssuer, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, List<PaymentMethod> paymentMethodList,
@@ -534,17 +528,16 @@ public class MercadoPago {
 
         guessingCardIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
 
-        //TODO discounts agregado
         guessingCardIntent.putExtra("payerEmail", payerEmail);
+
         guessingCardIntent.putExtra("transactionAmount", JsonUtil.getInstance().toJson(transactionAmount));
+
         guessingCardIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
 
         activity.startActivityForResult(guessingCardIntent, GUESSING_CARD_REQUEST_CODE);
     }
 
-    //TODO discounts agregué el payer email como parámetro
-    //TODO validar en todos lados que el payerEmail sea correcto
     private static void startCardVaultActivity(Activity activity, String key, BigDecimal amount, Site site, Boolean installmentsEnabled,
                                                PaymentPreference paymentPreference, DecorationPreference decorationPreference,
                                                List<PaymentMethod> paymentMethodList, PaymentRecovery paymentRecovery, Card card,
@@ -564,16 +557,12 @@ public class MercadoPago {
         cardVaultIntent.putExtra("paymentRecovery", JsonUtil.getInstance().toJson(paymentRecovery));
         cardVaultIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         cardVaultIntent.putExtra("card", JsonUtil.getInstance().toJson(card));
-
-        //TODO discounts agregado
         cardVaultIntent.putExtra("payerEmail",payerEmail);
         cardVaultIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
-
 
         activity.startActivityForResult(cardVaultIntent, CARD_VAULT_REQUEST_CODE);
     }
 
-    //TODO discounts
     private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount, Boolean directDiscountEnabled) {
 
         Intent discountsIntent = new Intent(activity, DiscountsActivity.class);
@@ -597,8 +586,6 @@ public class MercadoPago {
         activity.startActivityForResult(paymentMethodsIntent, PAYMENT_METHODS_REQUEST_CODE);
     }
 
-    //TODO discounts modifique la firma para pasarle el payerEmail
-    //TODO validar parámetros como payer emial en todos lados
     private static void startPaymentVaultActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl,
                                                   String merchantGetCustomerUri, String merchantAccessToken, BigDecimal amount,
                                                   Site site, Boolean installmentsEnabled, Boolean showBankDeals, PaymentPreference paymentPreference,
@@ -624,8 +611,6 @@ public class MercadoPago {
         vaultIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         vaultIntent.putExtra("payerAccessToken", payerAccessToken);
         vaultIntent.putExtra("accountMoneyEnabled", accountMoneyEnabled);
-
-        //TODO discounts
         vaultIntent.putExtra("payerEmail", payerEmail);
 
         activity.startActivityForResult(vaultIntent, PAYMENT_VAULT_REQUEST_CODE);
@@ -769,12 +754,10 @@ public class MercadoPago {
         private Card mCard;
         private String mPayerAccessToken;
         private Boolean mAccountMoneyEnabled;
-        private List<PaymentType> mPaymentTypesList;
-        private CardInfo mCardInfo;
-
-        //TODO discount
         private Boolean mDirectDiscountEnabled;
         private Boolean mCodeDiscountEnabled;
+        private List<PaymentType> mPaymentTypesList;
+        private CardInfo mCardInfo;
 
         public StartActivityBuilder() {
 
@@ -854,28 +837,24 @@ public class MercadoPago {
             return this;
         }
 
-        //TODO discounts
         public StartActivityBuilder setPayerEmail(String payerEmail) {
 
             this.mPayerEmail = payerEmail;
             return this;
         }
 
-        //TODO discount
         public StartActivityBuilder setDiscount(Discount discount) {
 
             this.mDiscount = discount;
             return this;
         }
 
-        //TODO discount
         public StartActivityBuilder setDirectDiscountEnabled(Boolean directDiscountEnabled) {
 
             this.mDirectDiscountEnabled = directDiscountEnabled;
             return this;
         }
 
-        //TODO discount
         public StartActivityBuilder setCodeDiscountEnabled(Boolean codeDiscountEnabled) {
 
             this.mCodeDiscountEnabled = codeDiscountEnabled;
@@ -1123,7 +1102,6 @@ public class MercadoPago {
             MercadoPago.startCustomerCardsActivity(this.mActivity, this.mCards);
         }
 
-        //TODO discounts agregué payer email y amount
         public void startInstallmentsActivity() {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mSite == null) throw new IllegalStateException("site is null");
@@ -1179,7 +1157,6 @@ public class MercadoPago {
                     mCardInfo, mDecorationPreference);
         }
 
-        //TODO discounts agregué payerEmail y amount
         public void startGuessingCardActivity() {
 
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
@@ -1192,7 +1169,6 @@ public class MercadoPago {
                     this.mPayerEmail, this.mDiscount);
         }
 
-        //TODO discounts agregué payerEmail
         public void startCardVaultActivity() {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mKey == null) throw new IllegalStateException("key is null");
@@ -1206,7 +1182,6 @@ public class MercadoPago {
                     this.mPayerEmail, this.mDiscount);
         }
 
-        //TODO discounts
         public void startDiscountsActivity() {
             if (this.mActivity == null) throw new IllegalStateException("activity is null");
             if (this.mKey == null) throw new IllegalStateException("key is null");
