@@ -656,22 +656,13 @@ public class InstallmentsActivityTest {
         validStartIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
 
         mTestRule.launchActivity(validStartIntent);
-        sleep();
+
         int appBarColor = ViewUtils.getBackgroundColor(mTestRule.getActivity().mAppBar);
         assertEquals(appBarColor, decorationPreference.getLighterColor());
         int toolbarColor = ViewUtils.getBackgroundColor(mTestRule.getActivity().mNormalToolbar);
         assertEquals(toolbarColor, decorationPreference.getLighterColor());
     }
-
-
-    private void sleep() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-
-        }
-    }
-
+    
     @Test
     public void decorationPreferenceWithDarkFontAndWithoutTokenPaintsToolbarAndTitle() {
         String payerCosts = StaticMock.getPayerCostsJson();

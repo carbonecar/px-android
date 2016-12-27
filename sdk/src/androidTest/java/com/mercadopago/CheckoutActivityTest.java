@@ -1743,42 +1743,5 @@ public class CheckoutActivityTest {
         CheckoutActivity activity = mTestRule.launchActivity(validStartIntent);
         assertTrue(!activity.mBinaryModeEnabled);
     }
-
-    //TODO ver
-//
-//
-//    @Test
-//    public void getPaymentMethodResultFromPaymentMethodsActivity() {
-//
-//        //prepared mocked api responses
-//        CheckoutPreference preference = StaticMock.getCheckoutPreference();
-//        mFakeAPI.addResponseToQueue(preference, 200, "");
-//
-//        PaymentMethodSearch paymentMethodSearch = JsonUtil.getInstance().fromJson(StaticMock.getPaymentMethodSearchWithoutCustomOptionsAsJson(), PaymentMethodSearch.class);
-//
-//        PaymentMethodSearchItem itemWithoutChildren = paymentMethodSearch.getGroups().get(1);
-//        itemWithoutChildren.setChildren(new ArrayList<PaymentMethodSearchItem>());
-//        paymentMethodSearch.getGroups().set(1, itemWithoutChildren);
-//
-//        mFakeAPI.addResponseToQueue(paymentMethodSearch, 200, "");
-//
-//        mTestRule.launchActivity(validStartIntent);
-//
-//        //
-//        Intent paymentMethodsResultIntent = new Intent();
-//        final PaymentMethod paymentMethod = StaticMock.getPaymentMethodOff();
-//
-//        paymentMethodsResultIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-//        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, paymentMethodsResultIntent);
-//
-//        intending(hasComponent(PaymentMethodsActivity.class.getName())).respondWith(result);
-//
-//
-//        onView(withId(R.id.mpsdkGroupsList)).perform(
-//                RecyclerViewActions.actionOnItemAtPosition(1, click()));
-//
-//
-//        assertEquals(mTestRule.getActivity().mSelectedPaymentMethod.getId(), paymentMethod.getId());
-//    }
-//
+    
 }
