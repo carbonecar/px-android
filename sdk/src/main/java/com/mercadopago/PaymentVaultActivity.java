@@ -617,7 +617,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 //            mPaymentVaultPresenter.setAmount(mTotalAmountWithDiscount);
 //        }
 
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmountWithoutDiscount(), discount.getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), discount.getCurrencyId(),false,true);
         mDiscountAmountTextView.setText(formattedDiscountAmount);
     }
 

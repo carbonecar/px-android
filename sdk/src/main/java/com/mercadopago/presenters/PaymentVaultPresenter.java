@@ -97,9 +97,9 @@ public class PaymentVaultPresenter {
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
+                mDiscount = discount;
                 applyAmountDiscount();
                 mPaymentVaultView.showDiscountRow();
-                mDiscount = discount;
                 mPaymentVaultView.showDiscountDetail(discount, mAmount);
             }
 

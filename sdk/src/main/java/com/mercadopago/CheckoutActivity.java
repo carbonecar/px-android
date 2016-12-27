@@ -163,7 +163,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
         //TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1       //PK de test de user de test
         //"matias.romar@mercadolibre.com"
         mPayerEmail = "matias.romar@mercadolibre.com";
-        mMerchantPublicKey = "APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d";
+        mMerchantPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
         mCheckoutPreferenceId = "236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d";
 
         //mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
