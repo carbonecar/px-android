@@ -95,6 +95,9 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setPublicKey(mPublicKey)
                 .setCheckoutPreferenceId(mCheckoutPreference.getId())
                 .setDecorationPreference(decorationPreference) //Optional
+                .setMerchantAccessToken(ExamplesUtils.DUMMY_MERCHANT_ACCESS_TOKEN)
+                .setMerchantBaseUrl(ExamplesUtils.DUMMY_MERCHANT_BASE_URL)
+                .setMerchantGetCustomerUri(ExamplesUtils.DUMMY_MERCHANT_GET_CUSTOMER_URI)
                 .startCheckoutActivity();
     }
 
