@@ -43,6 +43,7 @@ public class CongratsActivity extends MercadoPagoActivity {
     protected ImageView mDiscountArrow;
     protected MPTextView mKeepBuyingButton;
     protected LinearLayout mDiscountRow;
+    protected LinearLayout mHasDirectDiscount;
 
     // Activity parameters
     protected Payment mPayment;
@@ -100,14 +101,14 @@ public class CongratsActivity extends MercadoPagoActivity {
             }
         });
 
-        //Discounts
+        //Discount
         mDiscountRow = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
-        mDiscountOff = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
-        mDiscountArrow = (ImageView) findViewById(R.id.mpsdkDiscountArrow);
-        //mTotalDescription = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
-        mTotalAmount = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
         mDiscountAmount = (MPTextView) findViewById(R.id.mpsdkDiscountAmount);
+        mHasDirectDiscount = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
+        mDiscountArrow = (ImageView) findViewById(R.id.mpsdkDiscountArrow);
         mDiscountSeparator = findViewById(R.id.mpsdkDiscountSeparator);
+        mTotalAmount = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
+        mDiscountOff = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
     }
 
     @Override
@@ -147,26 +148,30 @@ public class CongratsActivity extends MercadoPagoActivity {
 
     private void setDiscountRow() {
         if (mDiscount != null) {
-            mTotalAmountDescription.setVisibility(View.GONE);
-            mDiscountRow.setVisibility(View.VISIBLE);
-            mDiscountArrow.setVisibility(View.GONE);
-            mDiscountSeparator.setVisibility(View.INVISIBLE);
-
+            setRowVisibility();
+            setTotalAmountWithoutDiscount();
+            setTotalAmountWithDiscount();
             setDiscountOff();
-            setTotalDiscountDescription();
         }
     }
 
-    private void setTotalDiscountDescription() {
-        mTotalDescription.setText("Total:");
-        Spanned formattedText = CurrenciesUtil.formatNumber(mPayment.getTransactionAmount(), mPayment.getCurrencyId(),false,true);
+    private void setTotalAmountWithDiscount() {
+        Spanned formattedText = CurrenciesUtil.formatNumber(mDiscount.getTransactionAmountWithDiscount(), mPayment.getCurrencyId(),false,true);
+        mDiscountAmount.setText(formattedText);
+    }
+
+    private void setTotalAmountWithoutDiscount() {
+        Spanned formattedText = CurrenciesUtil.formatNumber(mDiscount.getTransactionAmount(), mPayment.getCurrencyId(),false,true);
         mTotalAmount.setText(formattedText);
         mTotalAmount.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    }
 
-        BigDecimal result = mPayment.getTransactionAmount().subtract(mDiscount.getCouponAmount());
+    private void setRowVisibility() {
+        mDiscountRow.setVisibility(View.VISIBLE);
         mDiscountAmount.setVisibility(View.VISIBLE);
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(result, mDiscount.getCurrencyId(),false,true);
-        mDiscountAmount.setText(formattedDiscountAmount);
+        mHasDirectDiscount.setVisibility(View.VISIBLE);
+        mDiscountArrow.setVisibility(View.GONE);
+        mDiscountSeparator.setVisibility(View.INVISIBLE);
     }
 
     private void setDiscountOff() {

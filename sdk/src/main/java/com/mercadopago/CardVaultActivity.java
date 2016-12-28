@@ -304,7 +304,6 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);
     }
 
-    //TODO discounts agregué el payerEmail
     @Override
     public void startInstallmentsActivity() {
         new MercadoPago.StartActivityBuilder()
@@ -312,8 +311,8 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                 .setPublicKey(mPresenter.getPublicKey())
                 .setPaymentMethod(mPresenter.getPaymentMethod())
                 .setAmount(mPresenter.getAmount())
-//                .setPayerEmail(mPresenter.getPayerEmail())
-//                .setDiscount(mPresenter.getDiscount())
+                .setPayerEmail(mPresenter.getPayerEmail())
+                .setDiscount(mPresenter.getDiscount())
                 .setIssuer(mPresenter.getIssuer())
                 .setPaymentPreference(mPresenter.getPaymentPreference())
                 .setSite(mPresenter.getSite())

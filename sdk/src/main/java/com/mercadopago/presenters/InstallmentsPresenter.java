@@ -40,6 +40,7 @@ public class InstallmentsPresenter {
 
     //Activity parameters
     private String mPublicKey;
+    private String mPayerEmail;
     private PaymentMethod mPaymentMethod;
     private Issuer mIssuer;
     private BigDecimal mAmount;
@@ -47,14 +48,8 @@ public class InstallmentsPresenter {
     private List<PayerCost> mPayerCosts;
     private PaymentPreference mPaymentPreference;
     private CardInfo mCardInfo;
-
-    //TODO discounts
     private Discount mDiscount;
-    private String mPayerEmail;
-    private BigDecimal mAmountWithoutDiscount;
     private Boolean mHasToSubtractDiscount = true;
-    private BigDecimal mTotalAmountWithDiscount;
-    private BigDecimal mTotalAmountWithoutDiscount;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -174,70 +169,59 @@ public class InstallmentsPresenter {
         return mPayerCosts != null;
     }
 
-    //TODO discounts
     public void loadDiscount() {
+        if (mDiscount == null) {
+            getDirectDiscount();
+        } else {
+            setHasToSubtractDiscount();
+            mView.showDiscountDetail(mDiscount);
+        }
+    }
+
+    public void getDirectDiscount() {
         mView.showDiscountRow();
-//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                applyAmountDiscount()
-//                mDiscount = discount;
-//                mView.showDiscountDetail(discount, mAmount);
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mView.showHasDiscount();
-//                //TODO ver que hacer con los errores
-//            }
-//        });
+
+        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                applyAmountDiscount();
+                mView.showDiscountDetail(discount);
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                mView.showHasDiscount();
+            }
+        });
     }
 
     public void applyAmountDiscount() {
         if (mHasToSubtractDiscount) {
             mHasToSubtractDiscount = false;
-            mTotalAmountWithDiscount = mAmount.subtract( mDiscount.getCouponAmount());
-            this.setTotalAmountWithoutDiscount(mAmount);
-            this.setAmount(mTotalAmountWithDiscount);
+            mDiscount.setTransactionAmount(mAmount);
+            this.setAmount(mDiscount.getTransactionAmountWithDiscount());
         }
     }
 
-    public void setTotalAmountWithoutDiscount(BigDecimal totalAmountWithoutDiscount) {
-        this.mTotalAmountWithoutDiscount = totalAmountWithoutDiscount;
+    public void setHasToSubtractDiscount() {
+        this.mHasToSubtractDiscount = false;
     }
 
-    public BigDecimal getTotalAmountWithoutDiscount() {
-        return this.mTotalAmountWithoutDiscount;
-    }
-
-    //TODO discounts
     public void setPayerEmail(String payerEmail) {
         this.mPayerEmail = payerEmail;
     }
 
-    //TODO discounts
     public Discount getDiscount() {
         return this.mDiscount;
     }
 
-    //TODO discounts
     public void setDiscount(Discount discount) {
         this.mDiscount = discount;
     }
 
-    //TODO discounts
     public String getPayerEmail() {
         return mPayerEmail;
-    }
-
-    //TODO discounts
-    public void setAmountWithoutDiscount(BigDecimal amountWithoutDiscount) {
-        this.mAmountWithoutDiscount = amountWithoutDiscount;
-    }
-
-    //TODO discounts
-    public BigDecimal getAmountWithoutDiscount() {
-        return this.mAmountWithoutDiscount;
     }
 
     public void loadPayerCosts() {

@@ -96,23 +96,13 @@ public class PaymentResultActivity extends Activity {
     }
 
     private void startCongratsActivity() {
-        //TODO mejorar
-        if (mDiscount != null) {
-            new MercadoPago.StartActivityBuilder()
-                    .setPublicKey(mMerchantPublicKey)
-                    .setActivity(this)
-                    .setPayment(mPayment)
-                    .setPaymentMethod(mPaymentMethod)
-                    .setDiscount(mDiscount)
-                    .startCongratsActivity();
-        } else {
-            new MercadoPago.StartActivityBuilder()
-                    .setPublicKey(mMerchantPublicKey)
-                    .setActivity(this)
-                    .setPayment(mPayment)
-                    .setPaymentMethod(mPaymentMethod)
-                    .startCongratsActivity();
-        }
+        new MercadoPago.StartActivityBuilder()
+                .setPublicKey(mMerchantPublicKey)
+                .setActivity(this)
+                .setPayment(mPayment)
+                .setDiscount(mDiscount)
+                .setPaymentMethod(mPaymentMethod)
+                .startCongratsActivity();
     }
 
     private void startCallForAuthorizeActivity() {

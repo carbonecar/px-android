@@ -21,7 +21,7 @@ public interface InstallmentsActivityView {
     void showHeader();
     void showApiExceptionError(ApiException exception);
     void initializeInstallments(List<PayerCost> payerCostList);
-    void showDiscountDetail(Discount discount, BigDecimal amount);
+    void showDiscountDetail(Discount discount);
     void showHasDiscount();
     void showDiscountRow();
 }

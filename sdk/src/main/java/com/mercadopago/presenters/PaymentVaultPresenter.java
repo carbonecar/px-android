@@ -78,6 +78,7 @@ public class PaymentVaultPresenter {
     }
 
     private void loadDiscount() {
+        mPaymentVaultView.showDiscountRow();
         if (mDiscount == null) {
             getDirectDiscount();
         } else {
@@ -86,8 +87,6 @@ public class PaymentVaultPresenter {
     }
 
     public void getDirectDiscount() {
-        //TODO validar que si llega acá payerEmail y Amount sean correctos
-        mPaymentVaultView.showDiscountRow();
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {

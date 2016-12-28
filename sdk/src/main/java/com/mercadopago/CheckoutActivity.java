@@ -157,15 +157,9 @@ public class CheckoutActivity extends MercadoPagoActivity {
     @Override
     protected void getActivityParameters() {
         //TODO discounts, borrar
-        //236387490-afbf8ab4-7730-4cb0-be59-c8def38b826d  //prefID con AT de produ de cuenta de test
-        //"APP_USR-f72d6d3b-dff8-4d69-ad2e-ec4e9773f94d   //PK de produ de usuriario de test
-        //TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1       //PK de test de user de test
-        //TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490 //AT de test de user de test
-        //"matias.romar@mercadolibre.com"
-        //mPayerEmail = "matias.romar@mercadolibre.com";
         mMerchantPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
         mCheckoutPreferenceId = "236387490-8cc00347-60c4-4524-b9bf-ff6c14126551";
-        mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";//APP_USR-8783499533330706-120110-58c1e4fc4524043a7ad4ae3b661925eb__LD_LC__-236387490";
+        mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";
 
         //mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mMerchantBaseUrl = this.getIntent().getStringExtra("merchantBaseUrl");
@@ -872,6 +866,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
                 .setPublicKey(mMerchantPublicKey)
                 .setActivity(getActivity())
                 .setPayment(mCreatedPayment)
+                .setDiscount(mDiscount)
                 .setPaymentMethod(mSelectedPaymentMethod)
                 .startPaymentResultActivity();
     }

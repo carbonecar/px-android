@@ -76,17 +76,13 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     protected Toolbar mNormalToolbar;
     protected FrontCardView mFrontCardView;
     protected MPTextView mTimerTextView;
-
-    //TODO discounts
+    //Discount row view
     protected LinearLayout mHasDiscountLinearLayout;
     protected LinearLayout mHasDirectDiscountLinearLayout;
     protected LinearLayout mDiscountRowLinearLayout;
     protected MPTextView mTotalAmountTextView;
     protected MPTextView mDiscountAmountTextView;
     protected MPTextView mDiscountOffTextView;
-    protected Boolean mHasToSubtractDiscount = true;
-    protected BigDecimal totalAmount;
-    protected BigDecimal mTotalAmountWithDiscount = new BigDecimal(0);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -200,13 +196,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         showTimer();
         initializeAdapter();
 
-        //TODO discounts
-        if (mPresenter.getDiscount() == null) {
-            mPresenter.loadDiscount();
-        } else {
-            showDiscountDetail(mPresenter.getDiscount(), mPresenter.getAmount());
-        }
-
+        mPresenter.loadDiscount();
         mPresenter.loadPayerCosts();
     }
 
@@ -251,8 +241,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             mNormalToolbar.setVisibility(View.VISIBLE);
         }
 
-        //TODO discounts
-        //mTotalDescriptionTextView = (MPTextView) findViewById(R.id.mpsdkTotalDescription);
         mTotalAmountTextView = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
         mHasDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
         mHasDirectDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkHasDirectDiscount);
@@ -424,7 +412,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             if (resultCode == RESULT_OK) {
                 mPresenter.recoverFromFailure();
             }
-            //TODO discounts
         } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
             resolveDiscountRequest(resultCode, data);
         } else {
@@ -433,14 +420,13 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             }
     }
 
-    //TODO discounts
     protected void resolveDiscountRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (mPresenter.getDiscount() == null) {
                 Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
                 mPresenter.setDiscount(discount);
 
-                showDiscountDetail(discount, mPresenter.getAmount());
+                showDiscountDetail(discount);
             }
         }
     }
@@ -455,21 +441,18 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         this.finish();
     }
 
-    //TODO discounts
     public void startDiscountsActivity(View view){
-        mPresenter.applyAmountDiscount();
+        if (mPresenter.getDiscount() != null) {
+            mPresenter.applyAmountDiscount();
+        }
 
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
                 .setPublicKey(mPresenter.getPublicKey())
-                .setPayerEmail(mPresenter.getPayerEmail());
-
-        if (mPresenter.getAmountWithoutDiscount() == null) {
-            mercadoPagoBuilder.setAmount(mPresenter.getAmount());
-        } else {
-            mercadoPagoBuilder.setAmount(mPresenter.getAmountWithoutDiscount());
-        }
+                .setPayerEmail(mPresenter.getPayerEmail())
+                .setAmount(mPresenter.getAmount())
+                .setDiscount(mPresenter.getDiscount());
 
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
@@ -480,11 +463,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
-    //TODO discounts
     @Override
-    public void showDiscountDetail(Discount discount, BigDecimal amount) {
-        showDiscountRow();
-
+    public void showDiscountDetail(Discount discount) {
         mHasDirectDiscountLinearLayout.setVisibility(View.VISIBLE);
         mDiscountAmountTextView.setVisibility(View.VISIBLE);
         mHasDiscountLinearLayout.setVisibility(View.GONE);
@@ -494,13 +474,11 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         setTotalAmount(discount);
     }
 
-    //TODO discount
     private void setTotalAmountWithDiscount(Discount discount) {
         Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(),false,true);
         mDiscountAmountTextView.setText(formattedDiscountAmount);
     }
 
-    //TODO discount
     private void setTotalAmount(Discount discount) {
         Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(),false,true);
 
@@ -508,7 +486,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
-    //TODO discount
     private void setDiscountOff(Discount discount) {
         String discountOff;
 
@@ -521,7 +498,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         }
     }
 
-    //TODO discounts
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
@@ -530,7 +506,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mTotalAmountTextView.setText(formattedTotalAmount);
     }
 
-    //TODO discounts
     @Override
     public void showDiscountRow() {
         mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
