@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:clickable="true"
-                    android:text="Total:"
+                    android:text="@string/mpsdk_review_summary_total"
                     android:textSize="16dp" />
 
                 <com.mercadopago.customviews.MPTextView
@@ -77,8 +77,8 @@
                         android:layout_marginRight="4dp"
                         android:onClick="startDiscountsActivity"
                         android:clickable="true"
-                        android:text="Tengo un descuento"
-                        android:textColor="#009EE3"
+                        android:text="@string/mpsdk_has_a_discount"
+                        android:textColor="@color/mpsdk_background_blue"
                         android:textSize="16dp" />
 
                     <ImageView

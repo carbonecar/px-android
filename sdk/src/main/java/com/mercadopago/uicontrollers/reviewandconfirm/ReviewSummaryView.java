@@ -155,8 +155,16 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
 
         mDiscountPercentageText.setText(discountText);
 
+        //mDiscountsText.setText(getFormattedAmount(mDiscountAmount));
+
         //TODO discounts agregar menos al descuento
-        mDiscountsText.setText(getFormattedAmount(mDiscountAmount));
+        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
+        formattedDiscountAmountBuilder.append("-");
+        formattedDiscountAmountBuilder.append(getFormattedAmount(mDiscountAmount));
+
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(mDiscountAmount, mCurrencyId, formattedDiscountAmountBuilder.toString(), false, true);
+
+        mDiscountsText.setText(amountText);
     }
 
     private void showPayerCostRow() {

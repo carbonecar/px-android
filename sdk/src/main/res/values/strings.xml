@@ -215,4 +215,8 @@
     <string name="mpsdk_review_summary_subtotal">Subtotal</string>
     <string name="mpsdk_review_summary_pay">Pagas</string>
     <string name="mpsdk_review_summary_total">Total</string>
+
+    <!-- Discount -->
+    <string name="mpsdk_has_a_discount">Tengo un descuento</string>
+
 </resources>
