@@ -1440,7 +1440,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             } else if (resultCode == RESULT_CANCELED) {
                 finish();
             }
-            //TODO discounts
         } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
             resolveDiscountRequest(resultCode, data);
         } else if (requestCode == ErrorUtil.ERROR_REQUEST_CODE) {
@@ -1453,7 +1452,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         }
     }
 
-    //TODO discounts
     private void resolveDiscountRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
@@ -1465,6 +1463,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         Intent returnIntent = new Intent();
         returnIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(mPresenter.getPaymentMethod()));
         returnIntent.putExtra("cardToken", JsonUtil.getInstance().toJson(mPresenter.getCardToken()));
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_OK, returnIntent);
         finish();
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);
