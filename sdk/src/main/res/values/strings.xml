@@ -191,7 +191,6 @@
     <string name="mpsdk_form_card_title_payment_type_prepaid">Tarjeta prepaga</string>
     <string name="mpsdk_payment_types_title">¿Qué tipo de tarjeta es?</string>
 
-
     <string name="mpsdk_confirm_prompt_yes">Sí</string>
     <string name="mpsdk_confirm_prompt_no">No</string>
 
@@ -218,5 +217,7 @@
 
     <!-- Discount -->
     <string name="mpsdk_has_a_discount">Tengo un descuento</string>
+    <string name="mpsdk_of_discount">de descuento</string>
+    <string name="mpsdk_percent_of_discount">% de descuento</string>
 
 </resources>

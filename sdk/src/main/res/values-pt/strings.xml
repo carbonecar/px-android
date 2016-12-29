@@ -213,5 +213,7 @@
 
     <!-- Discount -->
     <string name="mpsdk_has_a_discount">Tenho um desconto</string>
+    <string name="mpsdk_of_discount">de desconto</string>
+    <string name="mpsdk_percent_of_discount">% de desconto</string>
 
 </resources>

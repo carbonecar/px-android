@@ -214,5 +214,7 @@
 
     <!-- Discount -->
     <string name="mpsdk_has_a_discount">I have a discount</string>
+    <string name="mpsdk_of_discount">of discount</string>
+    <string name="mpsdk_percent_of_discount">% of discount</string>
 
 </resources>

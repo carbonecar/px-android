@@ -219,12 +219,13 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     private void showSummaryTitle() {
         if (mDiscountsPresenter.getDiscount().getAmountOff().equals(new BigDecimal(0))) {
-            String title = mDiscountsPresenter.getDiscount().getPercentOff() + "% de descuento";
+            String title = mDiscountsPresenter.getDiscount().getPercentOff() + getString(R.string.mpsdk_percent_of_discount);
             mReviewSummaryTitle.setText(title);
         } else {
             StringBuilder formattedTitle = new StringBuilder();
             formattedTitle.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getDiscount().getAmountOff(), mDiscountsPresenter.getCurrencyId()));
-            formattedTitle.append(" de descuento");
+            formattedTitle.append(" ");
+            formattedTitle.append(getString(R.string.mpsdk_of_discount));
             Spanned spannedFullText = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getDiscount().getAmountOff(), mDiscountsPresenter.getDiscount().getCurrencyId(), formattedTitle.toString(), false, true);
             mReviewSummaryTitle.setText(spannedFullText);
         }
