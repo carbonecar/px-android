@@ -10,9 +10,18 @@ public class Discount {
     private BigDecimal amountOff;
     private BigDecimal couponAmount;
     private String currencyId;
-    private String code;
+    private String couponCode;
     private BigDecimal transactionAmount;
     private BigDecimal transactionAmountWithDiscount;
+
+
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
+    }
+
+    public String getCouponCode() {
+        return couponCode;
+    }
 
     public void setTransactionAmount(BigDecimal transactionAmount) {
         this.transactionAmount = transactionAmount;
@@ -29,14 +38,6 @@ public class Discount {
 
     public BigDecimal getTransactionAmountWithDiscount() {
         return transactionAmountWithDiscount;
-    }
-
-    public String getCode() {
-        return this.code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public BigDecimal getAmountOff() {

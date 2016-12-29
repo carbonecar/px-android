@@ -93,34 +93,26 @@ public class DiscountsPresenter {
                 //TODO buscar algo más elegante para el equals ese
                 if (apiException.getMessage().equals("doesn't find a campaign")) {
                     Toast.makeText(mContext, "No posee descuento", Toast.LENGTH_SHORT).show();
-                    //View.askDicountCode
                 }
-//                setFailureRecovery(new FailureRecovery() {
-//                    @Override
-//                    public void recover() {
-//                        cloneToken();
-//                    }
-//                });
-                //mView.stopLoadingView();
-                //mView.showApiExceptionError(apiException);
             }
         });
     }
 
-    private void getCodeDiscount(String discountCode) {
+    private void getCodeDiscount(final String discountCode) {
         //mDiscountsView.showLoadingView();
 
         mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
+                mDiscount.setCouponCode(discountCode);
                 applyAmountDiscount();
                 mDiscountsView.drawSummary();
             }
 
             @Override
             public void failure(ApiException apiException) {
-
+                //TODO discounts mejorar
                 if (apiException.getError().equals("campaign-code-doesnt-match")) {
                     mDiscountsView.showCodeInputError("Código incorrecto");
                 } else if (apiException.getError().equals("campaign-doesnt-match")) {
@@ -128,16 +120,6 @@ public class DiscountsPresenter {
                 } else if (apiException.getError().equals("run out of uses")) {
                     mDiscountsView.showCodeInputError("Cantidad de usos completadas");
                 }
-
-//                setFailureRecovery(new FailureRecovery() {
-//                    @Override
-//                    public void recover() {
-//                        cloneToken();
-//                    }
-//                });
-                //mView.stopLoadingView();
-                //mView.showApiExceptionError(apiException);
-
             }
         });
     }

@@ -862,7 +862,10 @@ public class CheckoutActivity extends MercadoPagoActivity {
         if (mDiscount != null) {
             paymentIntent.setCampaignId(mDiscount.getId().intValue());
             paymentIntent.setCouponAmount(mDiscount.getCouponAmount().floatValue());
-            paymentIntent.setCouponCode(mDiscount.getCode());
+
+            if (!isEmpty(mDiscount.getCouponCode())) {
+                paymentIntent.setCouponCode(mDiscount.getCouponCode());
+            }
         }
 
         paymentIntent.setTransactionId(mTransactionId);
