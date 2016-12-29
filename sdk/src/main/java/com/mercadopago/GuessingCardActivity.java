@@ -391,17 +391,12 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             mTimerTextView.setVisibility(View.VISIBLE);
             mTimerTextView.setText(CheckoutTimer.getInstance().getCurrentTime());
         } else {
-            //TODO discounts, descomentar
             mPresenter.loadBankDeals();
         }
 
         mErrorState = NORMAL_STATE;
 
-        //TODO discounts descomentar
-        if (mPresenter.getDiscount() == null) {
-            mPresenter.loadDiscount();
-        }
-
+        mPresenter.loadDiscount();
         mPresenter.loadPaymentMethods();
     }
 
@@ -1512,23 +1507,24 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
-    //TODO discounts
     @Override
-    public void showDiscountDetail(Discount discount, BigDecimal amount) {
+    public void showDiscountDetail(Discount discount) {
         mDiscountDetailLinearLayout.setVisibility(View.VISIBLE);
+        setDiscountOff(discount);
+    }
 
-        //TODO mejorar
-        //TODO validar que Discount no sea nulo porque va a romper todo
+    private void setDiscountOff(Discount discount) {
+        String discountOff;
+
         if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            String discountOff = "$" + discount.getAmountOff();
+            discountOff = "$" + discount.getAmountOff();
             mDiscountOffTextView.setText(discountOff);
         } else {
-            String discountOff = discount.getPercentOff() + "%";
+            discountOff = discount.getPercentOff() + "%";
             mDiscountOffTextView.setText(discountOff);
         }
     }
 
-    //TODO discounts
     @Override
     public void showHasDiscount() {
         mDiscountDetailLinearLayout.setVisibility(View.GONE);

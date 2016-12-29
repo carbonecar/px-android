@@ -48,8 +48,6 @@ public interface GuessingCardActivityView {
     void initializeTitle();
     void setCardholderName(String cardholderName);
     void setIdentificationNumber(String identificationNumber);
-
-    //TODO discounts
-    void showDiscountDetail(Discount discount, BigDecimal amount);
+    void showDiscountDetail(Discount discount);
     void showHasDiscount();
 }

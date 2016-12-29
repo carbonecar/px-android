@@ -88,6 +88,7 @@ public class GuessingCardPresenter {
     private Discount mDiscount;
     private BigDecimal mTransactionAmount;
     private String mPayerEmail;
+    private Boolean mHasToSubtractDiscount = true;
 
     public GuessingCardPresenter(Context context) {
         this.mContext = context;
@@ -317,54 +318,56 @@ public class GuessingCardPresenter {
         }
     }
 
-    //TODO discounts
-    //TODO falta hacer que pise el transactionAmount una vez obtenido el descuento y así continue el flujo con el nuevo amount
     public void loadDiscount() {
-//        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                mDiscount = discount;
-//                mView.showDiscountDetail(discount, mTransactionAmount);
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mView.showHasDiscount();
-//                //TODO ver que hacer con los errores
-//                //TODO mandarlo a que al final del flujo pida código
-//            }
-//        });
-
-        //TODO borrar y descomnetar lo de arriba, está así para probar el failure
-        mView.showHasDiscount();
+        if (mDiscount == null) {
+            getDirectDiscount();
+        }
     }
 
-    //TODO discounts
+    public void getDirectDiscount() {
+        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                applyAmountDiscount();
+                mView.showDiscountDetail(discount);
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                mView.showHasDiscount();
+            }
+        });
+    }
+
+    public void applyAmountDiscount() {
+        if (mHasToSubtractDiscount) {
+            mHasToSubtractDiscount = false;
+            mDiscount.setTransactionAmount(mTransactionAmount);
+            this.setTransactionAmount(mDiscount.getTransactionAmountWithDiscount());
+        }
+    }
+
     public void setTransactionAmount(BigDecimal transactionAmount) {
         this.mTransactionAmount = transactionAmount;
     }
 
-    //TODO discounts
     public Discount getDiscount() {
         return mDiscount;
     }
 
-    //TODO discounts
     public void setDiscount(Discount discount) {
         this.mDiscount = discount;
     }
 
-    //TODO discounts
     public void setPayerEmail(String payerEmail) {
         this.mPayerEmail = payerEmail;
     }
 
-    //TODO discounts
     public String getPayerEmail() {
         return mPayerEmail;
     }
 
-    //TODO discounts
     public BigDecimal getTransactionAmount() {
         return mTransactionAmount;
     }

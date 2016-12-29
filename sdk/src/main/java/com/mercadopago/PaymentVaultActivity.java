@@ -471,9 +471,9 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                 .setPaymentPreference(mPaymentVaultPresenter.getPaymentPreference())
                 .setDecorationPreference(mDecorationPreference)
                 .setAmount(mPaymentVaultPresenter.getAmount())
-                .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                 .setSite(mPaymentVaultPresenter.getSite())
                 .setInstallmentsEnabled(mInstallmentsEnabled)
+                .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
                 .setDiscount(mPaymentVaultPresenter.getDiscount())
                 .setSupportedPaymentMethods(mPaymentVaultPresenter.getPaymentMethodSearch().getPaymentMethods())
                 .startCardVaultActivity();
