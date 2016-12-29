@@ -377,6 +377,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
             mToken = JsonUtil.getInstance().fromJson(data.getStringExtra("token"), Token.class);
             mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
             mSelectedPayerCost = JsonUtil.getInstance().fromJson(data.getStringExtra("payerCost"), PayerCost.class);
+
+            mPaymentVaultPresenter.setDiscount(JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class));
             finishWithCardResult();
         } else {
             MPTracker.getInstance().trackEvent("PAYMENT_VAULT", "CANCELED", "2", mPaymentVaultPresenter.getMerchantPublicKey(), mPaymentVaultPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);

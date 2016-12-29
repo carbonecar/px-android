@@ -368,12 +368,14 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void showLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.GONE);
+        mDiscountRowLinearLayout.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void stopLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
+        mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -391,6 +393,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     public void finishWithResult(PayerCost payerCost) {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(payerCost));
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_OK, returnIntent);
         finish();
     }

@@ -237,7 +237,11 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             PayerCost payerCost = JsonUtil.getInstance().fromJson(bundle.getString("payerCost"), PayerCost.class);
+            Discount discount = JsonUtil.getInstance().fromJson(bundle.getString("discount"), Discount.class);
+
             mPresenter.setPayerCost(payerCost);
+            mPresenter.setDiscount(discount);
+
             if (savedCardAvailable()) {
                 startSecurityCodeActivity();
             } else {
@@ -342,6 +346,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         returnIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(mPresenter.getPaymentMethod()));
         returnIntent.putExtra("token", JsonUtil.getInstance().toJson(mPresenter.getToken()));
         returnIntent.putExtra("issuer", JsonUtil.getInstance().toJson(mPresenter.getIssuer()));
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_OK, returnIntent);
         finish();
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);
