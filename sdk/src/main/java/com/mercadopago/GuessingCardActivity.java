@@ -198,6 +198,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         BigDecimal transactionAmount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("transactionAmount"), BigDecimal.class);
         Discount discount = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("discount"), Discount.class);
+        Boolean installmentsEnabled = getIntent().getBooleanExtra("installmentsEnabled", false);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
 
         Token token = null;
@@ -230,8 +231,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mPresenter.setPaymentPreference(paymentPreference);
         mPresenter.setPaymentRecovery(paymentRecovery);
         mPresenter.setTransactionAmount(transactionAmount);
-        mPresenter.setDiscount(discount);
         mPresenter.setPayerEmail(payerEmail);
+        mPresenter.setDiscount(discount);
+        mPresenter.setInstallmentsEnabled(installmentsEnabled);
     }
 
     @Override
@@ -1489,14 +1491,18 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         this.finish();
     }
 
-    //TODO discounts
     public void startDiscountsActivity(View view){
+        if (mPresenter.getDiscount() != null) {
+            mPresenter.applyAmountDiscount();
+        }
+
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
                     .setPublicKey(mPresenter.getPublicKey())
                     .setPayerEmail(mPresenter.getPayerEmail())
-                    .setAmount(mPresenter.getTransactionAmount());
+                    .setAmount(mPresenter.getTransactionAmount())
+                    .setDiscount(mPresenter.getDiscount());;
 
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());

@@ -68,7 +68,7 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
-        //loadDiscount();
+        loadDiscount();
 
         if (isItemSelected()) {
             showSelectedItemChildren();
@@ -87,23 +87,19 @@ public class PaymentVaultPresenter {
     }
 
     public void getDirectDiscount() {
-        //TODO discounts descomentar está así para probar el failure
-//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                mDiscount = discount;
-//                applyAmountDiscount();
-//                mPaymentVaultView.showDiscountDetail(discount);
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mPaymentVaultView.showHasDiscount();
-//            }
-//        });
+        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                applyAmountDiscount();
+                mPaymentVaultView.showDiscountDetail(discount);
+            }
 
-        //TODO discount borrar
-        //mPaymentVaultView.showHasDiscount();
+            @Override
+            public void failure(ApiException apiException) {
+                mPaymentVaultView.showHasDiscount();
+            }
+        });
     }
 
     public void applyAmountDiscount() {

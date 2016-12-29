@@ -628,6 +628,4 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     public void showDiscountRow() {
         mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
     }
-
-
 }

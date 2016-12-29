@@ -89,6 +89,7 @@ public class GuessingCardPresenter {
     private BigDecimal mTransactionAmount;
     private String mPayerEmail;
     private Boolean mHasToSubtractDiscount = true;
+    private Boolean mInstallmentsEnabled;
 
     public GuessingCardPresenter(Context context) {
         this.mContext = context;
@@ -319,7 +320,7 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
-        if (mDiscount == null) {
+        if (!mInstallmentsEnabled && mDiscount == null) {
             getDirectDiscount();
         }
     }
@@ -350,6 +351,10 @@ public class GuessingCardPresenter {
 
     public void setTransactionAmount(BigDecimal transactionAmount) {
         this.mTransactionAmount = transactionAmount;
+    }
+
+    public void setInstallmentsEnabled(Boolean installmentsEnabled) {
+        this.mInstallmentsEnabled = installmentsEnabled;
     }
 
     public Discount getDiscount() {

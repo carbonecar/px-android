@@ -88,6 +88,10 @@ public class CardVaultPresenter {
         this.mInstallmentsEnabled = installmentsEnabled;
     }
 
+    public Boolean getInstallmentsEnabled() {
+        return mInstallmentsEnabled;
+    }
+
     public void setCard(Card card) {
         this.mCard = card;
     }

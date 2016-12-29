@@ -47,7 +47,7 @@
                 android:id="@+id/mpsdkDiscountDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible" >
+                android:visibility="gone" >
                 <include layout="@layout/mpsdk_row_guessing_discount"/>
             </LinearLayout>
 
