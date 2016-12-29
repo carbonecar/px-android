@@ -210,7 +210,7 @@
     <string name="mpsdk_activity_checkout_title">Confirma tu compra</string>
     <string name="mpsdk_review_summary_products">Productos</string>
     <string name="mpsdk_review_summary_discount">Descuentos</string>
-    <string name="mpsdk_review_summary_discount_with_percent_off">Descuento %1$s</string>
+    <string name="mpsdk_review_summary_discount_with_percent_off">Descuento %1$s%%</string>
     <string name="mpsdk_review_summary_discount_with_amount_off">Descuento</string>
     <string name="mpsdk_review_summary_subtotal">Subtotal</string>
     <string name="mpsdk_review_summary_pay">Pagas</string>

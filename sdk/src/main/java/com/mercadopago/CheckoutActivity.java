@@ -640,20 +640,28 @@ public class CheckoutActivity extends MercadoPagoActivity {
         mReviewSummaryContainer.removeAllViews();
 
         if (mDiscount != null) {
-            //TODO discount, si es amountOff distinto de cero pasar ese, sino pasar el porcentaje
-            //TODO discounts, validar si con solo pasar couponAmount en vez de amountOff y así evito pasar el porcentaje
-            summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
-                    mCheckoutPreference.getAmount(), mSelectedPayerCost, mSelectedPaymentMethod, null, mDiscount.getCouponAmount(),
-                    mConfirmCallback, mDecorationPreference);
+            if (mDiscount.getAmountOff().equals(new BigDecimal(0))) {
+                summaryView = summaryViewBuilder(mDiscount.getPercentOff(), mDiscount.getCouponAmount());
+            } else {
+                summaryView = summaryViewBuilder(null, mDiscount.getCouponAmount());
+            }
         } else {
-            summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
-                    mCheckoutPreference.getAmount(), mSelectedPayerCost, mSelectedPaymentMethod, null, null,
-                    mConfirmCallback, mDecorationPreference);
+            summaryView = summaryViewBuilder(null, null);
         }
 
         summaryView.inflateInParent(mReviewSummaryContainer, true);
         summaryView.initializeControls();
         summaryView.drawSummary();
+    }
+
+    private ReviewSummaryView summaryViewBuilder(BigDecimal percentOff, BigDecimal couponAmount) {
+        ReviewSummaryView summaryView;
+
+        summaryView = new ReviewSummaryView(this, mCheckoutPreference.getItems().get(0).getCurrencyId(),
+                mCheckoutPreference.getAmount(), mSelectedPayerCost, mSelectedPaymentMethod, percentOff, couponAmount,
+                mConfirmCallback, mDecorationPreference);
+
+        return summaryView;
     }
 
     private void setToolbarTitle() {

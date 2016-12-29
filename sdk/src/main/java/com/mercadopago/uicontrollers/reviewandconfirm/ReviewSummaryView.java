@@ -121,9 +121,7 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
         } else {
             mSubtotalRow.setVisibility(View.GONE);
         }
-        //TODO discount, agregué si payment method es null, ESTO LO HICE CUANDO QUERIA USAR EL MISMO SUMMARY
         if (mPaymentMethod != null && MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
-        //if (MercadoPagoUtil.isCard(mPaymentMethod.getPaymentTypeId())) {
             //Pagas
             showPayerCostRow();
             showTotal(mPayerCost.getTotalAmount());
@@ -144,6 +142,8 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
     }
 
     private void showDiscountRow() {
+        StringBuilder formattedAmountBuilder = new StringBuilder();
+        Spanned amountText;
         String discountText;
 
         if (mDiscountPercentage != null) {
@@ -155,14 +155,11 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
 
         mDiscountPercentageText.setText(discountText);
 
-        //mDiscountsText.setText(getFormattedAmount(mDiscountAmount));
 
-        //TODO discounts agregar menos al descuento
-        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
-        formattedDiscountAmountBuilder.append("-");
-        formattedDiscountAmountBuilder.append(getFormattedAmount(mDiscountAmount));
+        formattedAmountBuilder.append("-");
+        formattedAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountAmount, mCurrencyId));
 
-        Spanned amountText = CurrenciesUtil.formatCurrencyInText(mDiscountAmount, mCurrencyId, formattedDiscountAmountBuilder.toString(), false, true);
+        amountText = CurrenciesUtil.formatCurrencyInText(mDiscountAmount, mCurrencyId, formattedAmountBuilder.toString(), false, true);
 
         mDiscountsText.setText(amountText);
     }
