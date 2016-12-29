@@ -115,8 +115,8 @@ public class CongratsActivity extends MercadoPagoActivity {
     protected void onValidStart() {
         setPaymentEmailDescription();
         setLastFourDigitsCard();
-        setDiscountRow();
         setInstallmentsDescription();
+        setDiscountRow();
         setPaymentIdDescription();
     }
 

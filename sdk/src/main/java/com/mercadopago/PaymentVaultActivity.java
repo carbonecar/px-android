@@ -301,7 +301,6 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         return customViewControllers;
     }
 
-    //TODO discounts falta agregar el seto del discount
     @Override
     public void startSavedCardFlow(Card card) {
         new MercadoPago.StartActivityBuilder()
@@ -313,6 +312,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
                 .setDecorationPreference(mDecorationPreference)
                 .setPaymentPreference(mPaymentVaultPresenter.getPaymentPreference())
                 .setInstallmentsEnabled(mInstallmentsEnabled)
+                .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
+                .setDiscount(mPaymentVaultPresenter.getDiscount())
                 .startCardVaultActivity();
     }
 

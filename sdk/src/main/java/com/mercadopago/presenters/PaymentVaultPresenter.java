@@ -87,6 +87,7 @@ public class PaymentVaultPresenter {
     }
 
     public void getDirectDiscount() {
+        //TODO discounts descomentar está así para probar el failure
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -100,6 +101,9 @@ public class PaymentVaultPresenter {
                 mPaymentVaultView.showHasDiscount();
             }
         });
+
+        //TODO borrar
+        //mPaymentVaultView.showHasDiscount();
     }
 
     public void applyAmountDiscount() {
