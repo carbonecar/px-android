@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mercadopago.customviews.MPEditText;
@@ -31,6 +32,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected DecorationPreference mDecorationPreference;
 
     //View
+    protected ProgressBar mProgressBar;
     protected FrameLayout mReviewDiscountSummaryContainer;
     protected FrameLayout mDiscountCodeContainer;
     protected FrameLayout mNextButton;
@@ -154,6 +156,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mErrorContainer = (FrameLayout) findViewById(R.id.mpsdkErrorContainer);
         mErrorTextView = (MPTextView) findViewById(R.id.mpsdkErrorTextView);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.mpsdkProgressBar);
+
         initializeToolbar();
     }
 
@@ -187,7 +191,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void drawSummary() {
-        MPTracker.getInstance().trackScreen( "DISCOUNT_SUMMARY", "F2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
+        MPTracker.getInstance().trackScreen( "DISCOUNT_SUMMARY", "2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
 
         mToolbar.setNavigationIcon(R.drawable.mpsdk_close);
         mDiscountCodeContainer.setVisibility(View.GONE);
@@ -236,7 +240,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void requestDiscountCode() {
-        MPTracker.getInstance().trackScreen( "DISCOUNT_INPUT_CODE", "F2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
+        MPTracker.getInstance().trackScreen( "DISCOUNT_INPUT_CODE", "2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
 
         mReviewDiscountSummaryContainer.setVisibility(View.GONE);
         mDiscountCodeContainer.setVisibility(View.VISIBLE);
@@ -252,6 +256,16 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     public void clearErrorView() {
         mErrorContainer.setVisibility(View.GONE);
         mErrorTextView.setText("");
+    }
+
+    @Override
+    public void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

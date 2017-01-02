@@ -96,9 +96,13 @@ public class DiscountsPresenter {
     }
 
     private void getCodeDiscount(final String discountCode) {
+        mDiscountsView.showProgressBar();
+
         mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
+                mDiscountsView.hideProgressBar();
+
                 mDiscount = discount;
                 mDiscount.setCouponCode(discountCode);
                 applyAmountDiscount();
@@ -107,6 +111,7 @@ public class DiscountsPresenter {
 
             @Override
             public void failure(ApiException apiException) {
+                mDiscountsView.hideProgressBar();
                 //TODO discounts mejorar
                 if (apiException.getError().equals("campaign-code-doesnt-match")) {
                     mDiscountsView.showCodeInputError("Código incorrecto");

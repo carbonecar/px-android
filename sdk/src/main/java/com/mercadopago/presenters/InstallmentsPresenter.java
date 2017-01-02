@@ -187,11 +187,13 @@ public class InstallmentsPresenter {
                 mDiscount = discount;
                 applyAmountDiscount();
                 mView.showDiscountDetail(discount);
+                loadPayerCosts();
             }
 
             @Override
             public void failure(ApiException apiException) {
                 mView.showHasDiscount();
+                loadPayerCosts();
             }
         });
     }

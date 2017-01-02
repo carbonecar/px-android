@@ -222,7 +222,7 @@ public class MercadoPago {
 
     public void getDirectDiscount(String amount, String payerEmail, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
-            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
+            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DIRECT_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             DiscountService service = mRetrofit.create(DiscountService.class);
             service.getDirectDiscount(this.mKey, amount, payerEmail).enqueue(callback);
@@ -233,7 +233,7 @@ public class MercadoPago {
 
     public void getCodeDiscount(String amount, String payerEmail, String couponCode, final Callback<Discount> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
-            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
+            MPTracker.getInstance().trackEvent("NO_SCREEN", "GET_CODE_DISCOUNT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
 
             DiscountService service = mRetrofit.create(DiscountService.class);
             service.getCodeDiscount(this.mKey, amount, payerEmail, couponCode).enqueue(callback);

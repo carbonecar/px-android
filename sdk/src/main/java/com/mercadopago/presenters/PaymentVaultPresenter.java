@@ -91,21 +91,26 @@ public class PaymentVaultPresenter {
     public void getDirectDiscount() {
         mPaymentVaultView.showProgress();
 
-        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
-            @Override
-            public void success(Discount discount) {
-                mDiscount = discount;
-                applyAmountDiscount();
-                mPaymentVaultView.showDiscountDetail(discount);
-                initPaymentVaultFlow();
-            }
+//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                applyAmountDiscount();
+//                mPaymentVaultView.showDiscountDetail(discount);
+//                initPaymentVaultFlow();
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                mPaymentVaultView.showHasDiscount();
+//                initPaymentVaultFlow();
+//            }
+//        });
 
-            @Override
-            public void failure(ApiException apiException) {
-                mPaymentVaultView.showHasDiscount();
-                initPaymentVaultFlow();
-            }
-        });
+        //TODO borrar y descoimentar lo de arriba
+        mPaymentVaultView.showHasDiscount();
+        initPaymentVaultFlow();
+
     }
 
     public void applyAmountDiscount() {

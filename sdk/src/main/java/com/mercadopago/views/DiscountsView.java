@@ -17,4 +17,8 @@ public interface DiscountsView {
     void showCodeInputError(String message);
 
     void clearErrorView();
+
+    void showProgressBar();
+
+    void hideProgressBar();
 }

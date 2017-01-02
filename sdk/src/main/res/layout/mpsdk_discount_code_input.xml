@@ -27,7 +27,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
@@ -61,6 +61,15 @@
                     android:textColor="@color/abc_search_url_text_selected"
                     android:textSize="19dp" />
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/mpsdkProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="9dp"
+                android:visibility="gone"/>
         </FrameLayout>
 
         <FrameLayout
@@ -140,12 +149,6 @@
                     android:textSize="14sp"
                     android:textColor="@color/mpsdk_color_red_error"/>
             </FrameLayout>
-            <ProgressBar
-                android:id="@+id/mpsdkProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

@@ -155,8 +155,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     private LinearLayout mCardExpiryDateInput;
     private LinearLayout mCardIdentificationInput;
     private LinearLayout mCardSecurityCodeInput;
+    private LinearLayout mDiscountDetailLinearLayout;
     private FrameLayout mErrorContainer;
     private MPTextView mErrorTextView;
+    private MPTextView mDiscountOffTextView;
+    private MPTextView mHasDiscountTextView;
     private String mErrorState;
     private TextView mNextButtonText;
     private TextView mBackButtonText;
@@ -165,11 +168,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     //Input Controls
     private String mCurrentEditingEditText;
     private String mCardSideState;
-
-    //TODO discounts
-    private LinearLayout mDiscountDetailLinearLayout;
-    private MPTextView mDiscountOffTextView;
-    private MPTextView mHasDiscountTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -443,7 +441,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mInputContainer.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
 
-        //TODO discounts
         mDiscountDetailLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
         mHasDiscountTextView = (MPTextView) findViewById(R.id.mpsdkHasDiscountText);

@@ -197,7 +197,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         initializeAdapter();
 
         mPresenter.loadDiscount();
-        mPresenter.loadPayerCosts();
     }
 
     private void showTimer() {
