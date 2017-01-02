@@ -16,6 +16,7 @@ import com.mercadopago.customviews.MPEditText;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Discount;
+import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.presenters.DiscountsPresenter;
 import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
@@ -186,6 +187,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void drawSummary() {
+        MPTracker.getInstance().trackScreen( "DISCOUNT_SUMMARY", "F2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
+
         mToolbar.setNavigationIcon(R.drawable.mpsdk_close);
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
@@ -233,6 +236,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
     @Override
     public void requestDiscountCode() {
+        MPTracker.getInstance().trackScreen( "DISCOUNT_INPUT_CODE", "F2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
+
         mReviewDiscountSummaryContainer.setVisibility(View.GONE);
         mDiscountCodeContainer.setVisibility(View.VISIBLE);
     }

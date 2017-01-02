@@ -69,7 +69,9 @@ public class PaymentVaultPresenter {
                 .build();
 
         loadDiscount();
+    }
 
+    private void initPaymentVaultFlow() {
         if (isItemSelected()) {
             showSelectedItemChildren();
         } else {
@@ -88,17 +90,20 @@ public class PaymentVaultPresenter {
 
     public void getDirectDiscount() {
         mPaymentVaultView.showProgress();
+
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
                 applyAmountDiscount();
                 mPaymentVaultView.showDiscountDetail(discount);
+                initPaymentVaultFlow();
             }
 
             @Override
             public void failure(ApiException apiException) {
                 mPaymentVaultView.showHasDiscount();
+                initPaymentVaultFlow();
             }
         });
     }
@@ -390,7 +395,7 @@ public class PaymentVaultPresenter {
     }
 
     private void getCustomerAsync() {
-        mPaymentVaultView.showProgress();
+        //mPaymentVaultView.showProgress();
         MerchantServer.getCustomer(mPaymentVaultView.getContext(), mMerchantBaseUrl, mMerchantGetCustomerUri, mMerchantAccessToken, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {

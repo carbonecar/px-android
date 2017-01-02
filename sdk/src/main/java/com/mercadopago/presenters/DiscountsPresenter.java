@@ -1,7 +1,6 @@
 package com.mercadopago.presenters;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.core.MercadoPago;
@@ -62,10 +61,7 @@ public class DiscountsPresenter {
         if (mCodeDiscountEnabled) {
             mDiscountsView.requestDiscountCode();
         }
-
-        else {
-            mDiscountsView.finishWithCancelResult();
-        }
+        //TODO discount poner un else
     }
 
     public void validateParameters() throws IllegalStateException {
@@ -195,6 +191,10 @@ public class DiscountsPresenter {
 
     public BigDecimal getCouponAmount() {
         return mDiscount.getCouponAmount();
+    }
+
+    public String getPublicKey() {
+        return this.mPublicKey;
     }
 
 }
