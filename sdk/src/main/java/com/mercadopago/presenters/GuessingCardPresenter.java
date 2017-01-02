@@ -84,12 +84,12 @@ public class GuessingCardPresenter {
     private boolean showPaymentTypes;
     private List<PaymentType> mPaymentTypesList;
 
-    //TODO discouns
-    private Discount mDiscount;
-    private BigDecimal mTransactionAmount;
+    //Discount
     private String mPayerEmail;
+    private BigDecimal mTransactionAmount;
     private Boolean mHasToSubtractDiscount = true;
     private Boolean mInstallmentsEnabled;
+    private Discount mDiscount;
 
     public GuessingCardPresenter(Context context) {
         this.mContext = context;

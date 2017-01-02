@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="Código de descuento"
+                    android:text="@string/mpsdk_discount_code"
                     android:textColor="@color/mpsdk_color_new_card_text"
                     android:textSize="14dp" />
 

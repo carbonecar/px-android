@@ -38,14 +38,19 @@ public class MerchantServer {
         service.createPayment(ripFirstSlash(merchantCreatePaymentUri), payment).enqueue(callback);
     }
 
-    //TODO discounts
-//    public static void getDiscount(Context context, String merchantBaseUrl, String merchantGetDiscountUri, String merchantAccessToken, Callback<Discount> callback) {
-//
-//        MerchantService service = getService(context, merchantBaseUrl);
-//
-//        //TODO creo que va AT como parámtro, analizar
-//        service.getDiscount(ripFirstSlash(merchantGetDiscountUri), merchantAccessToken).enqueue(callback);
-//    }
+    public static void getDirectDiscount(String transactionAmount, String payerEmail, Context context, String merchantBaseUrl, String merchantGetDirectDiscountUri, String merchantAccessToken, Callback<Discount> callback) {
+
+        MerchantService service = getService(context, merchantBaseUrl);
+
+        service.getDirectDiscount( ripFirstSlash(merchantGetDirectDiscountUri), merchantAccessToken, transactionAmount, payerEmail).enqueue(callback);
+    }
+
+    public static void getCodeDiscount(String discountCode, String transactionAmount, String payerEmail, Context context, String merchantBaseUrl, String merchantGetCodeDiscountUri, String merchantAccessToken, Callback<Discount> callback) {
+
+        MerchantService service = getService(context, merchantBaseUrl);
+
+        service.getCodeDiscount( ripFirstSlash(merchantGetCodeDiscountUri), merchantAccessToken, discountCode, transactionAmount, payerEmail).enqueue(callback);
+    }
 
     private static String ripFirstSlash(String uri) {
 

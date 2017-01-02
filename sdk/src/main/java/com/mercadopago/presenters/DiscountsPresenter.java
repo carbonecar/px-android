@@ -30,7 +30,7 @@ public class DiscountsPresenter {
     private String mMerchantAccessToken;
     private String mPayerEmail;
     private String mMerchantBaseUrl;
-    private String mMerchantDiscountsUri;
+    private String mMerchantDiscountUri;
     private String mDiscountCode;
     private BigDecimal mTransactionAmount;
     private Discount mDiscount;
@@ -57,16 +57,19 @@ public class DiscountsPresenter {
     private void initDiscountFlow() {
         if (mDirectDiscountEnabled) {
             getDirectDiscount();
-        } else if (mCodeDiscountEnabled) {
+        }
+
+        if (mCodeDiscountEnabled) {
             mDiscountsView.requestDiscountCode();
         }
+
         else {
             mDiscountsView.finishWithCancelResult();
         }
     }
 
     public void validateParameters() throws IllegalStateException {
-        //TODO validar todos los parámetros
+        //TODO validar payerEmail y transaction amount
     }
 
     public void initializeMercadoPago() {
@@ -78,8 +81,6 @@ public class DiscountsPresenter {
     }
 
     private void getDirectDiscount() {
-        //mDiscountsView.showLoadingView();
-
         mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -89,18 +90,16 @@ public class DiscountsPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                //TODO sino tiene descuento chequear si tiene código
-                //TODO buscar algo más elegante para el equals ese
-                if (apiException.getMessage().equals("doesn't find a campaign")) {
-                    Toast.makeText(mContext, "No posee descuento", Toast.LENGTH_SHORT).show();
+                    //TODO finish with error message
+//                mDiscountsView.finishWithErrorMessage();
+//                if (apiException.getMessage().equals("doesn't find a campaign")) {
+//                    Toast.makeText(mContext, "No posee descuento", Toast.LENGTH_SHORT).show();
+//                }
                 }
-            }
         });
     }
 
     private void getCodeDiscount(final String discountCode) {
-        //mDiscountsView.showLoadingView();
-
         mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -155,7 +154,7 @@ public class DiscountsPresenter {
     }
 
     public void setMerchantDiscountsUri (String merchantDiscountsUri) {
-        this.mMerchantDiscountsUri = merchantDiscountsUri;
+        this.mMerchantDiscountUri = merchantDiscountsUri;
     }
 
     public void setPayerEmail(String payerEmail){

@@ -216,6 +216,8 @@
     <string name="mpsdk_review_summary_total">Total</string>
 
     <!-- Discount -->
+    <string name="mpsdk_input_button_exchange">Canjear</string>
+    <string name="mpsdk_discount_code">Código de descuento</string>
     <string name="mpsdk_has_a_discount">Tengo un descuento</string>
     <string name="mpsdk_of_discount">de descuento</string>
     <string name="mpsdk_percent_of_discount">% de descuento</string>

@@ -3,6 +3,7 @@ package com.mercadopago.services;
 import com.mercadopago.adapters.MPCall;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.Customer;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.MerchantPayment;
 import com.mercadopago.model.Payment;
 
@@ -25,7 +26,9 @@ public interface MerchantService {
     @POST("/{uri}")
     MPCall<CheckoutPreference> createPreference(@Path(value = "uri", encoded = true) String uri, @Body Map<String, Object> body);
 
-    //TODO discount
-//    @GET("/{uri}")
-//    MPCall<Discount> getDiscount(@Path(value = "uri", encoded = true) String uri, //TODO);
+    @GET("/{uri}")
+    MPCall<Discount> getDirectDiscount(@Path(value = "uri", encoded = true) String uri, @Query(value="merchant_access_token", encoded = true) String merchantAccessToken, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail);
+
+    @GET("/{uri}")
+    MPCall<Discount> getCodeDiscount(@Path(value = "uri", encoded = true) String uri, @Query(value="merchant_access_token", encoded = true) String merchantAccessToken, @Query("transaction_amount") String transactionAmount, @Query("email") String payerEmail, @Query("coupon_code") String couponCode);
 }

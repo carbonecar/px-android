@@ -87,6 +87,7 @@ public class PaymentVaultPresenter {
     }
 
     public void getDirectDiscount() {
+        mPaymentVaultView.showProgress();
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -174,7 +175,7 @@ public class PaymentVaultPresenter {
         Payer payer = new Payer();
         payer.setAccessToken(mPayerAccessToken);
 
-        mPaymentVaultView.showProgress();
+        //mPaymentVaultView.showProgress();
         mMercadoPago.getPaymentMethodSearch(mAmount, excludedPaymentTypes, excludedPaymentMethodIds, payer, mAccountMoneyEnabled, new Callback<PaymentMethodSearch>() {
 
             @Override
