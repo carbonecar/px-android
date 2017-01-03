@@ -1,6 +1,7 @@
 package com.mercadopago;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -48,6 +50,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected MPTextView mErrorTextView;
     protected TextView mNextButtonText;
     protected TextView mBackButtonText;
+    protected ImageView mCloseImage;
     protected MPEditText mDiscountCodeEditText;
     protected ScrollView mScrollView;
     protected Toolbar mToolbar;
@@ -138,6 +141,14 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
             }
         });
 
+        mCloseImage = (ImageView) findViewById(R.id.mpsdkCloseImage);
+        mCloseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         mDiscountCodeEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -200,7 +211,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
         LayoutUtil.hideKeyboard(this);
 
-        mToolbar.setNavigationIcon(R.drawable.mpsdk_close);
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 

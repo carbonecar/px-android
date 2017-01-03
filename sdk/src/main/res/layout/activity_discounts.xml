@@ -16,14 +16,8 @@
             android:id="@+id/mpsdkDiscountLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:orientation="vertical">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/mpsdkToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/mpsdk_background_blue"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
             <FrameLayout
                 android:id="@+id/mpsdkDiscountCodeContainer"
@@ -38,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:visibility="gone">
+                android:visibility="visible">
                 <include layout="@layout/mpsdk_review_discount_summary"/>
             </FrameLayout>
         </LinearLayout>

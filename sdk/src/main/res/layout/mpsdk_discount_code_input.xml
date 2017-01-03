@@ -18,6 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/mpsdkToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/mpsdk_background_blue"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
             <FrameLayout
                 android:id="@+id/mpsdkDiscountBackground"
                 android:layout_width="match_parent"
