@@ -156,16 +156,11 @@ public class CheckoutActivity extends MercadoPagoActivity {
 
     @Override
     protected void getActivityParameters() {
-        //TODO discounts, borrar
-        mMerchantPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
-        mCheckoutPreferenceId = "236387490-8cc00347-60c4-4524-b9bf-ff6c14126551";
-        mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";
-
-        //mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
+        mMerchantPublicKey = getIntent().getStringExtra("merchantPublicKey");
         mMerchantBaseUrl = this.getIntent().getStringExtra("merchantBaseUrl");
         mMerchantGetCustomerUri = this.getIntent().getStringExtra("merchantGetCustomerUri");
-        //mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
-        //mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
+        mMerchantAccessToken = this.getIntent().getStringExtra("merchantAccessToken");
+        mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
     }
 
     @Override

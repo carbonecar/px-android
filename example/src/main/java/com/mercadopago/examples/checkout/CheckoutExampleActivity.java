@@ -69,36 +69,58 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
 
     public void onContinueClicked(View view) {
-        showProgressLayout();
-        Map<String, Object> map = new HashMap<>();
-        map.put("item_id", "1");
-        map.put("amount", new BigDecimal(300));
+        //TODO discounst, descomentar
+//        showProgressLayout();
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("item_id", "1");
+//        map.put("amount", new BigDecimal(300));
+//
+//       MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+//                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
+//                    @Override
+//                    public void success(CheckoutPreference checkoutPreference) {
+//                        mCheckoutPreference = checkoutPreference;
+//                        startMercadoPagoCheckout();
+//                    }
+//
+//                    @Override
+//                    public void failure(ApiException error) {
+//                        showRegularLayout();
+//                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
+//                    }
+//                });
 
-       MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
-                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
-                    @Override
-                    public void success(CheckoutPreference checkoutPreference) {
-                        mCheckoutPreference = checkoutPreference;
-                        startMercadoPagoCheckout();
-                    }
+        //TODO discounts, borrar
+        startMercadoPagoCheckout();
 
-                    @Override
-                    public void failure(ApiException error) {
-                        showRegularLayout();
-                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
-                    }
-                });
     }
 
     private void startMercadoPagoCheckout() {
+        //TODO discounts, borrar
+        //mPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
+        //mCheckoutPreferenceId = "236387490-8cc00347-60c4-4524-b9bf-ff6c14126551";
+        //mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";
+
+
+        //TODO discounts borrar
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
-        
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey(mPublicKey)
-                .setCheckoutPreferenceId(mCheckoutPreference.getId())
-                .setDecorationPreference(decorationPreference) //Optional
+                .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")
+                .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
+                .setDecorationPreference(decorationPreference)
                 .startCheckoutActivity();
+
+
+        //TODO discounts descomentar
+//        DecorationPreference decorationPreference = getCurrentDecorationPreference();
+//
+//        new MercadoPago.StartActivityBuilder()
+//                .setActivity(this)
+//                .setPublicKey(mPublicKey)
+//                .setCheckoutPreferenceId(mCheckoutPreference.getId())
+//                .setDecorationPreference(decorationPreference) //Optional
+//                .startCheckoutActivity();
     }
 
     private DecorationPreference getCurrentDecorationPreference() {
