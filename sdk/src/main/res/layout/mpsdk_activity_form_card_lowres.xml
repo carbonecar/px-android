@@ -30,6 +30,9 @@
                     android:orientation="vertical"
                     android:background="@color/mpsdk_white"
                     android:visibility="visible">
+
+                    <include layout="@layout/mpsdk_row_guessing_discount"/>
+
                     <include layout="@layout/mpsdk_form_card_input"/>
                 </LinearLayout>
 

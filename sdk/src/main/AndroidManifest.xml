@@ -99,7 +99,8 @@
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
             android:name=".DiscountsActivity"
-            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"/>
+            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".VaultActivity"
             android:theme="@style/Theme.MercadoPagoTheme" />
@@ -110,7 +111,5 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
     </application>
-
 </manifest>

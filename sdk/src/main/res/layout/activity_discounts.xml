@@ -8,10 +8,10 @@
     tools:context="com.mercadopago.DiscountsActivity">
 
     <ScrollView
+        android:id="@+id/mpsdkScrollViewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-
         <LinearLayout
             android:id="@+id/mpsdkDiscountLinearLayout"
             android:layout_width="match_parent"

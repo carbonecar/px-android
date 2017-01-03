@@ -9,7 +9,7 @@
     android:paddingRight="40dp"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#009EE3">
+    android:background="@color/mpsdk_background_blue">
 
     <LinearLayout
         android:id="@+id/mpsdkReviewSummaryTitleDiscount"

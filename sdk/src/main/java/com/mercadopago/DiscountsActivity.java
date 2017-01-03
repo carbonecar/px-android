@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mercadopago.customviews.MPEditText;
@@ -47,7 +48,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected TextView mNextButtonText;
     protected TextView mBackButtonText;
     protected MPEditText mDiscountCodeEditText;
-
+    protected ScrollView mScrollView;
     protected Toolbar mToolbar;
 
     protected DiscountsPresenter mDiscountsPresenter;
@@ -158,6 +159,9 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
         mProgressBar = (ProgressBar) findViewById(R.id.mpsdkProgressBar);
 
+        mScrollView = (ScrollView) findViewById(R.id.mpsdkScrollViewContainer);
+
+        fullScrollDown();
         initializeToolbar();
     }
 
@@ -256,6 +260,16 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     public void clearErrorView() {
         mErrorContainer.setVisibility(View.GONE);
         mErrorTextView.setText("");
+    }
+
+    private void fullScrollDown() {
+        Runnable r = new Runnable() {
+            public void run() {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        };
+        mScrollView.post(r);
+        r.run();
     }
 
     @Override
