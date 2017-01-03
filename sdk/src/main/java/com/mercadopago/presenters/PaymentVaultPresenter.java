@@ -107,8 +107,10 @@ public class PaymentVaultPresenter {
 //            }
 //        });
 
+
         mPaymentVaultView.showHasDiscount();
         initPaymentVaultFlow();
+
     }
 
     public void applyAmountDiscount() {

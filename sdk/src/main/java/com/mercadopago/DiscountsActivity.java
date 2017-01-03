@@ -23,6 +23,7 @@ import com.mercadopago.presenters.DiscountsPresenter;
 import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
@@ -196,6 +197,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     @Override
     public void drawSummary() {
         MPTracker.getInstance().trackScreen( "DISCOUNT_SUMMARY", "2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
+
+        LayoutUtil.hideKeyboard(this);
 
         mToolbar.setNavigationIcon(R.drawable.mpsdk_close);
         mDiscountCodeContainer.setVisibility(View.GONE);
