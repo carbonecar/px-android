@@ -8,15 +8,16 @@
 
     <include layout="@layout/mpsdk_regular_toolbar"/>
 
+    <include layout="@layout/mpsdk_row_discount"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <include layout="@layout/mpsdk_row_discount"/>
 
             <LinearLayout
                 android:id="@+id/mpsdkNewCardInstallmentsContainer"

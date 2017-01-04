@@ -99,8 +99,7 @@
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
             android:name=".DiscountsActivity"
-            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
             android:name=".VaultActivity"
             android:theme="@style/Theme.MercadoPagoTheme" />

@@ -320,37 +320,27 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
-
-        //TODO discounts, borrar,e stá para probar
-        mInstallmentsEnabled = false;
-
-        if (hasToShowDiscountRequest()) {
+        if (hasToShowDiscount()) {
             getDirectDiscount();
         }
     }
 
     public void getDirectDiscount() {
+        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                applyAmountDiscount();
+                mView.showDiscountDetail(discount);
+                loadPaymentMethods();
+            }
 
-        //TODO discounts descomentar
-//        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                mDiscount = discount;
-//                applyAmountDiscount();
-//                mView.showDiscountDetail(discount);
-//                loadPaymentMethods();
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mView.showHasDiscount();
-//                loadPaymentMethods();
-//            }
-//        });
-
-        //TODO discounts, borrar, es para probar failure
-        mView.showHasDiscount();
-        loadPaymentMethods();
+            @Override
+            public void failure(ApiException apiException) {
+                mView.showHasDiscount();
+                loadPaymentMethods();
+            }
+        });
     }
 
     public void applyAmountDiscount() {
@@ -399,7 +389,7 @@ public class GuessingCardPresenter {
     }
 
     public void loadBankDeals() {
-        if (!hasToShowDiscountRequest()) {
+        if (!hasToShowDiscount()) {
             getBankDealsAsync();
         }
     }
@@ -776,7 +766,7 @@ public class GuessingCardPresenter {
         return mInstallmentsEnabled;
     }
 
-    public Boolean hasToShowDiscountRequest() {
+    public Boolean hasToShowDiscount() {
         return mDiscount == null && getInstallmentsEnabled() != null && !getInstallmentsEnabled();
     }
 }

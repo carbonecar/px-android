@@ -501,7 +501,7 @@ public class MercadoPago {
                                                   Boolean requireIssuer, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, List<PaymentMethod> paymentMethodList,
                                                   PaymentRecovery paymentRecovery, Card card, BigDecimal transactionAmount,
-                                                  String payerEmail, Discount discount) {
+                                                  String payerEmail, Discount discount, Boolean installmentsEnabled) {
 
         Intent guessingCardIntent = new Intent(activity, GuessingCardActivity.class);
         guessingCardIntent.putExtra("merchantPublicKey", key);
@@ -533,6 +533,8 @@ public class MercadoPago {
         guessingCardIntent.putExtra("transactionAmount", JsonUtil.getInstance().toJson(transactionAmount));
 
         guessingCardIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
+
+        guessingCardIntent.putExtra("installmentsEnabled", installmentsEnabled);
 
 
         activity.startActivityForResult(guessingCardIntent, GUESSING_CARD_REQUEST_CODE);
@@ -1166,7 +1168,7 @@ public class MercadoPago {
             MercadoPago.startGuessingCardActivity(this.mActivity, this.mKey, this.mRequireSecurityCode,
                     this.mRequireIssuer, this.mShowBankDeals, this.mPaymentPreference, this.mDecorationPreference,
                     this.mPaymentMethodList, this.mPaymentRecovery, this.mCard, this.mAmount,
-                    this.mPayerEmail, this.mDiscount);
+                    this.mPayerEmail, this.mDiscount, this.mInstallmentsEnabled);
         }
 
         public void startCardVaultActivity() {

@@ -182,21 +182,25 @@ public class InstallmentsPresenter {
     public void getDirectDiscount() {
         mView.showDiscountRow();
 
-        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
-            @Override
-            public void success(Discount discount) {
-                mDiscount = discount;
-                applyAmountDiscount();
-                mView.showDiscountDetail(discount);
-                loadPayerCosts();
-            }
+//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                applyAmountDiscount();
+//                mView.showDiscountDetail(discount);
+//                loadPayerCosts();
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                mView.showHasDiscount();
+//                loadPayerCosts();
+//            }
+//        });
 
-            @Override
-            public void failure(ApiException apiException) {
-                mView.showHasDiscount();
-                loadPayerCosts();
-            }
-        });
+        //TODO discotuns borrar está para probar
+        mView.showHasDiscount();
+        loadPayerCosts();
     }
 
     public void applyAmountDiscount() {

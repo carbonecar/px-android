@@ -22,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.adapters.IdentificationTypesAdapter;
@@ -584,7 +583,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                 mBankDealsTextView.setText(getString(R.string.mpsdk_bank_deals_action));
             }
 
-            if (!mPresenter.hasToShowDiscountRequest()) {
+            if (!mPresenter.hasToShowDiscount()) {
                 mBankDealsTextView.setVisibility(View.VISIBLE);
             }
 
