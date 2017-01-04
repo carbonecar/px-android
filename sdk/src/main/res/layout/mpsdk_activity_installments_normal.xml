@@ -34,20 +34,16 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <include layout="@layout/mpsdk_row_discount"/>
-            </FrameLayout>
+        <include layout="@layout/mpsdk_row_discount"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/mpsdkActivityInstallmentsView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                android:background="@color/mpsdk_white"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:descendantFocusability="afterDescendants"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mpsdkActivityInstallmentsView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:background="@color/mpsdk_white"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:descendantFocusability="afterDescendants"/>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

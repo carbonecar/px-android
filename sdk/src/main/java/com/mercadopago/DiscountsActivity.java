@@ -127,14 +127,14 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mBackButton = (FrameLayout) findViewById(R.id.mpsdkBackButton);
         mNextButtonText = (MPTextView) findViewById(R.id.mpsdkNextButtonText);
         mBackButtonText = (MPTextView) findViewById(R.id.mpsdkBackButtonText);
-        mNextButtonText.setOnClickListener(new View.OnClickListener() {
+        mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CharSequence discountCode = mDiscountCodeEditText.getText();
                 mDiscountsPresenter.validateDiscountCodeInput(discountCode.toString());
             }
         });
-        mBackButtonText.setOnClickListener(new View.OnClickListener() {
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -145,7 +145,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                finishWithResult();
             }
         });
 

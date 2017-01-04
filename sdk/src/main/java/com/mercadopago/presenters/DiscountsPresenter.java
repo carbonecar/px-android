@@ -6,6 +6,7 @@ import com.mercadopago.callbacks.Callback;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Discount;
+import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
@@ -56,12 +57,9 @@ public class DiscountsPresenter {
     private void initDiscountFlow() {
         if (mDirectDiscountEnabled) {
             getDirectDiscount();
-        }
-
-        if (mCodeDiscountEnabled) {
+        } else {
             mDiscountsView.requestDiscountCode();
         }
-        //TODO discount poner un else
     }
 
     public void validateParameters() throws IllegalStateException {

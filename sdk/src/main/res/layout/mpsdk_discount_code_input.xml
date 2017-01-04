@@ -145,7 +145,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textColor="@color/mpsdk_active_button"
-                            android:text="Canjear"/>
+                            android:text="@string/mpsdk_input_button_exchange"/>
                     </FrameLayout>
                 </LinearLayout>
                 <FrameLayout
