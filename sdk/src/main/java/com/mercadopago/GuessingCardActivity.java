@@ -157,6 +157,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     private LinearLayout mCardIdentificationInput;
     private LinearLayout mCardSecurityCodeInput;
     private LinearLayout mDiscountDetailLinearLayout;
+    private LinearLayout mHasDiscount;
     private FrameLayout mErrorContainer;
     private MPTextView mErrorTextView;
     private MPTextView mDiscountOffTextView;
@@ -443,7 +444,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mProgressBar.setVisibility(View.VISIBLE);
 
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
-        mHasDiscountTextView = (MPTextView) findViewById(R.id.mpsdkHasDiscountText);
+        mDiscountDetail = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
 
         fullScrollDown();
     }
@@ -470,6 +471,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
     private void loadLowResViews() {
         loadToolbarArrow(mLowResToolbar);
+
+        mHasDiscount = (LinearLayout) findViewById(R.id.mpsdkHasDiscount);
+
     }
 
     private void loadNormalViews() {
@@ -487,7 +491,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mIdentificationCardView.initializeControls();
         mIdentificationCardView.hide();
 
-        mDiscountDetail = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
+        mHasDiscountTextView = (MPTextView) findViewById(R.id.mpsdkHasDiscountText);
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {
@@ -1521,9 +1525,12 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     @Override
     public void showDiscountDetail(Discount discount) {
         mDiscountDetail.setVisibility(View.VISIBLE);
-        mHasDiscountTextView.setVisibility(View.GONE);
 
-
+        if (!mLowResActive) {
+            mHasDiscountTextView.setVisibility(View.GONE);
+        } else {
+            mHasDiscount.setVisibility(View.GONE);
+        }
 
         setDiscountOff(discount);
     }
@@ -1543,6 +1550,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     @Override
     public void showHasDiscount() {
         hideBankDeals();
-        mHasDiscountTextView.setVisibility(View.VISIBLE);
+
+        if (!mLowResActive) {
+            mHasDiscountTextView.setVisibility(View.VISIBLE);
+        } else {
+            mHasDiscount.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -330,21 +330,27 @@ public class GuessingCardPresenter {
     }
 
     public void getDirectDiscount() {
-        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
-            @Override
-            public void success(Discount discount) {
-                mDiscount = discount;
-                applyAmountDiscount();
-                mView.showDiscountDetail(discount);
-                loadPaymentMethods();
-            }
 
-            @Override
-            public void failure(ApiException apiException) {
-                mView.showHasDiscount();
-                loadPaymentMethods();
-            }
-        });
+        //TODO discounts descomentar
+//        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+//            @Override
+//            public void success(Discount discount) {
+//                mDiscount = discount;
+//                applyAmountDiscount();
+//                mView.showDiscountDetail(discount);
+//                loadPaymentMethods();
+//            }
+//
+//            @Override
+//            public void failure(ApiException apiException) {
+//                mView.showHasDiscount();
+//                loadPaymentMethods();
+//            }
+//        });
+
+        //TODO discounts, borrar, es para probar failure
+        mView.showHasDiscount();
+        loadPaymentMethods();
     }
 
     public void applyAmountDiscount() {
