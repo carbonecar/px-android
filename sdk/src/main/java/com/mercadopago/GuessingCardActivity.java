@@ -396,7 +396,10 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         mErrorState = NORMAL_STATE;
 
-        mPresenter.loadDiscount();
+        //TODO discounts descomentar
+        //mPresenter.loadDiscount();
+
+
         mPresenter.loadPaymentMethods();
     }
 
@@ -439,7 +442,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mErrorTextView = (MPTextView) findViewById(R.id.mpsdkErrorTextView);
         mScrollView = (ScrollView) findViewById(R.id.mpsdkScrollViewContainer);
         mInputContainer.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+
+        //TODO discounts descomentar
+        //mProgressBar.setVisibility(View.VISIBLE);
 
         mDiscountDetailLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);

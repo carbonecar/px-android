@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/mpsdkDiscountRow"
             android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,13 +95,13 @@
                     android:id="@+id/mpsdkHasDirectDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="visible">
+                    android:visibility="gone">
                     <com.mercadopago.customviews.MPTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:layout_gravity="center"
-                        android:text="Descuento"
+                        android:text="@string/mpsdk_discount"
                         android:textColor="@color/mpsdk_color_payer_costs_no_rate"
                         android:textSize="16dp" />
 

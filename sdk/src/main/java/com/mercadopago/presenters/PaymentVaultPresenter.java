@@ -85,6 +85,7 @@ public class PaymentVaultPresenter {
             getDirectDiscount();
         } else {
             mPaymentVaultView.showDiscountDetail(mDiscount);
+            initPaymentVaultFlow();
         }
     }
 

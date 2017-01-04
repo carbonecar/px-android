@@ -322,6 +322,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         Intent intent = new Intent(this, PaymentVaultActivity.class);
         intent.putExtras(this.getIntent());
         intent.putExtra("selectedSearchItem", JsonUtil.getInstance().toJson(groupIem));
+        intent.putExtra("discount", JsonUtil.getInstance().toJson(mPaymentVaultPresenter.getDiscount()));
         intent.putExtra("paymentMethodSearch", JsonUtil.getInstance().toJson(mPaymentVaultPresenter.getPaymentMethodSearch()));
         startActivityForResult(intent, MercadoPago.PAYMENT_VAULT_REQUEST_CODE);
         overridePendingTransition(R.anim.mpsdk_slide_right_to_left_in, R.anim.mpsdk_slide_right_to_left_out);

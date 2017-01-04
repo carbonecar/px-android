@@ -320,7 +320,7 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
-        if (!mInstallmentsEnabled && mDiscount == null) {
+        if (mDiscount == null) {//!mInstallmentsEnabled && mDiscount == null) {
             getDirectDiscount();
         }
     }
@@ -332,6 +332,9 @@ public class GuessingCardPresenter {
                 mDiscount = discount;
                 applyAmountDiscount();
                 mView.showDiscountDetail(discount);
+
+                //TODO discounts analizar si va
+                mView.showInputContainer();
             }
 
             @Override

@@ -173,8 +173,9 @@ public class InstallmentsPresenter {
         if (mDiscount == null) {
             getDirectDiscount();
         } else {
-            setHasToSubtractDiscount();
+            applyAmountDiscount();
             mView.showDiscountDetail(mDiscount);
+            loadPayerCosts();
         }
     }
 
