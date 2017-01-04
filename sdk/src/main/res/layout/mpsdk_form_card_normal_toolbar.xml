@@ -42,7 +42,7 @@
         android:paddingTop="10dp"
         android:textSize="16dp"
         android:visibility="gone"
-        android:text="Tengo un descuento"
+        android:text="@string/mpsdk_has_a_discount"
         android:onClick="startDiscountsActivity"
         android:clickable="true"
         android:background="@drawable/mpsdk_title_toolbar"

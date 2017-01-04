@@ -101,7 +101,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         //mCheckoutPreferenceId = "236387490-8cc00347-60c4-4524-b9bf-ff6c14126551";
         //mMerchantAccessToken = "TEST-8783499533330706-120110-a876150674ce72d994c9b9a2342824fd__LA_LB__-236387490";
 
-
         //TODO discounts borrar
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
         new MercadoPago.StartActivityBuilder()
@@ -110,7 +109,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
                 .setDecorationPreference(decorationPreference)
                 .startCheckoutActivity();
-
 
         //TODO discounts descomentar
 //        DecorationPreference decorationPreference = getCurrentDecorationPreference();

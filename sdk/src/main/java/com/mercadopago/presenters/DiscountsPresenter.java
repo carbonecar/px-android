@@ -117,6 +117,10 @@ public class DiscountsPresenter {
                     mDiscountsView.showCodeInputError("No existe campaña");
                 } else if (apiException.getError().equals("run out of uses")) {
                     mDiscountsView.showCodeInputError("Cantidad de usos completadas");
+                } else if (apiException.getError().equals("Must provide your access_token to proceed")) {
+                    //TODO discounts do something
+                } else {
+                    //TODO discounts do something
                 }
             }
         });

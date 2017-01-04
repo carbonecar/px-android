@@ -320,7 +320,11 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
-        if (mDiscount == null) {//!mInstallmentsEnabled && mDiscount == null) {
+
+        //TODO discounts, borrar,e stá para probar
+        mInstallmentsEnabled = false;
+
+        if (hasToShowDiscountRequest()) {
             getDirectDiscount();
         }
     }
@@ -332,14 +336,13 @@ public class GuessingCardPresenter {
                 mDiscount = discount;
                 applyAmountDiscount();
                 mView.showDiscountDetail(discount);
-
-                //TODO discounts analizar si va
-                mView.showInputContainer();
+                loadPaymentMethods();
             }
 
             @Override
             public void failure(ApiException apiException) {
                 mView.showHasDiscount();
+                loadPaymentMethods();
             }
         });
     }
@@ -390,7 +393,9 @@ public class GuessingCardPresenter {
     }
 
     public void loadBankDeals() {
-        getBankDealsAsync();
+        if (!hasToShowDiscountRequest()) {
+            getBankDealsAsync();
+        }
     }
 
     protected void getPaymentMethodsAsync() {
@@ -761,4 +766,11 @@ public class GuessingCardPresenter {
         }
     }
 
+    public Boolean getInstallmentsEnabled() {
+        return mInstallmentsEnabled;
+    }
+
+    public Boolean hasToShowDiscountRequest() {
+        return mDiscount == null && getInstallmentsEnabled() != null && !getInstallmentsEnabled();
+    }
 }

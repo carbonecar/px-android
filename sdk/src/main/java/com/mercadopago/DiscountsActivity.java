@@ -309,4 +309,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
+
+
 }

@@ -135,6 +135,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     private CardView mCardView;
     private IdentificationCardView mIdentificationCardView;
     private MPTextView mTimerTextView;
+    private LinearLayout mDiscountDetail;
 
     //Input Views
     private ProgressBar mProgressBar;
@@ -396,10 +397,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         mErrorState = NORMAL_STATE;
 
-        //TODO discounts descomentar
-        //mPresenter.loadDiscount();
-
-
+        mPresenter.loadDiscount();
         mPresenter.loadPaymentMethods();
     }
 
@@ -442,11 +440,8 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mErrorTextView = (MPTextView) findViewById(R.id.mpsdkErrorTextView);
         mScrollView = (ScrollView) findViewById(R.id.mpsdkScrollViewContainer);
         mInputContainer.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
 
-        //TODO discounts descomentar
-        //mProgressBar.setVisibility(View.VISIBLE);
-
-        mDiscountDetailLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
         mHasDiscountTextView = (MPTextView) findViewById(R.id.mpsdkHasDiscountText);
 
@@ -491,6 +486,8 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mIdentificationCardView.inflateInParent(mIdentificationCardContainer, true);
         mIdentificationCardView.initializeControls();
         mIdentificationCardView.hide();
+
+        mDiscountDetail = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
     }
 
     private void loadToolbarArrow(Toolbar toolbar) {
@@ -582,7 +579,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
             } else {
                 mBankDealsTextView.setText(getString(R.string.mpsdk_bank_deals_action));
             }
-            mBankDealsTextView.setVisibility(View.VISIBLE);
+
+            if (!mPresenter.hasToShowDiscountRequest()) {
+                mBankDealsTextView.setVisibility(View.VISIBLE);
+            }
+
             mBankDealsTextView.setFocusable(true);
             mBankDealsTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1458,6 +1459,9 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         if (resultCode == RESULT_OK) {
             Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
             mPresenter.setDiscount(discount);
+            mPresenter.applyAmountDiscount();
+
+            showDiscountDetail(discount);
         }
     }
 
@@ -1516,7 +1520,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
     @Override
     public void showDiscountDetail(Discount discount) {
-        mDiscountDetailLinearLayout.setVisibility(View.VISIBLE);
+        mDiscountDetail.setVisibility(View.VISIBLE);
+        mHasDiscountTextView.setVisibility(View.GONE);
+
+
+
         setDiscountOff(discount);
     }
 
@@ -1534,7 +1542,6 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
     @Override
     public void showHasDiscount() {
-        mDiscountDetailLinearLayout.setVisibility(View.GONE);
         hideBankDeals();
         mHasDiscountTextView.setVisibility(View.VISIBLE);
     }
