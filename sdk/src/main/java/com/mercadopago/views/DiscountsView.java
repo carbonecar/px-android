@@ -21,4 +21,6 @@ public interface DiscountsView {
     void showProgressBar();
 
     void hideProgressBar();
+
+    void showEmptyDiscountCodeError();
 }

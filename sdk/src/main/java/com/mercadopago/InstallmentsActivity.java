@@ -426,7 +426,9 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         if (resultCode == RESULT_OK) {
             if (mPresenter.getDiscount() == null) {
                 Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+
                 mPresenter.setDiscount(discount);
+                mPresenter.applyAmountDiscount();
 
                 showDiscountDetail(discount);
             }

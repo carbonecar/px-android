@@ -119,7 +119,9 @@ public class DiscountsPresenter {
                     mDiscountsView.showCodeInputError("Cantidad de usos completadas");
                 } else if (apiException.getError().equals("Must provide your access_token to proceed")) {
                     //TODO discounts do something
-                } else {
+                } else if (apiException.getError().equals("amount-doesnt-match")) {
+                    mDiscountsView.showCodeInputError("El monto no alcanza el mínimo o supera el máximo");
+            } else {
                     //TODO discounts do something
                 }
             }
@@ -135,8 +137,7 @@ public class DiscountsPresenter {
             getCodeDiscount(discountCode);
         }
         else {
-            //TODO poner como recurso
-            mDiscountsView.showCodeInputError("No se ingresó codigo");
+            mDiscountsView.showEmptyDiscountCodeError();
         }
     }
 

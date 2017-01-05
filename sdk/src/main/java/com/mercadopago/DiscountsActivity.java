@@ -276,6 +276,11 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     @Override
+    public void showEmptyDiscountCodeError() {
+        showCodeInputError(getString(R.string.mpsdk_do_not_enter_code));
+    }
+
+    @Override
     public void clearErrorView() {
         mErrorContainer.setVisibility(View.GONE);
         mErrorTextView.setText("");

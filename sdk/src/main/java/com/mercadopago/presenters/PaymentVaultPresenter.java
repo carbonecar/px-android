@@ -91,7 +91,7 @@ public class PaymentVaultPresenter {
 
     public void getDirectDiscount() {
         mPaymentVaultView.showProgress();
-//
+
 //        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
 //            @Override
 //            public void success(Discount discount) {
@@ -108,8 +108,7 @@ public class PaymentVaultPresenter {
 //            }
 //        });
 
-
-        //TODO discount, borrar, está para probar
+        //TODO discounts borrar
         mPaymentVaultView.showHasDiscount();
         initPaymentVaultFlow();
     }
