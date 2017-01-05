@@ -182,25 +182,21 @@ public class InstallmentsPresenter {
     public void getDirectDiscount() {
         mView.showDiscountRow();
 
-//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                mDiscount = discount;
-//                applyAmountDiscount();
-//                mView.showDiscountDetail(discount);
-//                loadPayerCosts();
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mView.showHasDiscount();
-//                loadPayerCosts();
-//            }
-//        });
+        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                mDiscount = discount;
+                applyAmountDiscount();
+                mView.showDiscountDetail(discount);
+            }
 
-        //TODO discotuns borrar está para probar
-        mView.showHasDiscount();
-        loadPayerCosts();
+            @Override
+            public void failure(ApiException apiException) {
+                mView.showHasDiscount();
+                loadPayerCosts();
+            }
+        });
+
     }
 
     public void applyAmountDiscount() {
@@ -208,6 +204,7 @@ public class InstallmentsPresenter {
             mHasToSubtractDiscount = false;
             mDiscount.setTransactionAmount(mAmount);
             setAmountWithDiscount();
+            getInstallmentsAsync();
         }
     }
 
@@ -215,8 +212,8 @@ public class InstallmentsPresenter {
         this.setAmount(mDiscount.getTransactionAmountWithDiscount());
     }
 
-    public void setHasToSubtractDiscount() {
-        this.mHasToSubtractDiscount = false;
+    public Boolean getHasToSubtractDiscount() {
+        return this.mHasToSubtractDiscount;
     }
 
     public void setPayerEmail(String payerEmail) {
@@ -249,7 +246,7 @@ public class InstallmentsPresenter {
         }
     }
 
-    private void getInstallmentsAsync() {
+    public void getInstallmentsAsync() {
         if (mMercadoPago == null) return;
         mView.showLoadingView();
         mMercadoPago.getInstallments(mBin, mAmount, mIssuerId, mPaymentMethod.getId(),
