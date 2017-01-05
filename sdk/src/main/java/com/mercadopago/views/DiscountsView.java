@@ -23,4 +23,6 @@ public interface DiscountsView {
     void hideProgressBar();
 
     void showEmptyDiscountCodeError();
+
+    void hideKeyboard();
 }

@@ -2,6 +2,7 @@ package com.mercadopago.presenters;
 
 import android.content.Context;
 
+import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.model.ApiException;
@@ -33,6 +34,12 @@ public class DiscountsPresenter {
     private String mDiscountCode;
     private BigDecimal mTransactionAmount;
     private Discount mDiscount;
+
+    //Errors
+    private static final String DISCOUNT_ERROR_AMOUNT_DOESNT_MATCH = "amount-doesnt-match";
+    private static final String DISCOUNT_ERROR_RUN_OUT_OF_USES = "run out of uses";
+    private static final String DISCOUNT_ERROR_CAMPAIGN_DOESNT_MATCH = "campaign-doesnt-match";
+    private static final String DISCOUNT_ERROR_CAMPAIGN_CODE_DOESNT_MATCH = "campaign-code-doesnt-match";
 
     private Boolean mDirectDiscountEnabled;
     private Boolean mCodeDiscountEnabled;
@@ -94,6 +101,7 @@ public class DiscountsPresenter {
         mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
+                mDiscountsView.hideKeyboard();
                 mDiscountsView.hideProgressBar();
 
                 mDiscount = discount;
@@ -105,19 +113,17 @@ public class DiscountsPresenter {
             @Override
             public void failure(ApiException apiException) {
                 mDiscountsView.hideProgressBar();
-                //TODO discounts mejorar
-                if (apiException.getError().equals("campaign-code-doesnt-match")) {
-                    mDiscountsView.showCodeInputError("Código incorrecto");
-                } else if (apiException.getError().equals("campaign-doesnt-match")) {
-                    mDiscountsView.showCodeInputError("No existe campaña");
-                } else if (apiException.getError().equals("run out of uses")) {
-                    mDiscountsView.showCodeInputError("Cantidad de usos completadas");
-                } else if (apiException.getError().equals("Must provide your access_token to proceed")) {
-                    //TODO discounts do something
-                } else if (apiException.getError().equals("amount-doesnt-match")) {
-                    mDiscountsView.showCodeInputError("El monto no alcanza el mínimo o supera el máximo");
-            } else {
-                    //TODO discounts do something
+
+                if (apiException.getError().equals(DISCOUNT_ERROR_CAMPAIGN_CODE_DOESNT_MATCH)) {
+                    mDiscountsView.showCodeInputError(mContext.getString(R.string.mpsdk_invalid_code));
+                } else if (apiException.getError().equals(DISCOUNT_ERROR_CAMPAIGN_DOESNT_MATCH)) {
+                    mDiscountsView.showCodeInputError(mContext.getString(R.string.mpsdk_merchant_without_discount_available));
+                } else if (apiException.getError().equals(DISCOUNT_ERROR_RUN_OUT_OF_USES)) {
+                    mDiscountsView.showCodeInputError(mContext.getString(R.string.mpsdk_ran_out_of_quantity_uses_discount));
+                } else if (apiException.getError().equals(DISCOUNT_ERROR_AMOUNT_DOESNT_MATCH)) {
+                    mDiscountsView.showCodeInputError(mContext.getString(R.string.mpsdk_amount_doesnt_match));
+                } else {
+                    mDiscountsView.finishWithCancelResult();
                 }
             }
         });

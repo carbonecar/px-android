@@ -221,5 +221,9 @@
     <string name="mpsdk_of_discount">of discount</string>
     <string name="mpsdk_percent_of_discount">% of discount</string>
     <string name="mpsdk_do_not_enter_code">You did not enter code</string>
+    <string name="mpsdk_invalid_code">Invalid code</string>
+    <string name="mpsdk_merchant_without_discount_available">Merchant without discount available</string>
+    <string name="mpsdk_ran_out_of_quantity_uses_discount">Ran out of quantity uses of discount </string>
+    <string name="mpsdk_amount_doesnt_match">Amount out of reach</string>
 
 </resources>

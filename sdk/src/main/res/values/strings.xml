@@ -223,5 +223,8 @@
     <string name="mpsdk_of_discount">de descuento</string>
     <string name="mpsdk_percent_of_discount">% de descuento</string>
     <string name="mpsdk_do_not_enter_code">No se ingresó código</string>
-
+    <string name="mpsdk_invalid_code">Código inválido</string>
+    <string name="mpsdk_merchant_without_discount_available">Vendedor sin descuento disponible</string>
+    <string name="mpsdk_ran_out_of_quantity_uses_discount">Se agotó la cantidad de usos</string>
+    <string name="mpsdk_amount_doesnt_match">Importe fuera del alcance</string>
 </resources>

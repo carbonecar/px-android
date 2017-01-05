@@ -2,7 +2,6 @@ package com.mercadopago;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +10,6 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,7 +69,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         }
 
         setContentView();
-
         initializeControls();
         onValidStart();
     }
@@ -204,9 +201,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     @Override
     public void drawSummary() {
         MPTracker.getInstance().trackScreen( "DISCOUNT_SUMMARY", "2", mDiscountsPresenter.getPublicKey(), BuildConfig.VERSION_NAME, this);
-
-        LayoutUtil.hideKeyboard(this);
-
         mDiscountCodeContainer.setVisibility(View.GONE);
         mReviewDiscountSummaryContainer.setVisibility(View.VISIBLE);
 
@@ -310,5 +304,10 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         Intent returnIntent = new Intent();
         setResult(RESULT_CANCELED, returnIntent);
         finish();
+    }
+
+    @Override
+    public void hideKeyboard() {
+        LayoutUtil.hideKeyboard(this);
     }
 }
