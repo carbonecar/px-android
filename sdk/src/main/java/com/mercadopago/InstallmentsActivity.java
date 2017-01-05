@@ -374,7 +374,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void stopLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
-        mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
+        showDiscountRow();
+
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -512,6 +513,13 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
 
     @Override
     public void showDiscountRow() {
-        mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
+        if (mPresenter.areDiscountParametersValid()) {
+            mDiscountRowLinearLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideDiscountRow() {
+        mDiscountRowLinearLayout.setVisibility(View.GONE);
     }
 }

@@ -72,13 +72,8 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
 
         setContentView();
 
-        try {
-            validateActivityParameters();
-            initializeControls();
-            onValidStart();
-        } catch (IllegalStateException exception) {
-            onInvalidStart(exception.getMessage());
-        }
+        initializeControls();
+        onValidStart();
     }
 
     protected void createPresenter() {
@@ -106,10 +101,6 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     protected void onValidStart() {
         mDiscountsPresenter.initializeMercadoPago();
         mDiscountsPresenter.initialize();
-    }
-
-    protected void validateActivityParameters() {
-        mDiscountsPresenter.validateParameters();
     }
 
     protected void initializeControls() {
@@ -320,6 +311,4 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
-
-
 }

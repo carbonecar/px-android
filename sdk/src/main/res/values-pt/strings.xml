@@ -209,7 +209,7 @@
     <string name="mpsdk_review_summary_pay">Você paga</string>
     <string name="mpsdk_review_summary_total">Total</string>
     <string name="mpsdk_review_summary_discount">Desconto</string>
-    <string name="mpsdk_review_summary_discount_with_percent_off">Desconto %1$s</string>
+    <string name="mpsdk_review_summary_discount_with_percent_off">Desconto %1$s%%</string>
     <string name="mpsdk_review_summary_discount_with_amount_off">Desconto</string>
 
     <!-- Discount -->

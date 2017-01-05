@@ -21,6 +21,8 @@ import com.mercadopago.views.InstallmentsActivityView;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * Created by vaserber on 9/29/16.
  */
@@ -171,7 +173,12 @@ public class InstallmentsPresenter {
 
     public void loadDiscount() {
         if (mDiscount == null) {
-            getDirectDiscount();
+            if (areDiscountParametersValid()) {
+                getDirectDiscount();
+            } else {
+                mView.hideDiscountRow();
+                loadPayerCosts();
+            }
         } else {
             setAmountWithDiscount();
             mView.showDiscountDetail(mDiscount);
@@ -179,7 +186,11 @@ public class InstallmentsPresenter {
         }
     }
 
-    public void getDirectDiscount() {
+    public Boolean areDiscountParametersValid() {
+        return !isEmpty(mPayerEmail) && mAmount != null && mAmount.compareTo(BigDecimal.ZERO)>0;
+    }
+
+    private void getDirectDiscount() {
         mView.showDiscountRow();
 
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
@@ -196,7 +207,6 @@ public class InstallmentsPresenter {
                 loadPayerCosts();
             }
         });
-
     }
 
     public void applyAmountDiscount() {

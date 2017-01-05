@@ -210,7 +210,7 @@
     <string name="mpsdk_activity_checkout_title">Confirm your purchase</string>
     <string name="mpsdk_review_summary_products">Products</string>
     <string name="mpsdk_review_summary_discount">Discount</string>
-    <string name="mpsdk_review_summary_discount_with_percent_off">Discount of %1$s</string>
+    <string name="mpsdk_review_summary_discount_with_percent_off">Discount of %1$s%%</string>
     <string name="mpsdk_review_summary_discount_with_amount_off">Discount</string>
 
     <!-- Discount -->

@@ -2,6 +2,7 @@ package com.mercadopago.presenters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
@@ -30,6 +31,8 @@ import com.mercadopago.views.GuessingCardActivityView;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.text.TextUtils.isEmpty;
 
 /**
  * Created by vaserber on 10/13/16.
@@ -321,11 +324,15 @@ public class GuessingCardPresenter {
 
     public void loadDiscount() {
         if (hasToShowDiscount()) {
-            getDirectDiscount();
+                getDirectDiscount();
         }
     }
 
-    public void getDirectDiscount() {
+    private Boolean areDiscountParametersValid() {
+        return !isEmpty(mPayerEmail) && mTransactionAmount != null && mTransactionAmount.compareTo(BigDecimal.ZERO)>0;
+    }
+
+    private void getDirectDiscount() {
         mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -767,6 +774,6 @@ public class GuessingCardPresenter {
     }
 
     public Boolean hasToShowDiscount() {
-        return mDiscount == null && getInstallmentsEnabled() != null && !getInstallmentsEnabled();
+        return mDiscount == null && getInstallmentsEnabled() != null && !getInstallmentsEnabled() && areDiscountParametersValid();
     }
 }

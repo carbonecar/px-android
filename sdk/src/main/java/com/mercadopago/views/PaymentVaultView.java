@@ -53,4 +53,6 @@ public interface PaymentVaultView {
     void showHasDiscount();
 
     void showDiscountRow();
+
+    void hideDiscountRow();
 }

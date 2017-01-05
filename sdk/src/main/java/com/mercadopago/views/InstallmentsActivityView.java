@@ -24,4 +24,5 @@ public interface InstallmentsActivityView {
     void showDiscountDetail(Discount discount);
     void showHasDiscount();
     void showDiscountRow();
+    void hideDiscountRow();
 }

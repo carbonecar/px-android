@@ -6,7 +6,6 @@ import com.mercadopago.callbacks.Callback;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Discount;
-import com.mercadopago.util.LayoutUtil;
 import com.mercadopago.views.DiscountsView;
 
 import java.math.BigDecimal;
@@ -55,15 +54,15 @@ public class DiscountsPresenter {
     }
 
     private void initDiscountFlow() {
-        if (mDirectDiscountEnabled) {
+        if (mDirectDiscountEnabled && areDiscountParametersValid()) {
             getDirectDiscount();
         } else {
             mDiscountsView.requestDiscountCode();
         }
     }
 
-    public void validateParameters() throws IllegalStateException {
-        //TODO validar payerEmail y transaction amount
+    private Boolean areDiscountParametersValid() {
+        return !isEmpty(mPayerEmail) && mTransactionAmount != null && mTransactionAmount.compareTo(BigDecimal.ZERO)>0;
     }
 
     public void initializeMercadoPago() {
@@ -84,11 +83,7 @@ public class DiscountsPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                    //TODO finish with error message
-//                mDiscountsView.finishWithErrorMessage();
-//                if (apiException.getMessage().equals("doesn't find a campaign")) {
-//                    Toast.makeText(mContext, "No posee descuento", Toast.LENGTH_SHORT).show();
-//                }
+                mDiscountsView.requestDiscountCode();
                 }
         });
     }
@@ -133,11 +128,15 @@ public class DiscountsPresenter {
     }
 
     public void validateDiscountCodeInput(String discountCode) {
-        if (!isEmpty(discountCode)) {
-            getCodeDiscount(discountCode);
-        }
-        else {
-            mDiscountsView.showEmptyDiscountCodeError();
+        if (areDiscountParametersValid()) {
+            if (!isEmpty(discountCode)) {
+                getCodeDiscount(discountCode);
+            }
+            else {
+                mDiscountsView.showEmptyDiscountCodeError();
+            }
+        } else {
+            mDiscountsView.finishWithCancelResult();
         }
     }
 

@@ -81,12 +81,18 @@ public class PaymentVaultPresenter {
 
     private void loadDiscount() {
         mPaymentVaultView.showDiscountRow();
-        if (mDiscount == null) {
-            getDirectDiscount();
-        } else {
-            mPaymentVaultView.showDiscountDetail(mDiscount);
-            initPaymentVaultFlow();
-        }
+
+            if (mDiscount == null) {
+                if (areDiscountParametersValid()) {
+                    getDirectDiscount();
+                } else {
+                    mPaymentVaultView.hideDiscountRow();
+                    initPaymentVaultFlow();
+                }
+            } else {
+                mPaymentVaultView.showDiscountDetail(mDiscount);
+                initPaymentVaultFlow();
+            }
     }
 
     public void getDirectDiscount() {
@@ -119,6 +125,10 @@ public class PaymentVaultPresenter {
             mDiscount.setTransactionAmount(mAmount);
             this.setAmount(mDiscount.getTransactionAmountWithDiscount());
         }
+    }
+
+    private Boolean areDiscountParametersValid() {
+        return !isEmpty(mPayerEmail) && mAmount != null && mAmount.compareTo(BigDecimal.ZERO)>0;
     }
 
     public void validateParameters() throws IllegalStateException {
