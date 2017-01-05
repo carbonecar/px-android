@@ -415,6 +415,8 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     public void selectPaymentMethod(PaymentMethod paymentMethod) {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPaymentVaultPresenter.getDiscount()));
+
         this.setResult(Activity.RESULT_OK, returnIntent);
         this.finish();
         animatePaymentMethodSelection();

@@ -592,7 +592,7 @@ public class MercadoPago {
                                                   String merchantGetCustomerUri, String merchantAccessToken, BigDecimal amount,
                                                   Site site, Boolean installmentsEnabled, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, PaymentMethodSearch paymentMethodSearch, List<Card> cards,
-                                                  String payerAccessToken, Boolean accountMoneyEnabled,String payerEmail) {
+                                                  String payerAccessToken, Boolean accountMoneyEnabled,String payerEmail, Discount discount) {
 
         Intent vaultIntent = new Intent(activity, PaymentVaultActivity.class);
         vaultIntent.putExtra("merchantPublicKey", merchantPublicKey);
@@ -614,6 +614,7 @@ public class MercadoPago {
         vaultIntent.putExtra("payerAccessToken", payerAccessToken);
         vaultIntent.putExtra("accountMoneyEnabled", accountMoneyEnabled);
         vaultIntent.putExtra("payerEmail", payerEmail);
+        vaultIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
 
         activity.startActivityForResult(vaultIntent, PAYMENT_VAULT_REQUEST_CODE);
     }
@@ -1220,7 +1221,8 @@ public class MercadoPago {
                         this.mMerchantGetCustomerUri, this.mMerchantAccessToken,
                         this.mAmount, this.mSite, this.mInstallmentsEnabled, this.mShowBankDeals,
                         this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodSearch,
-                        this.mCards, this.mPayerAccessToken, this.mAccountMoneyEnabled, this.mPayerEmail);
+                        this.mCards, this.mPayerAccessToken, this.mAccountMoneyEnabled, this.mPayerEmail,
+                        this.mDiscount);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }

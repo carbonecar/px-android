@@ -376,6 +376,7 @@ public class CheckoutActivity extends MercadoPagoActivity {
                 .setSite(mSite)
                 .setAmount(mCheckoutPreference.getAmount())
                 .setPaymentMethodSearch(mPaymentMethodSearch)
+                .setDiscount(mDiscount)
                 .setPaymentPreference(mCheckoutPreference.getPaymentPreference())
                 .setDecorationPreference(mDecorationPreference)
                 .setCards(mSavedCards)
