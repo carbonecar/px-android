@@ -212,10 +212,6 @@ public class InstallmentsPresenter {
         this.setAmount(mDiscount.getTransactionAmountWithDiscount());
     }
 
-    public Boolean getHasToSubtractDiscount() {
-        return this.mHasToSubtractDiscount;
-    }
-
     public void setPayerEmail(String payerEmail) {
         this.mPayerEmail = payerEmail;
     }
