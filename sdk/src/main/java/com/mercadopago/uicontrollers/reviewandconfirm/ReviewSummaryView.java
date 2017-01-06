@@ -155,7 +155,6 @@ public class ReviewSummaryView implements ReviewSummaryViewController {
 
         mDiscountPercentageText.setText(discountText);
 
-
         formattedAmountBuilder.append("-");
         formattedAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountAmount, mCurrencyId));
 

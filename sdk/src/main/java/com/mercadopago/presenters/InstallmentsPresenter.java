@@ -180,6 +180,7 @@ public class InstallmentsPresenter {
                 loadPayerCosts();
             }
         } else {
+            mHasToSubtractDiscount = false;
             setAmountWithDiscount();
             mView.showDiscountDetail(mDiscount);
             loadPayerCosts();

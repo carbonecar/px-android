@@ -2,6 +2,7 @@ package com.mercadopago;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.LinkAddress;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,10 +41,10 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     //View
     protected ProgressBar mProgressBar;
     protected FrameLayout mReviewDiscountSummaryContainer;
-    protected FrameLayout mDiscountCodeContainer;
     protected FrameLayout mNextButton;
     protected FrameLayout mBackButton;
     protected FrameLayout mErrorContainer;
+    protected LinearLayout mDiscountCodeContainer;
     protected LinearLayout mDiscountLinearLayout;
     protected MPTextView mReviewSummaryTitle;
     protected MPTextView mReviewSummaryProductAmount;
@@ -104,7 +106,7 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         mDiscountLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountLinearLayout);
 
         mReviewDiscountSummaryContainer = (FrameLayout) findViewById(R.id.mpsdkReviewDiscountSummaryContainer);
-        mDiscountCodeContainer = (FrameLayout) findViewById(R.id.mpsdkDiscountCodeContainer);
+        mDiscountCodeContainer = (LinearLayout) findViewById(R.id.mpsdkDiscountCodeContainer);
 
         //Review discount summary
         mReviewSummaryTitle = (MPTextView) findViewById(R.id.mpsdkReviewSummaryTitle);
@@ -309,5 +311,10 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     @Override
     public void hideKeyboard() {
         LayoutUtil.hideKeyboard(this);
+    }
+
+    @Override
+    public void setSoftInputModeSummary() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 }

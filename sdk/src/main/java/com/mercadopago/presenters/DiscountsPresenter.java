@@ -101,9 +101,9 @@ public class DiscountsPresenter {
         mMercadoPago.getCodeDiscount(mTransactionAmount.toString(), mPayerEmail, discountCode, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
+                mDiscountsView.setSoftInputModeSummary();
                 mDiscountsView.hideKeyboard();
                 mDiscountsView.hideProgressBar();
-
                 mDiscount = discount;
                 mDiscount.setCouponCode(discountCode);
                 applyAmountDiscount();

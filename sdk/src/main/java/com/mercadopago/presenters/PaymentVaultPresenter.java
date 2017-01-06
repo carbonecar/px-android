@@ -113,7 +113,6 @@ public class PaymentVaultPresenter {
 //            }
 //        });
 
-        //TODO discounts borrar
         mPaymentVaultView.showHasDiscount();
         initPaymentVaultFlow();
     }

@@ -323,6 +323,12 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
+        //TODO discounts borrar
+//        mTransactionAmount = new BigDecimal(1000);
+//        mPayerEmail = "lalalala@lalalala";
+//        mPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
+//        mInstallmentsEnabled = false;
+
         if (hasToShowDiscount()) {
                 getDirectDiscount();
         }
@@ -333,7 +339,7 @@ public class GuessingCardPresenter {
     }
 
     private void getDirectDiscount() {
-        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail,new Callback<Discount>() {
+        mMercadoPago.getDirectDiscount(mTransactionAmount.toString(), mPayerEmail, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;

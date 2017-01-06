@@ -25,4 +25,6 @@ public interface DiscountsView {
     void showEmptyDiscountCodeError();
 
     void hideKeyboard();
+
+    void setSoftInputModeSummary();
 }
