@@ -247,6 +247,13 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
         mDiscountRowLinearLayout = (LinearLayout) findViewById(R.id.mpsdkDiscountRow);
 
+        mDiscountRowLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDiscountsActivity();
+            }
+        });
+
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -374,8 +381,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void stopLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
-        showDiscountRow();
-
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -446,7 +451,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         this.finish();
     }
 
-    public void startDiscountsActivity(View view){
+    public void startDiscountsActivity(){
         if (mPresenter.getDiscount() != null) {
             mPresenter.applyAmountDiscount();
         }
@@ -457,6 +462,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
                 .setPublicKey(mPresenter.getPublicKey())
                 .setPayerEmail(mPresenter.getPayerEmail())
                 .setAmount(mPresenter.getAmount())
+                .setDecorationPreference(mDecorationPreference)
                 .setDiscount(mPresenter.getDiscount());
 
         if (mPresenter.getDiscount() != null) {

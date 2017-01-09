@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import com.mercadopago.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.callbacks.OnSelectedCallback;
@@ -175,6 +176,13 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         mAppBar = (AppBarLayout) findViewById(R.id.mpsdkAppBar);
         mAppBarLayout = (CollapsingToolbarLayout) this.findViewById(R.id.mpsdkCollapsingToolbar);
         initializeToolbar();
+
+        mDiscountRowLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDiscountsActivity();
+            }
+        });
     }
 
     protected void onInvalidStart(String message) {
@@ -189,7 +197,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     private void showTimer() {
-        if (CheckoutTimer.getInstance().isTimerEnabled()){
+        if (CheckoutTimer.getInstance().isTimerEnabled()) {
             CheckoutTimer.getInstance().addObserver(this);
             mTimerTextView.setVisibility(View.VISIBLE);
             mTimerTextView.setText(CheckoutTimer.getInstance().getCurrentTime());
@@ -217,7 +225,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
             if (mDecorationPreference.isDarkFontEnabled()) {
                 mAppBarLayout.setExpandedTitleColor(mDecorationPreference.getDarkFontColor(this));
                 mAppBarLayout.setCollapsedTitleTextColor(mDecorationPreference.getDarkFontColor(this));
-                if(mTimerTextView != null) {
+                if (mTimerTextView != null) {
                     mTimerTextView.setTextColor(mDecorationPreference.getDarkFontColor(this));
                 }
             }
@@ -406,7 +414,6 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
 
             mPaymentVaultPresenter.setDiscount(discount);
             mPaymentVaultPresenter.applyAmountDiscount();
-
             showDiscountDetail(discount);
         }
     }
@@ -566,7 +573,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         this.finish();
     }
 
-    public void startDiscountsActivity(View view){
+    public void startDiscountsActivity() {
         if (mPaymentVaultPresenter.getDiscount() != null) {
             mPaymentVaultPresenter.applyAmountDiscount();
         }
@@ -574,10 +581,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
-                    .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
-                    .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
-                    .setAmount(mPaymentVaultPresenter.getAmount())
-                    .setDiscount(mPaymentVaultPresenter.getDiscount());
+                .setPublicKey(mPaymentVaultPresenter.getMerchantPublicKey())
+                .setPayerEmail(mPaymentVaultPresenter.getPayerEmail())
+                .setAmount(mPaymentVaultPresenter.getAmount())
+                .setDiscount(mPaymentVaultPresenter.getDiscount())
+                .setDecorationPreference(mDecorationPreference);
 
         if (mPaymentVaultPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPaymentVaultPresenter.getDiscount());
@@ -600,12 +608,12 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     private void setTotalAmountWithDiscount(Discount discount) {
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(),false,true);
+        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(), false, true);
         mDiscountAmountTextView.setText(formattedDiscountAmount);
     }
 
     private void setTotalAmount(Discount discount) {
-        Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(),false,true);
+        Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(), false, true);
 
         mTotalAmountTextView.setText(formattedText);
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -614,7 +622,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     private void setDiscountOff(Discount discount) {
         String discountOff;
 
-        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO) > 0) {
             discountOff = "$" + discount.getAmountOff();
             mDiscountOffTextView.setText(discountOff);
         } else {
@@ -627,7 +635,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
 
-        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(),false,true);
+        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(), false, true);
         mTotalAmountTextView.setText(formattedTotalAmount);
     }
 

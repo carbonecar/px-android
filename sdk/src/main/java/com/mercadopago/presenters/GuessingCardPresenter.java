@@ -2,7 +2,6 @@ package com.mercadopago.presenters;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
@@ -323,19 +322,16 @@ public class GuessingCardPresenter {
     }
 
     public void loadDiscount() {
-        //TODO discounts borrar
-//        mTransactionAmount = new BigDecimal(1000);
-//        mPayerEmail = "lalalala@lalalala";
-//        mPublicKey = "TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1";
-//        mInstallmentsEnabled = false;
-
-        if (hasToShowDiscount()) {
-                getDirectDiscount();
+        if (shouldGetDirectDiscount()) {
+            getDirectDiscount();
+        } else if (mDiscount != null) {
+            applyAmountDiscount();
+            mView.showDiscountDetail(mDiscount);
         }
     }
 
     private Boolean areDiscountParametersValid() {
-        return !isEmpty(mPayerEmail) && mTransactionAmount != null && mTransactionAmount.compareTo(BigDecimal.ZERO)>0;
+        return !isEmpty(mPayerEmail) && mTransactionAmount != null && mTransactionAmount.compareTo(BigDecimal.ZERO) > 0;
     }
 
     private void getDirectDiscount() {
@@ -350,7 +346,6 @@ public class GuessingCardPresenter {
 
             @Override
             public void failure(ApiException apiException) {
-                mView.showHasDiscount();
                 loadPaymentMethods();
             }
         });
@@ -402,7 +397,7 @@ public class GuessingCardPresenter {
     }
 
     public void loadBankDeals() {
-        if (!hasToShowDiscount()) {
+        if (!shouldGetDirectDiscount()) {
             getBankDealsAsync();
         }
     }
@@ -433,7 +428,7 @@ public class GuessingCardPresenter {
         if (mPaymentMethodGuessingController == null) {
             return;
         }
-        for (PaymentMethod paymentMethod: mPaymentMethodGuessingController.getGuessedPaymentMethods()) {
+        for (PaymentMethod paymentMethod : mPaymentMethodGuessingController.getGuessedPaymentMethods()) {
             if (paymentMethod.getPaymentTypeId().equals(paymentType.getId())) {
                 setPaymentMethod(paymentMethod);
             }
@@ -545,7 +540,7 @@ public class GuessingCardPresenter {
 
     public void enablePaymentTypeSelection(List<PaymentMethod> paymentMethodList) {
         List<PaymentType> paymentTypesList = new ArrayList<>();
-        for (PaymentMethod pm: paymentMethodList) {
+        for (PaymentMethod pm : paymentMethodList) {
             PaymentType type = new PaymentType(pm.getPaymentTypeId());
             paymentTypesList.add(type);
         }
@@ -775,11 +770,7 @@ public class GuessingCardPresenter {
         }
     }
 
-    public Boolean getInstallmentsEnabled() {
-        return mInstallmentsEnabled;
-    }
-
-    public Boolean hasToShowDiscount() {
-        return mDiscount == null && getInstallmentsEnabled() != null && !getInstallmentsEnabled() && areDiscountParametersValid();
+    public Boolean shouldGetDirectDiscount() {
+        return mDiscount == null && areDiscountParametersValid();
     }
 }

@@ -96,25 +96,26 @@ public class PaymentVaultPresenter {
     }
 
     public void getDirectDiscount() {
-//        mPaymentVaultView.showProgress();
-//        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
-//            @Override
-//            public void success(Discount discount) {
-//                mDiscount = discount;
-//                applyAmountDiscount();
-//                mPaymentVaultView.showDiscountDetail(discount);
-//                initPaymentVaultFlow();
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
-//                mPaymentVaultView.showHasDiscount();
-//                initPaymentVaultFlow();
-//            }
-//        });
+        mPaymentVaultView.showProgress();
+        mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail,new Callback<Discount>() {
+            @Override
+            public void success(Discount discount) {
+                if(mPaymentVaultView != null) {
+                    mDiscount = discount;
+                    applyAmountDiscount();
+                    mPaymentVaultView.showDiscountDetail(discount);
+                    initPaymentVaultFlow();
+                }
+            }
 
-        mPaymentVaultView.showHasDiscount();
-        initPaymentVaultFlow();
+            @Override
+            public void failure(ApiException apiException) {
+                if(mPaymentVaultView != null) {
+                    mPaymentVaultView.hideDiscountRow();
+                    initPaymentVaultFlow();
+                }
+            }
+        });
     }
 
     public void applyAmountDiscount() {
@@ -193,7 +194,7 @@ public class PaymentVaultPresenter {
         Payer payer = new Payer();
         payer.setAccessToken(mPayerAccessToken);
 
-        //mPaymentVaultView.showProgress();
+        mPaymentVaultView.showProgress();
         mMercadoPago.getPaymentMethodSearch(mAmount, excludedPaymentTypes, excludedPaymentMethodIds, payer, mAccountMoneyEnabled, new Callback<PaymentMethodSearch>() {
 
             @Override
@@ -408,7 +409,7 @@ public class PaymentVaultPresenter {
     }
 
     private void getCustomerAsync() {
-        //mPaymentVaultView.showProgress();
+        mPaymentVaultView.showProgress();
         MerchantServer.getCustomer(mPaymentVaultView.getContext(), mMerchantBaseUrl, mMerchantGetCustomerUri, mMerchantAccessToken, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {

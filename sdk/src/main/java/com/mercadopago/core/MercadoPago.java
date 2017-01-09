@@ -565,7 +565,7 @@ public class MercadoPago {
         activity.startActivityForResult(cardVaultIntent, CARD_VAULT_REQUEST_CODE);
     }
 
-    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount, Boolean directDiscountEnabled) {
+    private static void startDiscountsActivity(Activity activity, String key, String payerEmail, BigDecimal amount, Discount discount, Boolean directDiscountEnabled, DecorationPreference decorationPreference) {
 
         Intent discountsIntent = new Intent(activity, DiscountsActivity.class);
         discountsIntent.putExtra("merchantPublicKey", key);
@@ -573,6 +573,7 @@ public class MercadoPago {
         discountsIntent.putExtra("amount", amount.toString());
         discountsIntent.putExtra("directDiscountEnabled", directDiscountEnabled);
         discountsIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
+        discountsIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
 
         activity.startActivityForResult(discountsIntent, DISCOUNTS_REQUEST_CODE);
     }
@@ -1191,7 +1192,7 @@ public class MercadoPago {
             if (this.mPayerEmail == null ) throw new IllegalStateException("email is null");
             if (this.mAmount == null) throw new IllegalStateException("amount is null");
 
-            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount, this.mDirectDiscountEnabled);
+            MercadoPago.startDiscountsActivity(this.mActivity, this.mKey, this.mPayerEmail, this.mAmount, this.mDiscount, this.mDirectDiscountEnabled, this.mDecorationPreference);
         }
 
         public void startPaymentMethodsActivity() {

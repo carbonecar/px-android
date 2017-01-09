@@ -42,7 +42,6 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="2dp"
-            android:onClick="startDiscountsActivity"
             android:clickable="true"
             android:src="@drawable/mpsdk_arrow_right_white"/>
     </LinearLayout>
@@ -67,7 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginRight="4dp"
-            android:onClick="startDiscountsActivity"
             android:clickable="true"
             android:text="Tengo un descuento"
             android:textColor="#009EE3"
@@ -78,7 +76,6 @@
             android:layout_height="20dp"
             android:layout_marginTop="2dp"
             android:layout_marginRight="5dp"
-            android:onClick="startDiscountsActivity"
             android:clickable="true"
             android:src="@drawable/mpsdk_arrow_right_blue"/>
     </LinearLayout>

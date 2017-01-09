@@ -2,6 +2,7 @@ package com.mercadopago;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.LinkAddress;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -210,6 +211,16 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
         showTransactionRow();
         showDiscountRow();
         showTotalRow();
+        decorateSummary();
+    }
+
+    private void decorateSummary() {
+        if(mDecorationPreference != null && mDecorationPreference.hasColors()) {
+            mReviewDiscountSummaryContainer.setBackgroundColor(mDecorationPreference.getLighterColor());
+            if(mDecorationPreference.isDarkFontEnabled()) {
+                mCloseImage.setColorFilter(mDecorationPreference.getDarkFontColor(this), PorterDuff.Mode.SRC_ATOP);
+            }
+         }
     }
 
     private void showTotalRow() {

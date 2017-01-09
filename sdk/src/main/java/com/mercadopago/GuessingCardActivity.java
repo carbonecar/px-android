@@ -399,6 +399,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
         mPresenter.loadDiscount();
         mPresenter.loadPaymentMethods();
+        fullScrollDown();
     }
 
     private void initializeViews() {
@@ -441,11 +442,15 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         mScrollView = (ScrollView) findViewById(R.id.mpsdkScrollViewContainer);
         mInputContainer.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
-
         mDiscountOffTextView = (MPTextView) findViewById(R.id.mpsdkDiscountOff);
         mDiscountDetail = (LinearLayout) findViewById(R.id.mpsdkDiscountDetail);
 
-        fullScrollDown();
+        mDiscountDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDiscountsActivity();
+            }
+        });
     }
 
     @Override
@@ -583,7 +588,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                 mBankDealsTextView.setText(getString(R.string.mpsdk_bank_deals_action));
             }
 
-            if (!mPresenter.hasToShowDiscount()) {
+            if (!mPresenter.shouldGetDirectDiscount()) {
                 mBankDealsTextView.setVisibility(View.VISIBLE);
             }
 
@@ -1499,7 +1504,7 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         this.finish();
     }
 
-    public void startDiscountsActivity(View view){
+    public void startDiscountsActivity(){
         if (mPresenter.getDiscount() != null) {
             mPresenter.applyAmountDiscount();
         }
@@ -1510,7 +1515,8 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
                     .setPublicKey(mPresenter.getPublicKey())
                     .setPayerEmail(mPresenter.getPayerEmail())
                     .setAmount(mPresenter.getTransactionAmount())
-                    .setDiscount(mPresenter.getDiscount());;
+                    .setDecorationPreference(mDecorationPreference)
+                    .setDiscount(mPresenter.getDiscount());
 
         if (mPresenter.getDiscount() != null) {
             mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());

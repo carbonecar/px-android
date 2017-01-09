@@ -192,19 +192,18 @@ public class InstallmentsPresenter {
     }
 
     private void getDirectDiscount() {
-        mView.showDiscountRow();
-
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
                 mDiscount = discount;
                 applyAmountDiscount();
                 mView.showDiscountDetail(discount);
+                loadPayerCosts();
             }
 
             @Override
             public void failure(ApiException apiException) {
-                mView.showHasDiscount();
+                mView.hideDiscountRow();
                 loadPayerCosts();
             }
         });
@@ -300,6 +299,9 @@ public class InstallmentsPresenter {
         } else {
             mView.showHeader();
             mView.initializeInstallments(mPayerCosts);
+        }
+        if(mDiscount != null) {
+            mView.showDiscountRow();
         }
     }
 

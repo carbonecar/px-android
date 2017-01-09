@@ -10,10 +10,10 @@
     android:background="@color/mpsdk_background_blue">
 
     <ImageView
-        android:layout_margin="15dp"
+        android:padding="15dp"
         android:id="@+id/mpsdkCloseImage"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="top|start"
         android:src="@drawable/mpsdk_close"/>
 
