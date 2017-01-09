@@ -1465,11 +1465,13 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
 
     private void resolveDiscountRequest(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
-            mPresenter.setDiscount(discount);
-            mPresenter.applyAmountDiscount();
+            if (mPresenter.getDiscount() == null) {
+                Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+                mPresenter.setDiscount(discount);
+                mPresenter.applyAmountDiscount();
 
-            showDiscountDetail(discount);
+                showDiscountDetail(discount);
+            }
         }
     }
 

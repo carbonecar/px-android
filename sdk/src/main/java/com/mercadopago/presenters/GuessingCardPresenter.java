@@ -325,7 +325,7 @@ public class GuessingCardPresenter {
         if (shouldGetDirectDiscount()) {
             getDirectDiscount();
         } else if (mDiscount != null) {
-            applyAmountDiscount();
+            mHasToSubtractDiscount = false;
             mView.showDiscountDetail(mDiscount);
         }
     }
