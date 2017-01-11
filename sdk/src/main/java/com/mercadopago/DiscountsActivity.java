@@ -224,24 +224,21 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     }
 
     private void showTotalRow() {
-        BigDecimal total = mDiscountsPresenter.getDiscount().getTransactionAmount().subtract(mDiscountsPresenter.getCouponAmount());
-        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber( total, mDiscountsPresenter.getDiscount().getCurrencyId(), false, true);
-        mReviewSummaryTotalAmount.setText(formattedTotalAmount);
+        mReviewSummaryTotalAmount.setText(getFormattedAmount(mDiscountsPresenter.getDiscount().getTransactionAmountWithDiscount(), mDiscountsPresenter.getDiscount().getCurrencyId()));
     }
 
     private void showDiscountRow() {
-        StringBuilder formattedDiscountAmountBuilder = new StringBuilder();
-        Spanned spannedDiscountAmount;
+        StringBuilder discountAmountBuilder = new StringBuilder();
+        Spanned discountAmount;
 
-        formattedDiscountAmountBuilder.append("-");
-        formattedDiscountAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId()));
-        spannedDiscountAmount = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId(), formattedDiscountAmountBuilder.toString(), false, true);
-        mReviewSummaryDiscountAmount.setText(spannedDiscountAmount);
+        discountAmountBuilder.append("-");
+        discountAmountBuilder.append(CurrenciesUtil.formatNumber(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId()));
+        discountAmount = CurrenciesUtil.formatCurrencyInText(mDiscountsPresenter.getCouponAmount(), mDiscountsPresenter.getCurrencyId(), discountAmountBuilder.toString(), false, true);
+        mReviewSummaryDiscountAmount.setText(discountAmount);
     }
 
     private void showTransactionRow() {
-        Spanned formattedTransactionAmount = CurrenciesUtil.formatNumber(mDiscountsPresenter.getDiscount().getTransactionAmount(),mDiscountsPresenter.getDiscount().getCurrencyId(), false, true);
-        mReviewSummaryProductAmount.setText(formattedTransactionAmount);
+        mReviewSummaryProductAmount.setText(getFormattedAmount(mDiscountsPresenter.getDiscount().getTransactionAmount(), mDiscountsPresenter.getDiscount().getCurrencyId()));
     }
 
     private void showSummaryTitle() {
@@ -327,5 +324,11 @@ public class DiscountsActivity extends AppCompatActivity implements DiscountsVie
     @Override
     public void setSoftInputModeSummary() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
+    private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
+        String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
+        return amountText;
     }
 }

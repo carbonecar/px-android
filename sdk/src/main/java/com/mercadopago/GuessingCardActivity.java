@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,6 +64,7 @@ import com.mercadopago.uicontrollers.card.CardView;
 import com.mercadopago.uicontrollers.card.IdentificationCardView;
 import com.mercadopago.util.ApiUtil;
 import com.mercadopago.util.ColorsUtil;
+import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.MPAnimationUtils;
@@ -1543,13 +1545,10 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
     }
 
     private void setDiscountOff(Discount discount) {
-        String discountOff;
-
         if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            discountOff = "$" + discount.getAmountOff();
-            mDiscountOffTextView.setText(discountOff);
+            mDiscountOffTextView.setText(getFormattedAmount(discount.getAmountOff(), discount.getCurrencyId()));
         } else {
-            discountOff = discount.getPercentOff() + "%";
+            String discountOff = discount.getPercentOff() + " %";
             mDiscountOffTextView.setText(discountOff);
         }
     }
@@ -1563,5 +1562,11 @@ public class GuessingCardActivity extends AppCompatActivity implements GuessingC
         } else {
             mHasDiscount.setVisibility(View.VISIBLE);
         }
+    }
+
+    private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
+        String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
+        return amountText;
     }
 }

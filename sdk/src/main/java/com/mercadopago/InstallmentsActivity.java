@@ -486,25 +486,19 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     }
 
     private void setTotalAmountWithDiscount(Discount discount) {
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(),false,true);
-        mDiscountAmountTextView.setText(formattedDiscountAmount);
+        mDiscountAmountTextView.setText(getFormattedAmount(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId()));
     }
 
     private void setTotalAmount(Discount discount) {
-        Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(),false,true);
-
-        mTotalAmountTextView.setText(formattedText);
+        mTotalAmountTextView.setText(getFormattedAmount(discount.getTransactionAmount(), discount.getCurrencyId()));
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     private void setDiscountOff(Discount discount) {
-        String discountOff;
-
         if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            discountOff = "$" + discount.getAmountOff();
-            mDiscountOffTextView.setText(discountOff);
+            mDiscountOffTextView.setText(getFormattedAmount(discount.getAmountOff(), discount.getCurrencyId()));
         } else {
-            discountOff = discount.getPercentOff() + "%";
+            String discountOff = discount.getPercentOff() + " %";
             mDiscountOffTextView.setText(discountOff);
         }
     }
@@ -512,9 +506,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
-
-        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId(),false,true);
-        mTotalAmountTextView.setText(formattedTotalAmount);
+        mTotalAmountTextView.setText(getFormattedAmount(mPresenter.getAmount(), mPresenter.getSite().getCurrencyId()));
     }
 
     @Override
@@ -527,5 +519,11 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void hideDiscountRow() {
         mDiscountRowLinearLayout.setVisibility(View.GONE);
+    }
+
+    private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
+        String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
+        return amountText;
     }
 }

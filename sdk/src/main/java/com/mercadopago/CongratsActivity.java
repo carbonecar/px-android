@@ -156,13 +156,11 @@ public class CongratsActivity extends MercadoPagoActivity {
     }
 
     private void setTotalAmountWithDiscount() {
-        Spanned formattedText = CurrenciesUtil.formatNumber(mDiscount.getTransactionAmountWithDiscount(), mPayment.getCurrencyId(),false,true);
-        mDiscountAmount.setText(formattedText);
+        mDiscountAmount.setText(getFormattedAmount(mDiscount.getTransactionAmountWithDiscount(), mPayment.getCurrencyId()));
     }
 
     private void setTotalAmountWithoutDiscount() {
-        Spanned formattedText = CurrenciesUtil.formatNumber(mDiscount.getTransactionAmount(), mPayment.getCurrencyId(),false,true);
-        mTotalAmount.setText(formattedText);
+        mTotalAmount.setText(getFormattedAmount(mDiscount.getTransactionAmount(), mPayment.getCurrencyId()));
         mTotalAmount.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
@@ -176,10 +174,9 @@ public class CongratsActivity extends MercadoPagoActivity {
 
     private void setDiscountOff() {
         if (mDiscount.getAmountOff() != null && mDiscount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
-            String discountOff = "$" + mDiscount.getAmountOff();
-            mDiscountOff.setText(discountOff);
+            mDiscountOff.setText(getFormattedAmount(mDiscount.getAmountOff(), mDiscount.getCurrencyId()));
         } else {
-            String discountOff = mDiscount.getPercentOff() + "%";
+            String discountOff = mDiscount.getPercentOff() + " %";
             mDiscountOff.setText(discountOff);
         }
     }
@@ -347,5 +344,11 @@ public class CongratsActivity extends MercadoPagoActivity {
                 }
             }
         }).start();
+    }
+
+    private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
+        String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
+        return amountText;
     }
 }

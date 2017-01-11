@@ -30,6 +30,7 @@ import com.mercadopago.decorations.GridSpacingItemDecoration;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
+import com.mercadopago.model.Currency;
 import com.mercadopago.model.CustomSearchItem;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Discount;
@@ -608,25 +609,20 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     private void setTotalAmountWithDiscount(Discount discount) {
-        Spanned formattedDiscountAmount = CurrenciesUtil.formatNumber(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId(), false, true);
-        mDiscountAmountTextView.setText(formattedDiscountAmount);
+        mDiscountAmountTextView.setText(getFormattedAmount(discount.getTransactionAmountWithDiscount(), discount.getCurrencyId()));
     }
 
     private void setTotalAmount(Discount discount) {
-        Spanned formattedText = CurrenciesUtil.formatNumber(discount.getTransactionAmount(), discount.getCurrencyId(), false, true);
-
-        mTotalAmountTextView.setText(formattedText);
+        mTotalAmountTextView.setText(getFormattedAmount(discount.getTransactionAmount(), discount.getCurrencyId()));
         mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     private void setDiscountOff(Discount discount) {
-        String discountOff;
-
-        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO) > 0) {
-            discountOff = "$" + discount.getAmountOff();
-            mDiscountOffTextView.setText(discountOff);
+        if (discount.getAmountOff() != null && discount.getAmountOff().compareTo(BigDecimal.ZERO)>0) {
+            String amount = "$ " + discount.getAmountOff();
+            mDiscountOffTextView.setText(amount);
         } else {
-            discountOff = discount.getPercentOff() + "%";
+            String discountOff = discount.getPercentOff() + " %";
             mDiscountOffTextView.setText(discountOff);
         }
     }
@@ -634,9 +630,7 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     @Override
     public void showHasDiscount() {
         mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
-
-        Spanned formattedTotalAmount = CurrenciesUtil.formatNumber(mPaymentVaultPresenter.getAmount(), mPaymentVaultPresenter.getSite().getCurrencyId(), false, true);
-        mTotalAmountTextView.setText(formattedTotalAmount);
+        mTotalAmountTextView.setText(getFormattedAmount(mPaymentVaultPresenter.getAmount(),mPaymentVaultPresenter.getSite().getCurrencyId()));
     }
 
     @Override
@@ -648,4 +642,11 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     public void hideDiscountRow() {
         mDiscountRowLinearLayout.setVisibility(View.GONE);
     }
+
+    private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
+        String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
+        Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
+        return amountText;
+    }
 }
+

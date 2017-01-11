@@ -105,11 +105,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:paddingLeft="3dp"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="3dp"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:adjustViewBounds="true"
                         android:textColor="@color/mpsdk_white"
-                        android:background="@drawable/mpsdk_discount_applied"/>
+                        android:background="@drawable/mpsdk_discount_applied"
+                        tools:text="$ 100"/>
 
                     <ImageView
                         android:id="@+id/mpsdkDiscountArrow"
