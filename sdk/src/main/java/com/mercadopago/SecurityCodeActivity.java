@@ -40,7 +40,7 @@ import com.mercadopago.views.SecurityCodeActivityView;
  * Created by vaserber on 10/26/16.
  */
 
-public class SecurityCodeActivity extends AppCompatActivity implements SecurityCodeActivityView, TimerObserver {
+public class SecurityCodeActivity extends MercadoPagoBaseActivity implements SecurityCodeActivityView, TimerObserver {
 
     protected SecurityCodePresenter mPresenter;
     protected Activity mActivity;

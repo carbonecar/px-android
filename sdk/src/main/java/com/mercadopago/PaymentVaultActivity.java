@@ -55,7 +55,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentVaultActivity extends AppCompatActivity implements PaymentVaultView, TimerObserver {
+public class PaymentVaultActivity extends MercadoPagoBaseActivity implements PaymentVaultView, TimerObserver {
 
     // Local vars
     protected DecorationPreference mDecorationPreference;

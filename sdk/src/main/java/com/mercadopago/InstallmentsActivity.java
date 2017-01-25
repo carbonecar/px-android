@@ -49,7 +49,7 @@ import java.util.List;
  * Created by vaserber on 9/29/16.
  */
 
-public class InstallmentsActivity extends AppCompatActivity implements InstallmentsActivityView, TimerObserver {
+public class InstallmentsActivity extends MercadoPagoBaseActivity implements InstallmentsActivityView, TimerObserver {
 
     protected InstallmentsPresenter mPresenter;
     protected Activity mActivity;

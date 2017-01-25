@@ -13,7 +13,7 @@ import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.util.JsonUtil;
 
-public abstract class MercadoPagoActivity extends AppCompatActivity {
+public abstract class MercadoPagoActivity extends MercadoPagoBaseActivity {
 
     private boolean mActivityActive;
     protected DecorationPreference mDecorationPreference;

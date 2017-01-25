@@ -77,7 +77,7 @@ import java.util.List;
  * Created by vaserber on 10/13/16.
  */
 
-public class GuessingCardActivity extends AppCompatActivity implements GuessingCardActivityView, TimerObserver {
+public class GuessingCardActivity extends MercadoPagoBaseActivity implements GuessingCardActivityView, TimerObserver {
 
     public static final String CARD_NUMBER_INPUT = "cardNumber";
     public static final String CARDHOLDER_NAME_INPUT = "cardHolderName";

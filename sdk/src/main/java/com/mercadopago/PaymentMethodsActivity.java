@@ -35,7 +35,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 
-public class PaymentMethodsActivity extends AppCompatActivity implements PaymentMethodsView {
+public class PaymentMethodsActivity extends MercadoPagoBaseActivity implements PaymentMethodsView {
 
     protected DecorationPreference mDecorationPreference;
     protected String mMerchantPublicKey;

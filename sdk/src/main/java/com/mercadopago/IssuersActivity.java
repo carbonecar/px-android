@@ -46,7 +46,7 @@ import java.util.List;
  * Created by vaserber on 10/11/16.
  */
 
-public class IssuersActivity extends AppCompatActivity implements IssuersActivityView, TimerObserver {
+public class IssuersActivity extends MercadoPagoBaseActivity implements IssuersActivityView, TimerObserver {
 
     protected IssuersPresenter mPresenter;
     protected Activity mActivity;
