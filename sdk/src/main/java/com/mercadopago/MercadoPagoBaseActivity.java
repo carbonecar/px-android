@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public abstract class MercadoPagoBaseActivity extends AppCompatActivity {
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         String language = getResources().getConfiguration().locale.getLanguage();
         String country = getResources().getConfiguration().locale.getCountry();
@@ -26,7 +26,7 @@ public abstract class MercadoPagoBaseActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         String language = savedInstanceState.getString("language");
         String country = savedInstanceState.getString("country");
-        if(!TextUtils.isEmpty(language) && !TextUtils.isEmpty(country)) {
+        if (!TextUtils.isEmpty(language) && !TextUtils.isEmpty(country)) {
             updateLanguage(language, country);
         }
     }
@@ -35,7 +35,7 @@ public abstract class MercadoPagoBaseActivity extends AppCompatActivity {
         final Configuration cfg = new Configuration();
         final Locale current = getResources().getConfiguration().locale;
         cfg.locale = new Locale(language, country);
-        if (cfg.locale.getLanguage() != null && !current.getLanguage().equals(cfg.locale)) {
+        if (cfg.locale.getLanguage() != null && !current.getLanguage().equals(cfg.locale.getLanguage())) {
             getResources().updateConfiguration(cfg, null);
         }
     }
