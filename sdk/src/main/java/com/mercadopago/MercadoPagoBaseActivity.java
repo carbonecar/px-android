@@ -12,23 +12,28 @@ import java.util.Locale;
  * Created by mreverter on 1/25/17.
  */
 public abstract class MercadoPagoBaseActivity extends AppCompatActivity {
+
+    private String mLanguage;
+    private String mCountry;
+
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        String language = getResources().getConfiguration().locale.getLanguage();
-        String country = getResources().getConfiguration().locale.getCountry();
-        outState.putString("language", language);
-        outState.putString("country", country);
+    protected void onCreate(Bundle savedInstance) {
+        if(savedInstance == null) {
+            mLanguage = getResources().getConfiguration().locale.getLanguage();
+            mCountry = getResources().getConfiguration().locale.getCountry();
+        } else {
+            mLanguage = savedInstance.getString("language");
+            mCountry = savedInstance.getString("country");
+        }
+        updateLanguage(mLanguage, mCountry);
+        super.onCreate(savedInstance);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        String language = savedInstanceState.getString("language");
-        String country = savedInstanceState.getString("country");
-        if (!TextUtils.isEmpty(language) && !TextUtils.isEmpty(country)) {
-            updateLanguage(language, country);
-        }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("language", mLanguage);
+        outState.putString("country", mCountry);
     }
 
     private void updateLanguage(@NonNull String language, @NonNull String country) {
