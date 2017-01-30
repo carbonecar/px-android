@@ -46,6 +46,9 @@ public class FrontCardView {
     public static final int NEUTRAL_CARD_COLOR = R.color.mpsdk_white;
     public static final int FULL_TEXT_VIEW_COLOR = R.color.mpsdk_base_text_alpha;
 
+    public static final String NEUTRAL_CARD_COLOR_NAME = "mpsdk_white";
+    public static final String FULL_TEXT_VIEW_COLOR_NAME = "mpsdk_base_text_alpha";
+
     private Context mContext;
     private View mView;
     private String mMode;
@@ -358,7 +361,11 @@ public class FrontCardView {
 
     private int getCardColor(PaymentMethod paymentMethod) {
         String colorName = "mpsdk_" + paymentMethod.getId().toLowerCase();
-        return mContext.getResources().getIdentifier(colorName, "color", mContext.getPackageName());
+        int color = mContext.getResources().getIdentifier(colorName, "color", mContext.getPackageName());
+        if (color == 0) {
+            color = mContext.getResources().getIdentifier(NEUTRAL_CARD_COLOR_NAME, "color", mContext.getPackageName());
+        }
+        return color;
     }
 
     private int getCardFontColor(PaymentMethod paymentMethod) {
@@ -366,7 +373,11 @@ public class FrontCardView {
             return FULL_TEXT_VIEW_COLOR;
         }
         String colorName = "mpsdk_font_" + paymentMethod.getId().toLowerCase();
-        return mContext.getResources().getIdentifier(colorName, "color", mContext.getPackageName());
+        int color = mContext.getResources().getIdentifier(colorName, "color", mContext.getPackageName());
+        if (color == 0) {
+            color = mContext.getResources().getIdentifier(FULL_TEXT_VIEW_COLOR_NAME, "color", mContext.getPackageName());
+        }
+        return color;
     }
 
     private void resize() {
