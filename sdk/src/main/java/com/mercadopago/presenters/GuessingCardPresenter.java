@@ -779,7 +779,7 @@ public class GuessingCardPresenter {
     }
 
     public Boolean showDiscount() {
-        return mDiscount == null && isAmountValid();
+        return mDiscountEnabled && mDiscount == null && isAmountValid();
     }
 
     public void setShowBankDeals(Boolean showBankDeals) {

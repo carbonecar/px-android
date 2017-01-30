@@ -160,6 +160,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
         mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
         mCongratsDisplay = this.getIntent().getIntExtra("congratsDisplay", -1);
         mBinaryModeEnabled = this.getIntent().getBooleanExtra("binaryModeEnabled", false);
+        mDiscount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
         mDiscountEnabled = this.getIntent().getBooleanExtra("discountEnabled", true);
     }
 
@@ -382,6 +383,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
                 .setAmount(mCheckoutPreference.getAmount())
                 .setPaymentMethodSearch(mPaymentMethodSearch)
                 .setDiscount(mDiscount)
+                .setDiscountEnabled(mDiscountEnabled)
                 .setPaymentPreference(mCheckoutPreference.getPaymentPreference())
                 .setDecorationPreference(mDecorationPreference)
                 .setCards(mSavedCards)
@@ -525,7 +527,8 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
                 .setDecorationPreference(mDecorationPreference)
                 .setAmount(mCheckoutPreference.getAmount())
                 .setSite(mSite)
-                .setInstallmentsEnabled(true)
+                .setInstallmentsEnabled(false)
+//                .setDiscount(mDiscount)
                 .setDiscountEnabled(mDiscountEnabled)
                 .setSupportedPaymentMethods(mPaymentMethodSearch.getPaymentMethods())
                 .setPaymentRecovery(mPaymentRecovery)

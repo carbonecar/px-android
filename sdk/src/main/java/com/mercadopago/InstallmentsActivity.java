@@ -364,7 +364,6 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
     public void stopLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
         mDiscountFrameLayout.setVisibility(View.VISIBLE);
-        mPresenter.initializeDiscountRow();
 
         LayoutUtil.showRegularLayout(this);
     }

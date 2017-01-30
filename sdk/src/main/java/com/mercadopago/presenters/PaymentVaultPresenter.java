@@ -1,6 +1,8 @@
 package com.mercadopago.presenters;
 
 
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
+
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
@@ -54,6 +56,7 @@ public class PaymentVaultPresenter {
     private PaymentPreference mPaymentPreference;
     private BigDecimal mAmount;
     private Boolean mAccountMoneyEnabled;
+    private Boolean mDiscountEnabled;
     private Integer mMaxSavedCards;
 
     public void attachView(PaymentVaultView paymentVaultView) {
@@ -71,7 +74,15 @@ public class PaymentVaultPresenter {
             initializeDiscountRow();
             showSelectedItemChildren();
         } else {
+            initPaymentVaultDiscountFlow();
+        }
+    }
+
+    private void initPaymentVaultDiscountFlow() {
+        if (mDiscountEnabled) {
             loadDiscount();
+        } else {
+            initPaymentVaultFlow();
         }
     }
 
@@ -541,6 +552,14 @@ public class PaymentVaultPresenter {
 
     public String getPayerEmail() {
         return mPayerEmail;
+    }
+
+    public void setDiscountEnabled(Boolean discountEnabled) {
+        this.mDiscountEnabled = discountEnabled;
+    }
+
+    public Boolean getDiscountEnabled() {
+        return this.mDiscountEnabled;
     }
 
     public void setMaxSavedCards(int maxSavedCards) {

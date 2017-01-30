@@ -21,6 +21,7 @@ import com.mercadopago.exceptions.MPException;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CheckoutPreference;
 import com.mercadopago.model.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Payment;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
@@ -94,6 +95,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     private void startMercadoPagoCheckout() {
 
         //TODO discounts, borrar
+        Discount discount = new Discount();
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 
         new MercadoPago.StartActivityBuilder()
@@ -101,6 +103,8 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")
                 .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
                 .setDiscountEnabled(false)
+                //TODO discounts validar que el cupon que me ingresan tenga todos los campos correctos
+//                .setDiscount(discount)
                 .setDecorationPreference(decorationPreference) //Optional
                 .startCheckoutActivity();
 

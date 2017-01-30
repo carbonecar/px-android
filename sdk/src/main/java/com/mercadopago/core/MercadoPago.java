@@ -342,7 +342,7 @@ public class MercadoPago {
     }
 
     private static void startCheckoutActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl, String merchantGetCustomerUri, String merchantAccessToken, String checkoutPreferenceId,
-                                              Boolean showBankDeals, Boolean binaryModeEnabled, Integer congratsDisplay, DecorationPreference decorationPreference, Boolean discountEnabled) {
+                                              Boolean showBankDeals, Boolean binaryModeEnabled, Integer congratsDisplay, DecorationPreference decorationPreference, Discount discount, Boolean discountEnabled) {
 
         Intent checkoutIntent = new Intent(activity, CheckoutActivity.class);
         checkoutIntent.putExtra("merchantPublicKey", merchantPublicKey);
@@ -354,6 +354,7 @@ public class MercadoPago {
         checkoutIntent.putExtra("congratsDisplay", congratsDisplay);
         checkoutIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         checkoutIntent.putExtra("binaryModeEnabled", binaryModeEnabled);
+        checkoutIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
         checkoutIntent.putExtra("discountEnabled", discountEnabled);
         activity.startActivityForResult(checkoutIntent, CHECKOUT_REQUEST_CODE);
     }
@@ -605,7 +606,8 @@ public class MercadoPago {
                                                   String merchantGetCustomerUri, String merchantAccessToken, BigDecimal amount,
                                                   Site site, Boolean installmentsEnabled, Boolean showBankDeals, PaymentPreference paymentPreference,
                                                   DecorationPreference decorationPreference, PaymentMethodSearch paymentMethodSearch, List<Card> cards,
-                                                  String payerAccessToken, Boolean accountMoneyEnabled, Integer maxSavedCards, String payerEmail, Discount discount) {
+                                                  String payerAccessToken, Boolean accountMoneyEnabled, Integer maxSavedCards, String payerEmail,
+                                                  Discount discount, Boolean discountEnabled) {
 
         Intent vaultIntent = new Intent(activity, PaymentVaultActivity.class);
         vaultIntent.putExtra("merchantPublicKey", merchantPublicKey);
@@ -628,6 +630,7 @@ public class MercadoPago {
         vaultIntent.putExtra("accountMoneyEnabled", accountMoneyEnabled);
         vaultIntent.putExtra("payerEmail", payerEmail);
         vaultIntent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
+        vaultIntent.putExtra("discountEnabled", discountEnabled);
         vaultIntent.putExtra("maxSavedCards", maxSavedCards);
 
         activity.startActivityForResult(vaultIntent, PAYMENT_VAULT_REQUEST_CODE);
@@ -1030,7 +1033,7 @@ public class MercadoPago {
             if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
                 MercadoPago.startCheckoutActivity(this.mActivity, this.mKey, this.mMerchantBaseUrl, this.mMerchantGetCustomerUri, this.mMerchantAccessToken,
                         this.mCheckoutPreferenceId, this.mShowBankDeals, this.mBinaryModeEnabled, this.mCongratsDisplay, this.mDecorationPreference,
-                        this.mDiscountEnabled);
+                        this.mDiscount, this.mDiscountEnabled);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }
@@ -1255,7 +1258,7 @@ public class MercadoPago {
                         this.mAmount, this.mSite, this.mInstallmentsEnabled, this.mShowBankDeals,
                         this.mPaymentPreference, this.mDecorationPreference, this.mPaymentMethodSearch,
                         this.mCards, this.mPayerAccessToken, this.mAccountMoneyEnabled, this.mMaxSavedCards,
-                        this.mPayerEmail, this.mDiscount);
+                        this.mPayerEmail, this.mDiscount, this.mDiscountEnabled);
             } else {
                 throw new RuntimeException("Unsupported key type for this method");
             }

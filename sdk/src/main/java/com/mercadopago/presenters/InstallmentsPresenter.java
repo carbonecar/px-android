@@ -1,6 +1,7 @@
 package com.mercadopago.presenters;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
 
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
@@ -178,6 +179,14 @@ public class InstallmentsPresenter {
     }
 
     public void initialize() {
+        if (mDiscountEnabled) {
+            loadDiscount();
+        } else {
+            loadPayerCosts();
+        }
+    }
+
+    private void loadDiscount() {
         if (mDiscount == null) {
             if (isAmountValid()) {
                 getDirectDiscount();
@@ -190,7 +199,7 @@ public class InstallmentsPresenter {
         }
     }
 
-    public Boolean isAmountValid() {
+    private Boolean isAmountValid() {
         return mAmount != null && mAmount.compareTo(BigDecimal.ZERO) > 0;
     }
 
@@ -245,7 +254,7 @@ public class InstallmentsPresenter {
         this.mDiscountEnabled = discountEnabled;
     }
 
-    public void loadPayerCosts() {
+    private void loadPayerCosts() {
         if (werePayerCostsSet()) {
             resolvePayerCosts(mPayerCosts);
         } else {
@@ -259,7 +268,7 @@ public class InstallmentsPresenter {
         }
     }
 
-    public void getInstallmentsAsync() {
+    private void getInstallmentsAsync() {
         if (mMercadoPago == null) return;
         mView.showLoadingView();
         mMercadoPago.getInstallments(mBin, getAmount(), mIssuerId, mPaymentMethod.getId(),
