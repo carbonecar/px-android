@@ -86,6 +86,7 @@ public class GuessingCardPresenter {
     private Boolean mShowBankDeals;
 
     //Discount
+    private Boolean mDiscountEnabled;
     private String mPayerEmail;
     private BigDecimal mTransactionAmount;
     private Discount mDiscount;
@@ -374,6 +375,10 @@ public class GuessingCardPresenter {
 
     public String getPayerEmail() {
         return mPayerEmail;
+    }
+
+    public void setDiscountEnabled(Boolean discountEnabled) {
+        this.mDiscountEnabled = discountEnabled;
     }
 
     public BigDecimal getTransactionAmount() {

@@ -144,6 +144,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
     protected NestedScrollView mScrollView;
     protected String mCustomerId;
     protected Boolean mBinaryModeEnabled;
+    protected Boolean mDiscountEnabled;
 
     @Override
     protected void setContentView() {
@@ -159,6 +160,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
         mCheckoutPreferenceId = this.getIntent().getStringExtra("checkoutPreferenceId");
         mCongratsDisplay = this.getIntent().getIntExtra("congratsDisplay", -1);
         mBinaryModeEnabled = this.getIntent().getBooleanExtra("binaryModeEnabled", false);
+        mDiscountEnabled = this.getIntent().getBooleanExtra("discountEnabled", true);
     }
 
     @Override
@@ -524,6 +526,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
                 .setAmount(mCheckoutPreference.getAmount())
                 .setSite(mSite)
                 .setInstallmentsEnabled(true)
+                .setDiscountEnabled(mDiscountEnabled)
                 .setSupportedPaymentMethods(mPaymentMethodSearch.getPaymentMethods())
                 .setPaymentRecovery(mPaymentRecovery)
                 .startCardVaultActivity();

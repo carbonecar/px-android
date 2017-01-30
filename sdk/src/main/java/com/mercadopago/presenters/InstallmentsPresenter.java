@@ -49,6 +49,7 @@ public class InstallmentsPresenter {
     private PaymentPreference mPaymentPreference;
     private CardInfo mCardInfo;
     private Discount mDiscount;
+    private Boolean mDiscountEnabled;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -238,6 +239,10 @@ public class InstallmentsPresenter {
 
     public String getPayerEmail() {
         return mPayerEmail;
+    }
+
+    public void setDiscountEnabled(Boolean discountEnabled) {
+        this.mDiscountEnabled = discountEnabled;
     }
 
     public void loadPayerCosts() {

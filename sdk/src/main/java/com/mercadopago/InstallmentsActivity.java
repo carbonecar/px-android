@@ -125,6 +125,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
 
         Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
+        Boolean discountEnabled = this.getIntent().getBooleanExtra("discountEnabled", true);
 
         mPresenter.setPaymentMethod(paymentMethod);
         mPresenter.setPublicKey(publicKey);
@@ -132,6 +133,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         mPresenter.setAmount(amount);
         mPresenter.setPayerEmail(payerEmail);
         mPresenter.setDiscount(discount);
+        mPresenter.setDiscountEnabled(discountEnabled);
         mPresenter.setSite(site);
         mPresenter.setPayerCosts(payerCosts);
         mPresenter.setPaymentPreference(paymentPreference);
