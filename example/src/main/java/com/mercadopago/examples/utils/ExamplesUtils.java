@@ -50,6 +50,7 @@ public class ExamplesUtils {
     public static final String DUMMY_MERCHANT_CREATE_PAYMENT_URI = "/checkout/examples/doPayment";
     //public static final String DUMMY_MERCHANT_GET_DISCOUNT_URI = "/checkout/examples/getDiscounts";
 
+
     // * Merchant access token
     public static final String DUMMY_MERCHANT_ACCESS_TOKEN = "mla-cards-data";
     // DUMMY_MERCHANT_ACCESS_TOKEN_AR = "mla-cards-data";

@@ -96,6 +96,9 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setPublicKey("TEST-d36977bd-46a7-4bab-918d-c6ff94816d58")
                 .setCheckoutPreferenceId("228175958-c34e807e-c222-49ae-adc8-ae9b80fda50a")
                 .setDecorationPreference(decorationPreference) //Optional
+//                .setMerchantBaseUrl("http://private-c5763d-mercadopagoexamples.apiary-mock.com")
+//                .setMerchantGetCustomerUri("get_customer")
+//                .setMerchantAccessToken(ExamplesUtils.DUMMY_MERCHANT_ACCESS_TOKEN)
                 .startCheckoutActivity();
     }
 
