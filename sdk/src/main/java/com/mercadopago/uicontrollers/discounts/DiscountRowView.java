@@ -31,6 +31,7 @@ public class DiscountRowView implements DiscountView {
     private Context mContext;
     private Discount mDiscount;
     private Boolean mShortRowEnabled;
+    private Boolean mDiscountEnabled;
     private Boolean mShowArrow;
     private Boolean mShowSeparator;
 
@@ -48,23 +49,33 @@ public class DiscountRowView implements DiscountView {
     private View mDiscountSeparator;
 
     public DiscountRowView(Context context, Discount discount, BigDecimal transactionAmount, String currencyId, Boolean shortRowEnabled,
-                           Boolean showArrow, Boolean showSeparator) {
+                           Boolean discountEnabled, Boolean showArrow, Boolean showSeparator) {
         mContext = context;
         mDiscount = discount;
         mTransactionAmount = transactionAmount;
         mCurrencyId = currencyId;
         mShortRowEnabled = shortRowEnabled;
+        mDiscountEnabled = discountEnabled;
         mShowArrow = showArrow;
         mShowSeparator = showSeparator;
     }
 
     @Override
     public void draw() {
-        if (mDiscount == null) {
-            showHasDiscountRow();
+        if (mDiscountEnabled) {
+            if (mDiscount == null) {
+                showHasDiscountRow();
+            } else {
+                showDiscountDetailRow();
+            }
         } else {
-            showDiscountDetailRow();
+            showDefaultRow();
         }
+    }
+
+    //TODO discounts analizar para guessing que pasa acá
+    private void showDefaultRow() {
+        mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
     }
 
     private void showHasDiscountRow() {
@@ -97,7 +108,6 @@ public class DiscountRowView implements DiscountView {
 
         setArrowVisibility();
         setSeparatorVisibility();
-        showHighDiscountRow();
         setDiscountOff();
         setTotalAmountWithDiscount();
         setTotalAmount();
@@ -112,8 +122,6 @@ public class DiscountRowView implements DiscountView {
         if (mTransactionAmount != null && !isEmpty(mCurrencyId)) {
             mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
             mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
-
-            showHighDiscountRow();
         }
     }
 
@@ -193,9 +201,5 @@ public class DiscountRowView implements DiscountView {
         String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
         Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
         return amountText;
-    }
-
-    private void showHighDiscountRow() {
-        mHighDiscountRow.setVisibility(View.VISIBLE);
     }
 }

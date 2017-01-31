@@ -87,6 +87,9 @@ public class PaymentVaultPresenter {
     }
 
     private void initPaymentVaultFlow() {
+        //TODO discounts agregado, validar
+        initializeDiscountRow();
+
         if (isItemSelected()) {
             showSelectedItemChildren();
         } else {

@@ -459,6 +459,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
                 .setDiscount(mPresenter.getDiscount())
                 .setTransactionAmount(transactionAmount)
                 .setCurrencyId(mPresenter.getSite().getCurrencyId())
+                .setDiscountEnabled(mPresenter.getDiscountEnabled())
                 .build();
 
         discountRowView.inflateInParent(mDiscountFrameLayout, true);
@@ -467,7 +468,9 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         discountRowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.initializeDiscountActivity();
+                if (mPresenter.getDiscountEnabled()) {
+                    mPresenter.initializeDiscountActivity();
+                }
             }
         });
     }

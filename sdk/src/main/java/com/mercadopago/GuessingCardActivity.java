@@ -1525,7 +1525,8 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
         discountRowBuilder.setContext(this)
                 .setDiscount(mPresenter.getDiscount())
                 .setTransactionAmount(transactionAmount)
-                .setShortRowEnabled(true);
+                .setShortRowEnabled(true)
+                .setDiscountEnabled(mPresenter.getDiscountEnabled());
 
         if (mPresenter.getDiscount() != null) {
             discountRowBuilder.setCurrencyId(mPresenter.getDiscount().getCurrencyId());

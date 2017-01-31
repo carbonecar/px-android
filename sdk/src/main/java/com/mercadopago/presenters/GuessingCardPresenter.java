@@ -381,6 +381,10 @@ public class GuessingCardPresenter {
         this.mDiscountEnabled = discountEnabled;
     }
 
+    public Boolean getDiscountEnabled() {
+        return this.mDiscountEnabled;
+    }
+
     public BigDecimal getTransactionAmount() {
         BigDecimal amount;
 

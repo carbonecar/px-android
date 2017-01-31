@@ -182,6 +182,7 @@ public class InstallmentsPresenter {
         if (mDiscountEnabled) {
             loadDiscount();
         } else {
+            initializeDiscountRow();
             loadPayerCosts();
         }
     }
@@ -252,6 +253,10 @@ public class InstallmentsPresenter {
 
     public void setDiscountEnabled(Boolean discountEnabled) {
         this.mDiscountEnabled = discountEnabled;
+    }
+
+    public Boolean getDiscountEnabled() {
+        return this.mDiscountEnabled;
     }
 
     private void loadPayerCosts() {

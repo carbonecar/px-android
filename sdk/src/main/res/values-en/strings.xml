@@ -202,7 +202,7 @@
     <string name="mpsdk_review_off_text_3">You will pay %1$s in your\n%2$s</string>
     <string name="mpsdk_review_off_text_4">You will pay %1$s with\n%2$s</string>
     <string name="mpsdk_homebanking">Home Banking of</string>
-    <string name="mpsdk_review_summary_total">Total</string>
+    <string name="mpsdk_review_summary_total">Total:</string>
     <string name="mpsdk_review_product_quantity">Quantity: %1$s</string>
     <string name="mpsdk_review_summary_subtotal">Subtotal</string>
     <string name="mpsdk_review_summary_pay">You will pay</string>
