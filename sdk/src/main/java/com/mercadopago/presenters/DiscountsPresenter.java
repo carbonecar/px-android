@@ -34,7 +34,7 @@ public class DiscountsPresenter extends MvpPresenter<DiscountsView, DiscountsPro
         if (mDiscount == null) {
             initDiscountFlow();
         } else {
-            mDiscountsView.drawSummary();
+            drawSummary();
         }
     }
 
@@ -48,6 +48,11 @@ public class DiscountsPresenter extends MvpPresenter<DiscountsView, DiscountsPro
 
     private Boolean isAmountValid() {
         return mTransactionAmount != null && mTransactionAmount.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    private void drawSummary() {
+        //TODO discounts validar parámetros
+        mDiscountsView.drawSummary();
     }
 
     private void getDirectDiscount() {

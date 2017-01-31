@@ -62,7 +62,7 @@ public class DiscountRowView implements DiscountView {
 
     @Override
     public void draw() {
-        if (mDiscountEnabled) {
+        if (isDiscountEnabled()) {
             if (mDiscount == null) {
                 showHasDiscountRow();
             } else {
@@ -75,7 +75,12 @@ public class DiscountRowView implements DiscountView {
 
     //TODO discounts analizar para guessing que pasa acá
     private void showDefaultRow() {
-        mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
+        if (isAmountValid(mTransactionAmount) && isCurrencyIdValid()) {
+
+            mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
+        } else {
+            mHighDiscountRow.setVisibility(View.GONE);
+        }
     }
 
     private void showHasDiscountRow() {
@@ -119,7 +124,7 @@ public class DiscountRowView implements DiscountView {
     }
 
     private void drawHighHasDiscountRow() {
-        if (mTransactionAmount != null && !isEmpty(mCurrencyId)) {
+        if (isAmountValid(mTransactionAmount) && isCurrencyIdValid()) {
             mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
             mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
         }
@@ -138,11 +143,11 @@ public class DiscountRowView implements DiscountView {
     }
 
     private void setDiscountOff() {
-        if (mDiscount.getAmountOff() != null && mDiscount.getAmountOff().compareTo(BigDecimal.ZERO) > 0) {
+        if (isAmountValid(mDiscount.getAmountOff())) {
             Currency currency = CurrenciesUtil.getCurrency(mDiscount.getCurrencyId());
             String amount = currency.getSymbol() + " " + mDiscount.getAmountOff();
             mDiscountOffTextView.setText(amount);
-        } else {
+        } else if (isPercentOffValid()){
             String discountOff = mContext.getResources().getString(R.string.mpsdk_discount_percent_off,
                     String.valueOf(mDiscount.getPercentOff()));
             mDiscountOffTextView.setText(discountOff);
@@ -197,9 +202,28 @@ public class DiscountRowView implements DiscountView {
         return mShortRowEnabled != null && mShortRowEnabled;
     }
 
+    private Boolean isDiscountEnabled() {
+        return  mDiscountEnabled != null && mDiscountEnabled;
+    }
+
     private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
         String originalNumber = CurrenciesUtil.formatNumber(amount, currencyId);
         Spanned amountText = CurrenciesUtil.formatCurrencyInText(amount, currencyId, originalNumber, false, true);
         return amountText;
     }
+
+    private Boolean isAmountValid(BigDecimal amount) {
+        return amount != null && amount.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+    private Boolean isPercentOffValid() {
+        return mDiscount.getPercentOff() != null && mDiscount.getPercentOff().compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+    //TODO agregar validación si pertenece al conjunto de currencies posibles
+    private Boolean isCurrencyIdValid() {
+        return !isEmpty(mCurrencyId);
+    }
+
+
 }
