@@ -528,7 +528,7 @@ public class CheckoutActivity extends MercadoPagoActivity implements TimerObserv
                 .setAmount(mCheckoutPreference.getAmount())
                 .setSite(mSite)
                 .setInstallmentsEnabled(false)
-//                .setDiscount(mDiscount)
+                .setDiscount(mDiscount)
                 .setDiscountEnabled(mDiscountEnabled)
                 .setSupportedPaymentMethods(mPaymentMethodSearch.getPaymentMethods())
                 .setPaymentRecovery(mPaymentRecovery)

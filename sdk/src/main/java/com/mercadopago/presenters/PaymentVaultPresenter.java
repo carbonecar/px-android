@@ -70,19 +70,19 @@ public class PaymentVaultPresenter {
                 .setContext(mPaymentVaultView.getContext())
                 .build();
 
-        if (isItemSelected()) {
-            initializeDiscountRow();
-            showSelectedItemChildren();
-        } else {
+        if (mDiscountEnabled) {
             initPaymentVaultDiscountFlow();
+        } else {
+            initPaymentVaultFlow();
         }
     }
 
     private void initPaymentVaultDiscountFlow() {
-        if (mDiscountEnabled) {
-            loadDiscount();
+        if (isItemSelected()) {
+            initializeDiscountRow();
+            showSelectedItemChildren();
         } else {
-            initPaymentVaultFlow();
+            loadDiscount();
         }
     }
 

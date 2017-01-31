@@ -88,6 +88,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 //                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
 //                    }
 //                });
+
         //TODO discounts, borrar
         startMercadoPagoCheckout();
     }
@@ -102,7 +103,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setActivity(this)
                 .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")
                 .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
-                .setDiscountEnabled(false)
+                .setDiscountEnabled(true)
                 //TODO discounts validar que el cupon que me ingresan tenga todos los campos correctos
 //                .setDiscount(discount)
                 .setDecorationPreference(decorationPreference) //Optional
