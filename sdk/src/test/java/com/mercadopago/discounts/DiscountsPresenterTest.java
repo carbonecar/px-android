@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class DiscountsPresenterTest {
 
     @Test
-    public void showDiscountSummaryWhenStartActivityWithoutDiscount() {
+    public void showDiscountSummaryWhenGetDirectDiscount() {
         MockedView mockedView = new MockedView();
         DiscountMockedResourcesProvider provider = new DiscountMockedResourcesProvider();
 
@@ -33,6 +33,23 @@ public class DiscountsPresenterTest {
         presenter.initialize();
 
         assertTrue(mockedView.drawedSummary);
+    }
+
+    @Test
+    public void showDiscountCodeRequestWhenDirectDiscountIsNotEnabled() {
+        MockedView mockedView = new MockedView();
+        DiscountMockedResourcesProvider provider = new DiscountMockedResourcesProvider();
+
+        DiscountsPresenter presenter = new DiscountsPresenter();
+        presenter.setDirectDiscountEnabled(false);
+        presenter.setTransactionAmount(new BigDecimal(100));
+
+        presenter.attachResourcesProvider(provider);
+        presenter.attachView(mockedView);
+
+        presenter.initialize();
+
+        assertTrue(mockedView.requestedDiscountCode);
     }
 
     private class MockedView implements DiscountsView {

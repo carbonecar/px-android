@@ -68,56 +68,36 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     }
 
     public void onContinueClicked(View view) {
-        //TODO discounts, descomentar
-//        showProgressLayout();
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("item_id", "1");
-//        map.put("amount", new BigDecimal(300));
-//
-//        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
-//                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
-//                    @Override
-//                    public void success(CheckoutPreference checkoutPreference) {
-//                        mCheckoutPreference = checkoutPreference;
-//                        startMercadoPagoCheckout();
-//                    }
-//
-//                    @Override
-//                    public void failure(ApiException error) {
-//                        showRegularLayout();
-//                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
-//                    }
-//                });
+        showProgressLayout();
+        Map<String, Object> map = new HashMap<>();
+        map.put("item_id", "1");
+        map.put("amount", new BigDecimal(300));
 
-        //TODO discounts, borrar
-        startMercadoPagoCheckout();
+        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
+                    @Override
+                    public void success(CheckoutPreference checkoutPreference) {
+                        mCheckoutPreference = checkoutPreference;
+                        startMercadoPagoCheckout();
+                    }
+
+                    @Override
+                    public void failure(ApiException error) {
+                        showRegularLayout();
+                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void startMercadoPagoCheckout() {
-
-        //TODO discounts, borrar
-        Discount discount = new Discount();
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 
         new MercadoPago.StartActivityBuilder()
                 .setActivity(this)
-                .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")
-                .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
-                .setDiscountEnabled(true)
-                //TODO discounts validar que el cupon que me ingresan tenga todos los campos correctos
-//                .setDiscount(discount)
+                .setPublicKey(mPublicKey)
+                .setCheckoutPreferenceId(mCheckoutPreference.getId())
                 .setDecorationPreference(decorationPreference) //Optional
                 .startCheckoutActivity();
-
-        //TODO discounts, descomentar
-//        DecorationPreference decorationPreference = getCurrentDecorationPreference();
-//
-//        new MercadoPago.StartActivityBuilder()
-//                .setActivity(this)
-//                .setPublicKey(mPublicKey)
-//                .setCheckoutPreferenceId(mCheckoutPreference.getId())
-//                .setDecorationPreference(decorationPreference) //Optional
-//                .startCheckoutActivity();
     }
 
     private DecorationPreference getCurrentDecorationPreference() {

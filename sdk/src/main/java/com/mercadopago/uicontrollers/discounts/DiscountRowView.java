@@ -210,7 +210,7 @@ public class DiscountRowView implements DiscountView {
     }
 
     private Boolean isDiscountEnabled() {
-        return  mDiscountEnabled != null && mDiscountEnabled;
+        return  mDiscountEnabled == null || mDiscountEnabled;
     }
 
     private Spanned getFormattedAmount(BigDecimal amount, String currencyId) {
