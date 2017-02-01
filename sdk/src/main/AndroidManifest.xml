@@ -102,5 +102,7 @@
         <activity
             android:name=".VaultActivity"
             android:theme="@style/Theme.MercadoPagoTheme" />
+        <activity android:name=".InstallmentsConfirmationActivity"></activity>
     </application>
+
 </manifest>
