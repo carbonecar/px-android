@@ -52,6 +52,26 @@ public class DiscountsPresenterTest {
         assertTrue(mockedView.requestedDiscountCode);
     }
 
+    @Test
+    public void showDiscountSummaryWhenInitializePresenterWithDiscount() {
+        MockedView mockedView = new MockedView();
+        DiscountMockedResourcesProvider provider = new DiscountMockedResourcesProvider();
+
+        DiscountsPresenter presenter = new DiscountsPresenter();
+        Discount discount = new Discount();
+
+        presenter.setDiscount(discount);
+        presenter.setDirectDiscountEnabled(false);
+        presenter.setTransactionAmount(new BigDecimal(100));
+
+        presenter.attachResourcesProvider(provider);
+        presenter.attachView(mockedView);
+
+        presenter.initialize();
+
+        assertTrue(mockedView.drawedSummary);
+    }
+
     private class MockedView implements DiscountsView {
 
         private Boolean drawedSummary;
