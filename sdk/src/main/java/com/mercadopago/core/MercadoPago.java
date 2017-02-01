@@ -11,7 +11,7 @@ import com.mercadopago.BankDealsActivity;
 import com.mercadopago.BuildConfig;
 import com.mercadopago.CallForAuthorizeActivity;
 import com.mercadopago.CardVaultActivity;
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.CongratsActivity;
 import com.mercadopago.CustomerCardsActivity;
 import com.mercadopago.GuessingCardActivity;
@@ -320,7 +320,7 @@ public class MercadoPago {
 
     private static void startCheckoutActivity(Activity activity, String merchantPublicKey, String merchantBaseUrl, String merchantGetCustomerUri, String merchantAccessToken, String checkoutPreferenceId, Boolean showBankDeals, Boolean binaryModeEnabled, Integer congratsDisplay, DecorationPreference decorationPreference) {
 
-        Intent checkoutIntent = new Intent(activity, CheckoutActivity.class);
+        Intent checkoutIntent = new Intent(activity, DeprecatedCheckoutActivity.class);
         checkoutIntent.putExtra("merchantPublicKey", merchantPublicKey);
         checkoutIntent.putExtra("checkoutPreferenceId", checkoutPreferenceId);
         checkoutIntent.putExtra("showBankDeals", showBankDeals);

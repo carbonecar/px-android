@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.callbacks.CallbackHolder;
 import com.mercadopago.callbacks.PaymentCallback;
 import com.mercadopago.callbacks.PaymentDataCallback;
@@ -42,7 +43,7 @@ public class MercadoPagoCheckout {
 
         //1 checkout preference con un id, sin service preference create pref --> pago con beta
         //2 lo mismo pero con un servidor del integrador para hacer el pago y creando una checkout pref local
-        //3 si en vez de poner un paymentcallback, pone un paymentdatacallback, 
+        //3 si en vez de poner un paymentcallback, pone un paymentdatacallback,
     }
 
     private void start(PaymentCallback paymentCallback) {
@@ -65,15 +66,12 @@ public class MercadoPagoCheckout {
 
     private void startCheckoutActivity() {
         Intent checkoutIntent = new Intent(context, CheckoutActivity.class);
-//        checkoutIntent.putExtra("flowPreference", JsonUtil.getInstance().toJson(flowPreference));
-//paso otda la info por intent
-
-        //TODO remove
-        checkoutIntent.putExtra("checkoutPreferenceId", checkoutPreference.getId());
+        checkoutIntent.putExtra("publicKey", publicKey);
+        checkoutIntent.putExtra("checkoutPreference", JsonUtil.getInstance().toJson(checkoutPreference));
+        checkoutIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
+        checkoutIntent.putExtra("servicePreference", JsonUtil.getInstance().toJson(servicePreference));
+        checkoutIntent.putExtra("flowPreference", JsonUtil.getInstance().toJson(flowPreference));
         context.startActivity(checkoutIntent);
-
-        //en checkout activity tengo que inicializar mercadoPagoContext
-        //
     }
 
     public static class Builder {

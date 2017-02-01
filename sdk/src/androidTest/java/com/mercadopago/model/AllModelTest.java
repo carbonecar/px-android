@@ -1,6 +1,6 @@
 package com.mercadopago.model;
 
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.test.BaseTest;
 import com.mercadopago.test.StaticMock;
 
@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AllModelTest extends BaseTest<CheckoutActivity> {
+public class AllModelTest extends BaseTest<DeprecatedCheckoutActivity> {
 
     public AllModelTest() {
-        super(CheckoutActivity.class);
+        super(DeprecatedCheckoutActivity.class);
     }
 
     public void testAddress() {

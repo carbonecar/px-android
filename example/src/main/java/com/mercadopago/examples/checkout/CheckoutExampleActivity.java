@@ -99,6 +99,10 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     }
 
     private void startMercadoPagoCheckout() {
+        //1 checkout preference con un id, sin service preference create pref --> pago con beta
+        //2 lo mismo pero con un servidor del integrador para hacer el pago y creando una checkout pref local
+        //3 si en vez de poner un paymentcallback, pone un paymentdatacallback,
+
 
 //        CheckoutPreference checkoutPreference = new CheckoutPreference.Builder()
 //                .addItem(new Item("id1", 5))
@@ -116,10 +120,10 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         decorationPreferenceBuilder.setCustomFont("fonts/ArimaMadurai-Light.ttf");
         DecorationPreference decorationPreference = decorationPreferenceBuilder.build();
 
-        ServicePreference servicePreference = new ServicePreference.Builder()
-                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
-                        "/merchantUri/create_preference")
-                .build();
+//        ServicePreference servicePreference = new ServicePreference.Builder()
+//                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
+//                        "/merchantUri/create_preference")
+//                .build();
 
         FlowPreference flowPreference = new FlowPreference.Builder()
 //                .disablePaymentApprovedScreen()
@@ -131,7 +135,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                 .setContext(this)
                 .setPublicKey(mPublicKey)
                 .setCheckoutPreference(mCheckoutPreference)
-                .setServicePreference(servicePreference)
+//                .setServicePreference(servicePreference)
                 .setDecorationPreference(decorationPreference)
                 .setFlowPreference(flowPreference)
                 .start(new PaymentCallback() {

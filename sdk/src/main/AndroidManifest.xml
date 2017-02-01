@@ -38,7 +38,7 @@
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
-            android:name=".CheckoutActivity"
+            android:name=".DeprecatedCheckoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity android:name=".GuessingCardActivity"

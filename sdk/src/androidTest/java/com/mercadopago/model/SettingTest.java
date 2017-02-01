@@ -1,15 +1,15 @@
 package com.mercadopago.model;
 
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.test.BaseTest;
 import com.mercadopago.test.StaticMock;
 
 import java.util.ArrayList;
 
-public class SettingTest extends BaseTest<CheckoutActivity> {
+public class SettingTest extends BaseTest<DeprecatedCheckoutActivity> {
 
     public SettingTest() {
-        super(CheckoutActivity.class);
+        super(DeprecatedCheckoutActivity.class);
     }
 
     public void testGetSettingByBin() {

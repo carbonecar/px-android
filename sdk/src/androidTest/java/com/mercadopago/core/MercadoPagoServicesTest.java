@@ -1,6 +1,6 @@
 package com.mercadopago.core;
 
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.test.BaseTest;
 import com.mercadopago.test.StaticMock;
 
@@ -8,10 +8,10 @@ import com.mercadopago.test.StaticMock;
  * Created by mreverter on 1/18/17.
  */
 
-public class MercadoPagoServicesTest extends BaseTest<CheckoutActivity> {
+public class MercadoPagoServicesTest extends BaseTest<DeprecatedCheckoutActivity> {
 
     public MercadoPagoServicesTest() {
-        super(CheckoutActivity.class);
+        super(DeprecatedCheckoutActivity.class);
     }
 
     public void testStartOk() {

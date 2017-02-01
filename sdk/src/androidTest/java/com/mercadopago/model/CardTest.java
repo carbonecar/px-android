@@ -1,13 +1,13 @@
 package com.mercadopago.model;
 
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.test.BaseTest;
 import com.mercadopago.test.StaticMock;
 
-public class CardTest extends BaseTest<CheckoutActivity> {
+public class CardTest extends BaseTest<DeprecatedCheckoutActivity> {
 
     public CardTest() {
-        super(CheckoutActivity.class);
+        super(DeprecatedCheckoutActivity.class);
     }
 
     public void testIsSecurityCodeRequired() {

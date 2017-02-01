@@ -1,14 +1,14 @@
 package com.mercadopago.model;
 
-import com.mercadopago.CheckoutActivity;
+import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.R;
 import com.mercadopago.test.BaseTest;
 import com.mercadopago.test.StaticMock;
 
-public class CardTokenTest extends BaseTest<CheckoutActivity> {
+public class CardTokenTest extends BaseTest<DeprecatedCheckoutActivity> {
 
     public CardTokenTest() {
-        super(CheckoutActivity.class);
+        super(DeprecatedCheckoutActivity.class);
     }
 
     public void testConstructor() {
