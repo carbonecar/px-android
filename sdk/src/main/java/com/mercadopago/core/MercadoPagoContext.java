@@ -42,7 +42,7 @@ public class MercadoPagoContext {
     }
 
     public CheckoutPreference getCheckoutPreference() {
-        return checkoutPreference == null ? new CheckoutPreference() : checkoutPreference;
+        return checkoutPreference == null ? new CheckoutPreference.Builder().build() : checkoutPreference;
     }
 
     public static class Builder {

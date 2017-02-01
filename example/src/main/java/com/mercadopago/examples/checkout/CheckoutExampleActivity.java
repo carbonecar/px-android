@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -13,6 +14,9 @@ import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.PaymentCallback;
+import com.mercadopago.constants.PaymentMethods;
+import com.mercadopago.constants.PaymentTypes;
+import com.mercadopago.constants.Sites;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoCheckout;
 import com.mercadopago.core.MerchantServer;
@@ -21,11 +25,13 @@ import com.mercadopago.examples.utils.ColorPickerDialog;
 import com.mercadopago.examples.utils.ExamplesUtils;
 import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.ApiException;
+import com.mercadopago.model.Item;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.preferences.DecorationPreference;
 import com.mercadopago.model.Payment;
 import com.mercadopago.callbacks.PaymentCallback;
 import com.mercadopago.preferences.FlowPreference;
+import com.mercadopago.preferences.ServicePreference;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
 
@@ -94,29 +100,59 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
     private void startMercadoPagoCheckout() {
 
+//        CheckoutPreference checkoutPreference = new CheckoutPreference.Builder()
+//                .addItem(new Item("id1", 5))
+//                .addItem(new Item("id2", 1))
+//                .addExcludedPaymentMethod(PaymentMethods.ARGENTINA.AMEX)
+//                .addExcludedPaymentMethod(PaymentMethods.ARGENTINA.VISA)
+//                .addExcludedPaymentType(PaymentTypes.ATM)
+//                .setDefaultInstallments(3)
+//                .setMaxInstallments(9)
+//                .setPayerEmail("mail@gmail.com")
+//                .setSite(Sites.ARGENTINA)
+//                .build();
+
         DecorationPreference.Builder decorationPreferenceBuilder = getCurrentDecorationPreferenceBuilder();
         decorationPreferenceBuilder.setCustomFont("fonts/ArimaMadurai-Light.ttf");
         DecorationPreference decorationPreference = decorationPreferenceBuilder.build();
+
+        ServicePreference servicePreference = new ServicePreference.Builder()
+                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
+                        "/merchantUri/create_preference")
+                .build();
+
+        FlowPreference flowPreference = new FlowPreference.Builder()
+//                .disablePaymentApprovedScreen()
+//                .disableReviewAndConfirmScreen()
+//                .setCongratsDisplayTime(10)
+                .build();
 
         new MercadoPagoCheckout.Builder()
                 .setContext(this)
                 .setPublicKey(mPublicKey)
                 .setCheckoutPreference(mCheckoutPreference)
+                .setServicePreference(servicePreference)
                 .setDecorationPreference(decorationPreference)
+                .setFlowPreference(flowPreference)
                 .start(new PaymentCallback() {
                     @Override
                     public void onSuccess(Payment payment) {
                         //Done!
+                        Log.d("log", "success");
+                        Log.d("log", payment.getStatus());
                     }
 
                     @Override
                     public void onCancel() {
                         //User canceled
+                        Log.d("log", "cancel");
                     }
 
                     @Override
                     public void onFailure(MercadoPagoError exception) {
                         //Failure in checkout
+                        Log.d("log", "failure");
+                        Log.d("log", exception.getMessage());
                     }
                 });
     }
