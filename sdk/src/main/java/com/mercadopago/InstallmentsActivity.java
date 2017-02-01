@@ -471,6 +471,20 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         });
     }
 
+    @Override
+    public void startInstallmentsReview(PayerCost payerCost) {
+        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
+
+        mercadoPagoBuilder.setActivity(this)
+                .setPublicKey(mPresenter.getPublicKey())
+                .setPaymentMethod(mPresenter.getPaymentMethod())
+                .setPayerCost(payerCost)
+                .setCardInfo(mPresenter.getCardInfo())
+                .setDecorationPreference(mDecorationPreference);
+
+        mercadoPagoBuilder.startInstallmentsReviewActivity();
+    }
+
     public InstallmentsPresenter getPresenter() {
         return mPresenter;
     }

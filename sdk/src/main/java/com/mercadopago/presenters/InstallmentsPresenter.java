@@ -305,6 +305,9 @@ public class InstallmentsPresenter {
     }
 
     public void onItemSelected(int position) {
+        //TODO installmentsReview
+        mView.startInstallmentsReview(mPayerCosts.get(position));
+
         mView.finishWithResult(mPayerCosts.get(position));
     }
 

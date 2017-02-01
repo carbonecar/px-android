@@ -16,6 +16,7 @@ import com.mercadopago.CustomerCardsActivity;
 import com.mercadopago.DiscountsActivity;
 import com.mercadopago.GuessingCardActivity;
 import com.mercadopago.InstallmentsActivity;
+import com.mercadopago.InstallmentsReviewActivity;
 import com.mercadopago.InstructionsActivity;
 import com.mercadopago.IssuersActivity;
 import com.mercadopago.PaymentMethodsActivity;
@@ -96,6 +97,7 @@ public class MercadoPago {
     public static final int PAYMENT_TYPES_REQUEST_CODE = 17;
     public static final int SECURITY_CODE_REQUEST_CODE = 18;
     public static final int DISCOUNTS_REQUEST_CODE = 19;
+    public static final int INSTALLMENTS_REVIEW_REQUEST_CODE = 20;
 
 
     public static final int BIN_LENGTH = 6;
@@ -456,6 +458,20 @@ public class MercadoPago {
         activity.startActivityForResult(intent, INSTALLMENTS_REQUEST_CODE);
     }
 
+    private static void startInstallmentsReviewActivity(Activity activity, String publicKey, PaymentMethod paymentMethod, PayerCost payerCost,
+                                                        CardInfo cardInfo, DecorationPreference decorationPreference) {
+
+        Intent intent = new Intent(activity, InstallmentsReviewActivity.class);
+
+        intent.putExtra("merchantPublicKey", publicKey);
+        intent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
+        intent.putExtra("payerCost", JsonUtil.getInstance().toJson(payerCost));
+        intent.putExtra("cardInfo", JsonUtil.getInstance().toJson(cardInfo));
+        intent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
+
+        activity.startActivityForResult(intent, INSTALLMENTS_REVIEW_REQUEST_CODE);
+    }
+
     private static void startIssuersActivity(Activity activity, String publicKey,
                                              PaymentMethod paymentMethod,
                                              List<Issuer> issuers, DecorationPreference decorationPreference,
@@ -754,6 +770,7 @@ public class MercadoPago {
         private PaymentMethodSearch mPaymentMethodSearch;
         private PaymentPreference mPaymentPreference;
         private PaymentRecovery mPaymentRecovery;
+        private PayerCost mPayerCost;
         private Discount mDiscount;
 
         private Token mToken;
@@ -886,6 +903,13 @@ public class MercadoPago {
             this.mPayment = payment;
             return this;
         }
+
+        public StartActivityBuilder setPayerCost(PayerCost payerCost) {
+
+            this.mPayerCost = payerCost;
+            return this;
+        }
+
 
         public StartActivityBuilder setCardInfo(CardInfo cardInfo) {
 
@@ -1145,6 +1169,16 @@ public class MercadoPago {
             MercadoPago.startInstallmentsActivity(mActivity, mAmount, mSite,
                     mKey, mPayerCosts, mPaymentPreference, mIssuer, mPaymentMethod, mDecorationPreference,
                     mCardInfo, mAmount, mPayerEmail, mDiscount);
+        }
+
+        public void startInstallmentsReviewActivity() {
+            if (this.mActivity == null) throw new IllegalStateException("activity is null");
+            if (this.mPaymentMethod == null) throw new IllegalStateException("payment method is null");
+            if (this.mPayerCost == null) throw new IllegalStateException("payer cost is null");
+            if (this.mCardInfo == null) throw new IllegalStateException("card info is null");
+            if (this.mKey == null) throw new IllegalStateException("key is null");
+
+            MercadoPago.startInstallmentsReviewActivity(mActivity, mKey, mPaymentMethod, mPayerCost, mCardInfo, mDecorationPreference);
         }
 
         public void startIssuersActivity() {

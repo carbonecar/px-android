@@ -1,64 +1,71 @@
 package com.mercadopago.presenters;
 
-import com.mercadopago.model.Discount;
+import com.mercadopago.controllers.PaymentMethodGuessingController;
+import com.mercadopago.model.CardInfo;
+import com.mercadopago.model.PayerCost;
+import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.mvp.MvpPresenter;
 import com.mercadopago.providers.InstallmentsReviewProvider;
-import com.mercadopago.views.InstallmentsReviewView;
-
-import java.math.BigDecimal;
+import com.mercadopago.views.InstallmentsReviewActivityView;
 
 /**
  * Created by mromar on 2/1/17.
  */
 
-public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReviewView, InstallmentsReviewProvider> {
+public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReviewActivityView, InstallmentsReviewProvider> {
 
-    private InstallmentsReviewView mInstallmentsReviewView;
+    private InstallmentsReviewActivityView mView;
 
     //Activity parameters
     private String mPublicKey;
-    private String mPayerEmail;
-    private BigDecimal mTransactionAmount;
-    private Discount mDiscount;
-    private Boolean mDirectDiscountEnabled;
+    private PaymentMethod mPaymentMethod;
+    private PayerCost mPayerCost;
+    private CardInfo mCardInfo;
+    private String mBin;
 
     public void initialize() {
         //TODO installmentsss
-    }
-
-    public Discount getDiscount() {
-        return this.mDiscount;
     }
 
     public void setMerchantPublicKey(String publicKey) {
         this.mPublicKey = publicKey;
     }
 
-    public void setPayerEmail(String payerEmail) {
-        this.mPayerEmail = payerEmail;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.mDiscount = discount;
-    }
-
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.mTransactionAmount = transactionAmount;
-    }
-
-    public void setDirectDiscountEnabled(Boolean directDiscountEnabled) {
-        this.mDirectDiscountEnabled = directDiscountEnabled;
-    }
-
-    public String getCurrencyId() {
-        return mDiscount.getCurrencyId();
-    }
-
-    public BigDecimal getTransactionAmount() {
-        return mTransactionAmount;
-    }
-
     public String getPublicKey() {
         return this.mPublicKey;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.mPaymentMethod = paymentMethod;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return this.mPaymentMethod;
+    }
+
+    public void setPayerCost(PayerCost payerCost) {
+        this.mPayerCost = payerCost;
+    }
+
+    public PayerCost getPayerCost() {
+        return this.mPayerCost;
+    }
+
+    public void setCardInfo(CardInfo cardInfo) {
+        this.mCardInfo = cardInfo;
+
+        if (mCardInfo == null) {
+            mBin = "";
+        } else {
+            mBin = mCardInfo.getFirstSixDigits();
+        }
+    }
+
+    public CardInfo getCardInfo() {
+        return this.mCardInfo;
+    }
+
+    public Integer getCardNumberLength() {
+        return PaymentMethodGuessingController.getCardNumberLength(mPaymentMethod, mBin);
     }
 }

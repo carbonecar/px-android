@@ -58,6 +58,10 @@
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
+            android:name=".InstallmentsReviewActivity"
+            android:screenOrientation="behind"
+            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"/>
+        <activity
             android:name=".IssuersActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
@@ -102,7 +106,6 @@
         <activity
             android:name=".VaultActivity"
             android:theme="@style/Theme.MercadoPagoTheme" />
-        <activity android:name=".InstallmentsReviewActivity"></activity>
     </application>
 
 </manifest>
