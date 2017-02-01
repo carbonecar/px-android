@@ -17,8 +17,6 @@ import com.mercadopago.util.CurrenciesUtil;
 
 import java.math.BigDecimal;
 
-import static android.text.TextUtils.isEmpty;
-
 /**
  * Created by mromar on 1/19/17.
  */
@@ -34,7 +32,6 @@ public class DiscountRowView implements DiscountView {
     private Boolean mDiscountEnabled;
     private Boolean mShowArrow;
     private Boolean mShowSeparator;
-
 
     //Views
     private View mView;
@@ -73,10 +70,14 @@ public class DiscountRowView implements DiscountView {
         }
     }
 
-    //TODO discounts analizar para guessing que pasa acá
     private void showDefaultRow() {
-        if (isAmountValid(mTransactionAmount) && isCurrencyIdValid()) {
+        if (!isShortRowEnabled()) {
+            showHighDefaultRow();
+        }
+    }
 
+    private void showHighDefaultRow() {
+        if (isAmountValid(mTransactionAmount) && CurrenciesUtil.isValidCurrency(mCurrencyId)) {
             mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
         } else {
             mHighDiscountRow.setVisibility(View.GONE);
@@ -124,9 +125,11 @@ public class DiscountRowView implements DiscountView {
     }
 
     private void drawHighHasDiscountRow() {
-        if (isAmountValid(mTransactionAmount) && isCurrencyIdValid()) {
+        if (isAmountValid(mTransactionAmount) && CurrenciesUtil.isValidCurrency(mCurrencyId)) {
             mHasDiscountLinearLayout.setVisibility(View.VISIBLE);
             mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mCurrencyId));
+        } else {
+            mHighDiscountRow.setVisibility(View.GONE);
         }
     }
 
@@ -143,7 +146,7 @@ public class DiscountRowView implements DiscountView {
     }
 
     private void setDiscountOff() {
-        if (isAmountValid(mDiscount.getAmountOff())) {
+        if (isAmountOffValid()) {
             Currency currency = CurrenciesUtil.getCurrency(mDiscount.getCurrencyId());
             String amount = currency.getSymbol() + " " + mDiscount.getAmountOff();
             mDiscountOffTextView.setText(amount);
@@ -155,12 +158,16 @@ public class DiscountRowView implements DiscountView {
     }
 
     private void setTotalAmountWithDiscount() {
-        mDiscountAmountTextView.setText(getFormattedAmount(mDiscount.getAmountWithDiscount(mTransactionAmount), mDiscount.getCurrencyId()));
+        if (isAmountValid(mTransactionAmount) && isDiscountCurrencyIdValid()) {
+            mDiscountAmountTextView.setText(getFormattedAmount(mDiscount.getAmountWithDiscount(mTransactionAmount), mDiscount.getCurrencyId()));
+        }
     }
 
     private void setTotalAmount() {
-        mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mDiscount.getCurrencyId()));
-        mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        if (isAmountValid(mTransactionAmount) && isDiscountCurrencyIdValid()) {
+            mTotalAmountTextView.setText(getFormattedAmount(mTransactionAmount, mDiscount.getCurrencyId()));
+            mTotalAmountTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
     }
 
     @Override
@@ -216,14 +223,15 @@ public class DiscountRowView implements DiscountView {
         return amount != null && amount.compareTo(BigDecimal.ZERO) >= 0;
     }
 
+    private Boolean isAmountOffValid() {
+        return mDiscount != null && mDiscount.getAmountOff() != null && mDiscount.getAmountOff().compareTo(BigDecimal.ZERO) > 0;
+    }
+
     private Boolean isPercentOffValid() {
-        return mDiscount.getPercentOff() != null && mDiscount.getPercentOff().compareTo(BigDecimal.ZERO) >= 0;
+        return mDiscount != null && mDiscount.getPercentOff() != null && mDiscount.getPercentOff().compareTo(BigDecimal.ZERO) > 0;
     }
 
-    //TODO agregar validación si pertenece al conjunto de currencies posibles
-    private Boolean isCurrencyIdValid() {
-        return !isEmpty(mCurrencyId);
+    private Boolean isDiscountCurrencyIdValid() {
+        return mDiscount != null && mDiscount.getCurrencyId() != null && CurrenciesUtil.isValidCurrency(mDiscount.getCurrencyId());
     }
-
-
 }
