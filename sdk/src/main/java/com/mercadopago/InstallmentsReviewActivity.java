@@ -9,6 +9,7 @@ import com.mercadopago.model.Discount;
 import com.mercadopago.observers.TimerObserver;
 import com.mercadopago.presenters.InstallmentsReviewPresenter;
 import com.mercadopago.providers.DiscountProviderImpl;
+import com.mercadopago.providers.InstallmentsReviewProviderImpl;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.views.DiscountsView;
 import com.mercadopago.views.InstallmentsActivityView;
@@ -55,8 +56,8 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
 
     private void initializePresenter() {
         try {
-            DiscountProviderImpl discountProvider = new DiscountProviderImpl(this, mPresenter.getPublicKey());
-            mPresenter.attachResourcesProvider(discountProvider);
+            InstallmentsReviewProviderImpl installmentsReviewProvider = new InstallmentsReviewProviderImpl(this, mPresenter.getPublicKey());
+            mPresenter.attachResourcesProvider(installmentsReviewProvider);
             mPresenter.attachView(this);
         } catch (IllegalStateException exception) {
             finishWithCancelResult();
@@ -68,7 +69,14 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
     }
 
     private  void initializeControls() {
-        //TODO
+        //TODO installments
+    }
+
+    protected void onValidStart() {
+        //TODO installments
+//        showTimer();
+
+        mPresenter.initialize();
     }
 
     private boolean isCustomColorSet() {

@@ -22,7 +22,9 @@ public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReview
     private Discount mDiscount;
     private Boolean mDirectDiscountEnabled;
 
-    
+    public void initialize() {
+        //TODO installmentsss
+    }
 
     public Discount getDiscount() {
         return this.mDiscount;

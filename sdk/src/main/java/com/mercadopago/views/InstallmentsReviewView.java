@@ -5,4 +5,6 @@ package com.mercadopago.views;
  */
 
 public interface InstallmentsReviewView {
+
+    void finishWithCancelResult();
 }
