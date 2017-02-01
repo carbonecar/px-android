@@ -210,7 +210,7 @@
     <string name="mpsdk_review_summary_products">Productos</string>
     <string name="mpsdk_review_summary_subtotal">Subtotal</string>
     <string name="mpsdk_review_summary_pay">Pagas</string>
-    <string name="mpsdk_review_summary_total">Total:</string>
+    <string name="mpsdk_review_summary_total">Total</string>
     <string name="mpsdk_review_summary_discount">Descuento</string>
     <string name="mpsdk_review_summary_discount_with_percent_off">Descuento %1$s%%</string>
     <string name="mpsdk_review_summary_discount_with_amount_off">Descuento</string>
@@ -229,4 +229,5 @@
     <string name="mpsdk_amount_doesnt_match">Importe fuera del alcance</string>
     <string name="mpsdk_campaign_expired">La campaña expiró</string>
     <string name="mpsdk_discount_percent_off">%1$s %%</string>
+    <string name="mpsdk_total">Total:</string>
 </resources>
