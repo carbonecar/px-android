@@ -85,7 +85,6 @@ public class PaymentVaultPresenter {
     }
 
     private void initPaymentVaultFlow() {
-        //TODO discounts agregado, validar
         initializeDiscountRow();
 
         if (isItemSelected()) {
@@ -196,6 +195,7 @@ public class PaymentVaultPresenter {
     }
 
     private void getPaymentMethodSearchAsync() {
+        mPaymentVaultView.showProgress();
 
         List<String> excludedPaymentTypes = mPaymentPreference == null ? null : mPaymentPreference.getExcludedPaymentTypes();
         List<String> excludedPaymentMethodIds = mPaymentPreference == null ? null : mPaymentPreference.getExcludedPaymentMethodIds();
