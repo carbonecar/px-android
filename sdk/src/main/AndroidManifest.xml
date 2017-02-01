@@ -41,6 +41,10 @@
             android:name=".DeprecatedCheckoutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
+        <activity
+            android:name=".CheckoutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity android:name=".GuessingCardActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"
