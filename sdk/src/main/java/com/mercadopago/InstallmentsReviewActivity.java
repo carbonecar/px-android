@@ -6,19 +6,22 @@ import android.os.Bundle;
 
 import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Discount;
-import com.mercadopago.presenters.DiscountsPresenter;
-import com.mercadopago.presenters.InstallmentsConfirmationPresenter;
+import com.mercadopago.observers.TimerObserver;
+import com.mercadopago.presenters.InstallmentsReviewPresenter;
 import com.mercadopago.providers.DiscountProviderImpl;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.views.DiscountsView;
+import com.mercadopago.views.InstallmentsActivityView;
+import com.mercadopago.views.InstallmentsReviewView;
 
 import java.math.BigDecimal;
 
-public class InstallmentsConfirmationActivity extends AppCompatActivity {
+public class InstallmentsReviewActivity extends AppCompatActivity implements InstallmentsReviewView, TimerObserver {
 
     // Local vars
     protected DecorationPreference mDecorationPreference;
 
-    protected InstallmentsConfirmationPresenter mPresenter;
+    protected InstallmentsReviewPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class InstallmentsConfirmationActivity extends AppCompatActivity {
     }
 
     private void createPresenter() {
-        mPresenter = new InstallmentsConfirmationPresenter();
+        mPresenter = new InstallmentsReviewPresenter();
     }
 
     private void getActivityParameters() {
@@ -77,5 +80,15 @@ public class InstallmentsConfirmationActivity extends AppCompatActivity {
         Intent returnIntent = new Intent();
         setResult(RESULT_CANCELED, returnIntent);
         finish();
+    }
+
+    @Override
+    public void onTimeChanged(String timeToShow) {
+        //TODO installments review add
+    }
+
+    @Override
+    public void onFinish() {
+        //TODO installments review add
     }
 }

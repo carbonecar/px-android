@@ -1,8 +1,9 @@
 package com.mercadopago.presenters;
 
 import com.mercadopago.model.Discount;
-import com.mercadopago.views.DiscountsView;
-import com.mercadopago.views.InstallmentsConfirmationView;
+import com.mercadopago.mvp.MvpPresenter;
+import com.mercadopago.providers.InstallmentsReviewProvider;
+import com.mercadopago.views.InstallmentsReviewView;
 
 import java.math.BigDecimal;
 
@@ -10,9 +11,9 @@ import java.math.BigDecimal;
  * Created by mromar on 2/1/17.
  */
 
-public class InstallmentsConfirmationPresenter extends MvpPresenter<InstallmentsConfirmationView, V> {
+public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReviewView, InstallmentsReviewProvider> {
 
-    private InstallmentsConfirmationView mInstallmentsConfirmationView;
+    private InstallmentsReviewView mInstallmentsReviewView;
 
     //Activity parameters
     private String mPublicKey;
