@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:background="@color/mpsdk_white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/mpsdk_view_progress_bar_small"/>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/mpsdkInstallmentesAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:background="@color/mpsdk_background_blue"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/mpsdk_scrolling_toolbar"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:id="@+id/mpsdkDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkInstallmentsAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="9 x $ 911"/>
+
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkTotalAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="($ 9567)"/>
+
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkTeaPercent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="TEA 90%"/>
+
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkCftpercent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="CFT 109%"/>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -8,11 +8,8 @@ import com.mercadopago.model.DecorationPreference;
 import com.mercadopago.model.Discount;
 import com.mercadopago.observers.TimerObserver;
 import com.mercadopago.presenters.InstallmentsReviewPresenter;
-import com.mercadopago.providers.DiscountProviderImpl;
 import com.mercadopago.providers.InstallmentsReviewProviderImpl;
 import com.mercadopago.util.JsonUtil;
-import com.mercadopago.views.DiscountsView;
-import com.mercadopago.views.InstallmentsActivityView;
 import com.mercadopago.views.InstallmentsReviewView;
 
 import java.math.BigDecimal;
@@ -65,7 +62,7 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
     }
 
     private void setContentView() {
-        setContentView(R.layout.activity_installments_confirm);
+        setContentView(R.layout.activity_installments_review);
     }
 
     private  void initializeControls() {
