@@ -38,6 +38,11 @@ public class MercadoPagoCheckout {
 
     private void validate() throws IllegalStateException {
         // TODO Implement
+        //valido todas las preferencias
+
+        //1 checkout preference con un id, sin service preference create pref --> pago con beta
+        //2 lo mismo pero con un servidor del integrador para hacer el pago y creando una checkout pref local
+        //3 si en vez de poner un paymentcallback, pone un paymentdatacallback, 
     }
 
     private void start(PaymentCallback paymentCallback) {
@@ -61,10 +66,14 @@ public class MercadoPagoCheckout {
     private void startCheckoutActivity() {
         Intent checkoutIntent = new Intent(context, CheckoutActivity.class);
 //        checkoutIntent.putExtra("flowPreference", JsonUtil.getInstance().toJson(flowPreference));
+//paso otda la info por intent
 
         //TODO remove
         checkoutIntent.putExtra("checkoutPreferenceId", checkoutPreference.getId());
         context.startActivity(checkoutIntent);
+
+        //en checkout activity tengo que inicializar mercadoPagoContext
+        //
     }
 
     public static class Builder {
