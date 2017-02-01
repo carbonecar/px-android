@@ -1,8 +1,6 @@
 package com.mercadopago.presenters;
 
 
-import android.database.sqlite.SQLiteBindOrColumnIndexOutOfRangeException;
-
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.FailureRecovery;
