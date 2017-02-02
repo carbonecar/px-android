@@ -1,87 +1,95 @@
 package com.mercadopago.presenters;
 
-import android.content.Context;
-
-import com.mercadopago.callbacks.Callback;
-import com.mercadopago.callbacks.FailureRecovery;
-import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoContext;
-import com.mercadopago.core.MercadoPagoServices;
-import com.mercadopago.model.ApiException;
+import com.mercadopago.exceptions.MercadoPagoError;
+import com.mercadopago.model.Card;
+import com.mercadopago.model.Customer;
 import com.mercadopago.model.PaymentMethodSearch;
+import com.mercadopago.mvp.MvpPresenter;
+import com.mercadopago.mvp.OnResourcesRetrievedCallback;
 import com.mercadopago.preferences.CheckoutPreference;
-import com.mercadopago.util.ApiUtil;
+import com.mercadopago.preferences.ServicePreference;
+import com.mercadopago.providers.CheckoutProvider;
 import com.mercadopago.views.CheckoutActivityView;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by vaserber on 2/1/17.
  */
 
-public class CheckoutPresenter {
+public class CheckoutPresenter extends MvpPresenter<CheckoutActivityView, CheckoutProvider> {
 
-    private Context mContext;
-    private String mPublicKey;
-    private CheckoutActivityView mView;
-    private MercadoPagoServices mMercadoPagoServices;
+    private PaymentMethodSearch mPaymentMethodSearch;
+    private String mCustomerId;
+    private List<Card> mSavedCards;
 
-    public CheckoutPresenter(Context context) {
-        this.mContext = context;
+    public void start() {
+        getPaymentMethodSearchAsync();
     }
 
-    public void setView(CheckoutActivityView view) {
-        this.mView = view;
-    }
+    private void getPaymentMethodSearchAsync() {
+//        getView().showProgress();
 
-    public void validateActivityParameters() {
-        //TODO validar
-        if (true) {
-            mView.onValidStart();
-        } else {
-            //TODO change
-            mView.onInvalidStart("error");
-        }
-    }
-
-    private void initializeMercadoPagoServices() {
-        if (mPublicKey == null || mMercadoPagoServices != null) return;
-        mMercadoPagoServices = new MercadoPagoServices.Builder()
-                .setContext(mContext)
-                .setPublicKey(mPublicKey)
-                .build();
-    }
-
-//    public void getPaymentMethodSearch() {
-//        initializeMercadoPagoServices();
-//
-//        //BigDecimal amount, List<String> excludedPaymentTypes, List<String> excludedPaymentMethods, Payer payer, boolean accountMoneyEnabled, final Callback<PaymentMethodSearch> callback
-//        CheckoutPreference checkoutPreference = MercadoPagoContext.getInstance().getCheckoutPreference();
-//
-//        mMercadoPagoServices.getPaymentMethodSearch(checkoutPreference.getAmount(), checkoutPreference.getExcludedPaymentTypes(), checkoutPreference.getExcludedPaymentMethods(), checkoutPreference.getPayer(), false, new Callback<PaymentMethodSearch>() {
-//            @Override
-//            public void success(PaymentMethodSearch paymentMethodSearch) {
-//                mPaymentMethodSearch = paymentMethodSearch;
-//                if (!mPaymentMethodSearch.hasSavedCards() && isMerchantServerInfoAvailable()) {
-//                    getCustomerAsync();
+        getResourcesProvider().getPaymentMethodSearch(new OnResourcesRetrievedCallback<PaymentMethodSearch>() {
+            @Override
+            public void onSuccess(PaymentMethodSearch paymentMethodSearch) {
+                mPaymentMethodSearch = paymentMethodSearch;
+                if (needsToLoadSavedCards()) {
+                    getCustomerAsync();
+                } else {
 //                } else if (isActivityActive()) {
-//                    startPaymentVaultActivity();
-//                }
-//            }
-//
-//            @Override
-//            public void failure(ApiException apiException) {
+                    getView().startPaymentVaultActivity();
+                }
+            }
+
+            @Override
+            public void onFailure(MercadoPagoError exception) {
+                //TODO
 //                if (isActivityActive()) {
 //                    setFailureRecovery(new FailureRecovery() {
 //                        @Override
 //                        public void recover() {
-//                            getPaymentMethodSearch();
+//                            getPaymentMethodSearchAsync();
 //                        }
 //                    });
 //                    ApiUtil.showApiExceptionError(getActivity(), apiException);
 //                }
-//            }
-//        });
-//    }
+            }
+        });
+    }
 
+    public PaymentMethodSearch getPaymentMethodSearch() {
+        return mPaymentMethodSearch;
+    }
+
+    private boolean needsToLoadSavedCards() {
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
+        return !mPaymentMethodSearch.hasSavedCards() && servicePreference.hasGetCustomerURL();
+    }
+
+    private void getCustomerAsync() {
+        //        getView().showProgress();
+
+        getResourcesProvider().getCustomer(new OnResourcesRetrievedCallback<Customer>() {
+            @Override
+            public void onSuccess(Customer customer) {
+                if (customer != null) {
+                    mCustomerId = customer.getId();
+                    CheckoutPreference checkoutPreference = MercadoPagoContext.getInstance().getCheckoutPreference();
+                    mSavedCards = checkoutPreference.getPaymentPreference() == null ? customer.getCards() : checkoutPreference.getPaymentPreference().getValidCards(customer.getCards());
+                }
+                getView().startPaymentVaultActivity();
+            }
+
+            @Override
+            public void onFailure(MercadoPagoError exception) {
+                getView().startPaymentVaultActivity();
+            }
+        });
+    }
+
+    public List<Card> getSavedCards() {
+        return mSavedCards;
+    }
 }

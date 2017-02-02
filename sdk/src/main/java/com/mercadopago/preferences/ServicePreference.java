@@ -67,6 +67,10 @@ public class ServicePreference {
         return this.createCheckoutPreferenceAdditionalInfo;
     }
 
+    public boolean hasGetCustomerURL() {
+        return getCustomerURL != null && getCustomerURI != null;
+    }
+
     public static class Builder {
 
         private String getCustomerURL;

@@ -26,15 +26,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CustomServiceHandler {
 
     public static void createCheckoutPreference(Context context, Callback<CheckoutPreference> callback) {
-        //TODO pedir al contexto la ServicePreference
-        Map<String, Object> map = new HashMap<>();
-        map.put("item_id", "1");
-        map.put("amount", new BigDecimal(300));
-        ServicePreference servicePreference = new ServicePreference.Builder()
-                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
-                        "/merchantUri/create_preference", map)
-                .build();
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("item_id", "1");
+//        map.put("amount", new BigDecimal(300));
+//        ServicePreference servicePreference = new ServicePreference.Builder()
+//                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
+//                        "/merchantUri/create_preference", map)
+//                .build();
 
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
         String checkoutPreferenceURL = servicePreference.getCreateCheckoutPreferenceURL();
         String checkoutPreferenceURI = servicePreference.getCreateCheckoutPreferenceURI();
         Map<String, Object> additionalInfo = servicePreference.getCreateCheckoutPreferenceAdditionalInfo();
@@ -44,11 +44,11 @@ public class CustomServiceHandler {
     }
 
     public static void getCustomer(Context context, Callback<Customer> callback) {
-        //TODO pedir al contexto la ServicePreference
-        ServicePreference servicePreference = new ServicePreference.Builder()
-                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
-                .build();
+//        ServicePreference servicePreference = new ServicePreference.Builder()
+//                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
+//                .build();
 
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
         String getCustomerURL = servicePreference.getGetCustomerURL();
         String getCustomerURI = servicePreference.getGetCustomerURI();
         Map<String, String> additionalInfo = servicePreference.getGetCustomerAdditionalInfo();
@@ -58,11 +58,11 @@ public class CustomServiceHandler {
     }
 
     public static void createPayment(Context context, String transactionId, Callback<Payment> callback) {
-        //TODO pedir al contexto la ServicePreference
-        ServicePreference servicePreference = new ServicePreference.Builder()
-                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
-                .build();
+//        ServicePreference servicePreference = new ServicePreference.Builder()
+//                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
+//                .build();
 
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
         String createPaymentURL = servicePreference.getCreatePaymentURL();
         String createPaymentURI = servicePreference.getCreatePaymentURI();
         Map<String, Object> additionalInfo = servicePreference.getCreatePaymentAdditionalInfo();
@@ -70,7 +70,8 @@ public class CustomServiceHandler {
         createPayment(context, transactionId, createPaymentURL, createPaymentURI, additionalInfo, callback);
     }
 
-    public static void createPayment(Context context, String transactionId, String baseUrl, String uri, Map<String, Object> paymentData, Callback<Payment> callback) {
+    public static void createPayment(Context context, String transactionId, String baseUrl, String uri,
+                                     Map<String, Object> paymentData, Callback<Payment> callback) {
         CustomService service = getService(context, baseUrl);
         service.createPayment(transactionId, ripFirstSlash(uri), paymentData).enqueue(callback);
     }
