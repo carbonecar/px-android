@@ -30,36 +30,72 @@
         <FrameLayout
             android:id="@+id/mpsdkDiscount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="42dp"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <com.mercadopago.customviews.MPTextView
                 android:id="@+id/mpsdkInstallmentsAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="9 x $ 911"/>
+                android:gravity="center"
+                android:textSize="24dp"
+                tools:text="9 x $ 911" />
 
             <com.mercadopago.customviews.MPTextView
                 android:id="@+id/mpsdkTotalAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="($ 9567)"/>
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                android:textSize="17dp"
+                tools:text="($ 9567)" />
 
             <com.mercadopago.customviews.MPTextView
                 android:id="@+id/mpsdkTeaPercent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="TEA 90%"/>
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:textSize="10dp"
+                tools:text="TEA 90%" />
 
             <com.mercadopago.customviews.MPTextView
                 android:id="@+id/mpsdkCftpercent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="CFT 109%"/>
+                android:layout_marginTop="1dp"
+                android:gravity="center"
+                android:textSize="25dp"
+                tools:text="CFT 109,00%" />
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/mpsdkInstallmentsOptionButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/mpsdk_button_bg_stroke"
+            android:onClick="onClickInstallmentOptionButton">
+            <com.mercadopago.customviews.MPTextView
+                android:id="@+id/mpsdkInstallmentsOptionButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAllCaps="false"
+                android:textSize="16dp"
+                app:fontStyle="regular"
+                android:textColor="@color/mpsdk_white_background"
+                android:text="@string/mpsdk_continue_label"/>
+        </FrameLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

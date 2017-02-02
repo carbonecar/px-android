@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -406,6 +407,8 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
             }
         } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
             resolveDiscountRequest(resultCode, data);
+        } else if (requestCode == MercadoPago.INSTALLMENT_REVIEW_REQUEST_CODE) {
+            resolveInstallmentReviewRequest(resultCode, data);
         } else {
             setResult(resultCode, data);
             finish();
@@ -418,6 +421,13 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
                 Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
                 mPresenter.onDiscountReceived(discount);
             }
+        }
+    }
+
+    protected void resolveInstallmentReviewRequest(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            setResult(RESULT_OK, data);
+            finish();
         }
     }
 

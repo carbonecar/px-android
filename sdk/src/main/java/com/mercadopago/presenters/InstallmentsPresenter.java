@@ -202,6 +202,8 @@ public class InstallmentsPresenter {
     }
 
     private void getDirectDiscount() {
+        mView.showLoadingView();
+
         mMercadoPago.getDirectDiscount(mAmount.toString(), mPayerEmail, new Callback<Discount>() {
             @Override
             public void success(Discount discount) {
@@ -305,10 +307,11 @@ public class InstallmentsPresenter {
     }
 
     public void onItemSelected(int position) {
-        //TODO installmentsReview
+        //TODO installments, si está prendido el componente, mostrarlo, sino finalizar
         mView.startInstallmentsReview(mPayerCosts.get(position));
 
-        mView.finishWithResult(mPayerCosts.get(position));
+        //TODO
+//        mView.finishWithResult(mPayerCosts.get(position));
     }
 
 }

@@ -97,7 +97,7 @@ public class MercadoPago {
     public static final int PAYMENT_TYPES_REQUEST_CODE = 17;
     public static final int SECURITY_CODE_REQUEST_CODE = 18;
     public static final int DISCOUNTS_REQUEST_CODE = 19;
-    public static final int INSTALLMENTS_REVIEW_REQUEST_CODE = 20;
+    public static final int INSTALLMENT_REVIEW_REQUEST_CODE = 20;
 
 
     public static final int BIN_LENGTH = 6;
@@ -469,7 +469,7 @@ public class MercadoPago {
         intent.putExtra("cardInfo", JsonUtil.getInstance().toJson(cardInfo));
         intent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
 
-        activity.startActivityForResult(intent, INSTALLMENTS_REVIEW_REQUEST_CODE);
+        activity.startActivityForResult(intent, INSTALLMENT_REVIEW_REQUEST_CODE);
     }
 
     private static void startIssuersActivity(Activity activity, String publicKey,

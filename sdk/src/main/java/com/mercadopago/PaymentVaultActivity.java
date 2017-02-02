@@ -601,6 +601,8 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity implements Pay
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
+
+
     @Override
     public void showDiscountRow(BigDecimal transactionAmount) {
         DiscountRowView discountRowView = new MercadoPagoUI.Views.DiscountRowViewBuilder()
