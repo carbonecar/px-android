@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mercadopago.callbacks.Callback;
+import com.mercadopago.callbacks.CallbackHolder;
 import com.mercadopago.callbacks.PaymentDataCallback;
 import com.mercadopago.core.CustomServiceHandler;
 import com.mercadopago.core.MercadoPagoComponents;
@@ -181,7 +182,12 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
         //showReviewAndConfirm(paymentData);
 
         //TODO cambiar esto de lugar
-        createPayment(paymentData);
+        if (CallbackHolder.getInstance().hasPaymentCallback()) {
+            createPayment(paymentData);
+        } else if (CallbackHolder.getInstance().hasPaymentDataCallback()) {
+            CallbackHolder.getInstance().getPaymentDataCallback().onSuccess(paymentData);
+            finish();
+        }
     }
 
     private void onCancelPaymentVaultRequest() {
@@ -189,7 +195,10 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
     }
 
     private void onFailurePaymentVaultRequest(MercadoPagoError mercadoPagoError) {
-
+        if (CallbackHolder.getInstance().hasPaymentDataCallback()) {
+            CallbackHolder.getInstance().getPaymentDataCallback().onFailure(mercadoPagoError);
+            finish();
+        }
     }
 
     private void createPayment(PaymentData paymentData) {
@@ -203,6 +212,8 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
             @Override
             public void success(Payment payment) {
                 Log.d("log", payment.getStatus());
+                CallbackHolder.getInstance().getPaymentCallback().onSuccess(payment);
+                finish();
             }
 
             @Override
@@ -211,6 +222,8 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
                 //TODO not working because: email is required and must be in email format
                 // payer missing
                 Log.d("log", apiException.getMessage());
+                MercadoPagoError mercadoPagoError = new MercadoPagoError(apiException);
+                CallbackHolder.getInstance().getPaymentCallback().onFailure(mercadoPagoError);
             }
         });
     }

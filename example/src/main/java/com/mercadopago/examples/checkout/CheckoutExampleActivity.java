@@ -183,7 +183,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
                     public void onFailure(MercadoPagoError exception) {
                         //Failure in checkout
                         Log.d("log", "failure");
-                        Log.d("log", exception.getMessage());
                     }
                 });
     }
