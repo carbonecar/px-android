@@ -15,7 +15,10 @@ import com.mercadopago.model.Customer;
 import com.mercadopago.model.PaymentMethodSearch;
 import com.mercadopago.mvp.OnResourcesRetrievedCallback;
 import com.mercadopago.preferences.CheckoutPreference;
+import com.mercadopago.preferences.ServicePreference;
 import com.mercadopago.util.ApiUtil;
+
+import java.util.Map;
 
 /**
  * Created by vaserber on 2/2/17.
@@ -67,7 +70,12 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
     @Override
     public void getCustomer(final OnResourcesRetrievedCallback<Customer> resourcesRetrievedCallback) {
-        CustomServiceHandler.getCustomer(mContext, new Callback<Customer>() {
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
+        String getCustomerURL = servicePreference.getGetCustomerURL();
+        String getCustomerURI = servicePreference.getGetCustomerURI();
+        Map<String, String> additionalInfo = servicePreference.getGetCustomerAdditionalInfo();
+
+        CustomServiceHandler.getCustomer(mContext, getCustomerURL, getCustomerURI, additionalInfo, new Callback<Customer>() {
             @Override
             public void success(Customer customer) {
                 resourcesRetrievedCallback.onSuccess(customer);

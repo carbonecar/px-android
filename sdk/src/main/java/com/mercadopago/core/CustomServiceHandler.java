@@ -28,49 +28,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CustomServiceHandler {
 
-    public static void createCheckoutPreference(Context context, Callback<CheckoutPreference> callback) {
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("item_id", "1");
-//        map.put("amount", new BigDecimal(300));
-//        ServicePreference servicePreference = new ServicePreference.Builder()
-//                .setCreateCheckoutPreferenceURL("http://private-4d9654-mercadopagoexamples.apiary-mock.com",
-//                        "/merchantUri/create_preference", map)
-//                .build();
-
-        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
-        String checkoutPreferenceURL = servicePreference.getCreateCheckoutPreferenceURL();
-        String checkoutPreferenceURI = servicePreference.getCreateCheckoutPreferenceURI();
-        Map<String, Object> additionalInfo = servicePreference.getCreateCheckoutPreferenceAdditionalInfo();
-
-        CustomService service = getService(context, checkoutPreferenceURL);
-        service.createPreference(checkoutPreferenceURI, additionalInfo).enqueue(callback);
+    public static void createCheckoutPreference(Context context, String url, String uri, Callback<CheckoutPreference> callback) {
+        CustomService service = getService(context, url);
+        service.createPreference(uri, null).enqueue(callback);
     }
 
-    public static void getCustomer(Context context, Callback<Customer> callback) {
-//        ServicePreference servicePreference = new ServicePreference.Builder()
-//                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
-//                .build();
-
-        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
-        String getCustomerURL = servicePreference.getGetCustomerURL();
-        String getCustomerURI = servicePreference.getGetCustomerURI();
-        Map<String, String> additionalInfo = servicePreference.getGetCustomerAdditionalInfo();
-
-        CustomService service = getService(context, getCustomerURL);
-        service.getCustomer(getCustomerURI, additionalInfo).enqueue(callback);
+    public static void createCheckoutPreference(Context context, String url, String uri, Map<String, Object> bodyInfo, Callback<CheckoutPreference> callback) {
+        CustomService service = getService(context, url);
+        service.createPreference(uri, bodyInfo).enqueue(callback);
     }
 
-    public static void createPayment(Context context, Long transactionId, PaymentBody paymentBody, Callback<Payment> callback) {
-//        ServicePreference servicePreference = new ServicePreference.Builder()
-//                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
-//                .build();
+    public static void getCustomer(Context context, String url, String uri, Callback<Customer> callback) {
+        CustomService service = getService(context, url);
+        service.getCustomer(uri, null).enqueue(callback);
+    }
 
-        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
-        String createPaymentURL = servicePreference.getCreatePaymentURL();
-        String createPaymentURI = servicePreference.getCreatePaymentURI();
-        Map<String, Object> additionalInfo = servicePreference.getCreatePaymentAdditionalInfo();
-        addPaymentBodyToMap(paymentBody, additionalInfo);
-        createPayment(context, transactionId, createPaymentURL, createPaymentURI, additionalInfo, callback);
+    public static void getCustomer(Context context, String url, String uri, Map<String, String> additionalInfo, Callback<Customer> callback) {
+        CustomService service = getService(context, url);
+        service.getCustomer(uri, additionalInfo).enqueue(callback);
     }
 
     public static void createPayment(Context context, Long transactionId, String baseUrl, String uri,
@@ -99,16 +74,4 @@ public class CustomServiceHandler {
         return uri.startsWith("/") ? uri.substring(1) : uri;
     }
 
-    private static void addPaymentBodyToMap(PaymentBody paymentBody, Map<String, Object> additionalInfo) {
-        additionalInfo.put("transaction_id", paymentBody.getTransactionId());
-        additionalInfo.put("installments", paymentBody.getInstallments());
-        additionalInfo.put("issuer_id", paymentBody.getIssuerId());
-        additionalInfo.put("payment_method_id", paymentBody.getPaymentMethodId());
-        additionalInfo.put("pref_id", paymentBody.getPrefId());
-        additionalInfo.put("token", paymentBody.getTokenId());
-        additionalInfo.put("binary_mode", paymentBody.getBinaryMode());
-        additionalInfo.put("public_key", paymentBody.getPublicKey());
-        additionalInfo.put("email", paymentBody.getEmail());
-        additionalInfo.put("payer", paymentBody.getPayer());
-    }
 }

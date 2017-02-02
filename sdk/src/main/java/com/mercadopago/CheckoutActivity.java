@@ -1,6 +1,7 @@
 package com.mercadopago;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -111,7 +112,6 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
     }
 
 
-
 //    private void onValidStart() {
 //        CheckoutPreference checkoutPreference = MercadoPagoContext.getInstance().getCheckoutPreference();
 //        if (checkoutPreference != null && checkoutPreference.getSiteId() != null && checkoutPreference.getItems() != null
@@ -203,29 +203,37 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
 
     private void createPayment(PaymentData paymentData) {
         PaymentBody paymentBody = createPaymentBody(paymentData);
-        Log.d("lala", paymentData.getPaymentMethod().getId());
+        Log.d("log", paymentData.getPaymentMethod().getId());
         Long transactionId = createTransactionId();
         //TODO transactionId debería funcionar tanto en el body como en la url como parametro
 //        paymentBody.setTransactionId(transactionId);
 
-        CustomServiceHandler.createPayment(this, transactionId, paymentBody, new Callback<Payment>() {
-            @Override
-            public void success(Payment payment) {
-                Log.d("log", payment.getStatus());
-                CallbackHolder.getInstance().getPaymentCallback().onSuccess(payment);
-                finish();
-            }
+        ServicePreference servicePreference = MercadoPagoContext.getInstance().getServicePreference();
+        String createPaymentURL = servicePreference.getCreatePaymentURL();
+        String createPaymentURI = servicePreference.getCreatePaymentURI();
+        Map<String, Object> additionalInfo = servicePreference.getCreatePaymentAdditionalInfo();
+        addPaymentBodyToMap(paymentBody, additionalInfo);
 
-            @Override
-            public void failure(ApiException apiException) {
-                Log.d("log", "payment failure");
-                //TODO not working because: email is required and must be in email format
-                // payer missing
-                Log.d("log", apiException.getMessage());
-                MercadoPagoError mercadoPagoError = new MercadoPagoError(apiException);
-                CallbackHolder.getInstance().getPaymentCallback().onFailure(mercadoPagoError);
-            }
-        });
+        CustomServiceHandler.createPayment(this, transactionId, createPaymentURL, createPaymentURI,
+                additionalInfo, new Callback<Payment>() {
+                    @Override
+                    public void success(Payment payment) {
+                        Log.d("log", payment.getStatus());
+                        CallbackHolder.getInstance().getPaymentCallback().onSuccess(payment);
+                        finish();
+                    }
+
+                    @Override
+                    public void failure(ApiException apiException) {
+                        Log.d("log", "payment failure");
+                        //TODO not working because: email is required and must be in email format
+                        // payer missing
+                        Log.d("log", apiException.getMessage());
+                        MercadoPagoError mercadoPagoError = new MercadoPagoError(apiException);
+                        CallbackHolder.getInstance().getPaymentCallback().onFailure(mercadoPagoError);
+                        finish();
+                    }
+                });
     }
 
     private Long createTransactionId() {
@@ -264,5 +272,18 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
             paymentBody.setIssuerId(paymentData.getIssuer().getId());
         }
         return paymentBody;
+    }
+
+    private static void addPaymentBodyToMap(PaymentBody paymentBody, Map<String, Object> additionalInfo) {
+        additionalInfo.put("transaction_id", paymentBody.getTransactionId());
+        additionalInfo.put("installments", paymentBody.getInstallments());
+        additionalInfo.put("issuer_id", paymentBody.getIssuerId());
+        additionalInfo.put("payment_method_id", paymentBody.getPaymentMethodId());
+        additionalInfo.put("pref_id", paymentBody.getPrefId());
+        additionalInfo.put("token", paymentBody.getTokenId());
+        additionalInfo.put("binary_mode", paymentBody.getBinaryMode());
+        additionalInfo.put("public_key", paymentBody.getPublicKey());
+        additionalInfo.put("email", paymentBody.getEmail());
+        additionalInfo.put("payer", paymentBody.getPayer());
     }
 }
