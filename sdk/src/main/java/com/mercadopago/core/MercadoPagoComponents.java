@@ -21,7 +21,9 @@ import com.mercadopago.PaymentResultActivity;
 import com.mercadopago.PaymentVaultActivity;
 import com.mercadopago.PendingActivity;
 import com.mercadopago.RejectionActivity;
+import com.mercadopago.callbacks.CallbackHolder;
 import com.mercadopago.callbacks.OnSelectedCallback;
+import com.mercadopago.callbacks.PaymentDataCallback;
 import com.mercadopago.model.BankDeal;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CardInformation;
@@ -164,14 +166,16 @@ public class MercadoPagoComponents {
                 return this;
             }
 
-            public void startActivity() {
-
+            public void startActivity(PaymentDataCallback paymentDataCallback) {
                 if (this.activity == null) throw new IllegalStateException("activity is null");
                 if (this.amount == null) throw new IllegalStateException("amount is null");
                 if (this.site == null) throw new IllegalStateException("site is null");
                 if (this.merchantPublicKey == null)
                     throw new IllegalStateException("public key is null");
-
+                if (paymentDataCallback == null) {
+                    throw new IllegalStateException("paymentDataCallback is null");
+                }
+                CallbackHolder.getInstance().setPaymentDataCallback(paymentDataCallback);
                 startPaymentVaultActivity();
             }
 

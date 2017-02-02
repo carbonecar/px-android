@@ -2,12 +2,17 @@ package com.mercadopago.preferences;
 
 import android.net.Uri;
 
+import com.mercadopago.BuildConfig;
+
 import java.util.Map;
 
 /**
  * Created by mreverter on 1/17/17.
  */
 public class ServicePreference {
+
+    public static final String DEFAULT_CREATE_PAYMENT_URI = "/" + BuildConfig.API_VERSION + "/checkout/payments";
+    public static final String DEFAULT_CREATE_PAYMENT_URL = "https://api.mercadopago.com";
 
     private String getCustomerURL;
     private String createPaymentURL;

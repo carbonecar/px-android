@@ -5,12 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
+import com.mercadopago.callbacks.Callback;
+import com.mercadopago.callbacks.PaymentDataCallback;
+import com.mercadopago.core.CustomServiceHandler;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoComponents;
 import com.mercadopago.core.MercadoPagoContext;
+import com.mercadopago.exceptions.MercadoPagoError;
+import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Issuer;
+import com.mercadopago.model.Payer;
 import com.mercadopago.model.PayerCost;
+import com.mercadopago.model.Payment;
+import com.mercadopago.model.PaymentData;
+import com.mercadopago.model.PaymentIntent;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.Site;
 import com.mercadopago.model.Token;
@@ -23,9 +33,15 @@ import com.mercadopago.presenters.CheckoutPresenter;
 import com.mercadopago.providers.CheckoutProvider;
 import com.mercadopago.providers.CheckoutProviderImpl;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.util.MercadoPagoUtil;
 import com.mercadopago.views.CheckoutActivityView;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import retrofit2.http.POST;
 
 /**
  * Created by vaserber on 2/1/17.
@@ -84,10 +100,11 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
     private void initializeMercadoPagoContext(DecorationPreference decorationPreference,
                                               ServicePreference servicePreference, CheckoutPreference checkoutPreference) {
         if (servicePreference == null) {
+
             ServicePreference defaultServicePreference = new ServicePreference.Builder()
                     //TODO poner nuestras urls default
 //                    .setCreateCheckoutPreferenceURL()
-//                    .setCreatePaymentURL()
+                    .setCreatePaymentURL(ServicePreference.DEFAULT_CREATE_PAYMENT_URL, ServicePreference.DEFAULT_CREATE_PAYMENT_URI)
                     .build();
             servicePreference = defaultServicePreference;
         }
@@ -129,23 +146,25 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
                 .setMerchantPublicKey(mMerchantPublicKey)
                 .setPaymentMethodSearch(mPresenter.getPaymentMethodSearch())
                 .setCards(mPresenter.getSavedCards())
-                .startActivity();
+                .startActivity(new PaymentDataCallback() {
+                    @Override
+                    public void onSuccess(PaymentData paymentData) {
+                        onSuccessPaymentVaultRequest(paymentData);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        onCancelPaymentVaultRequest();
+                    }
+
+                    @Override
+                    public void onFailure(MercadoPagoError exception) {
+                        onFailurePaymentVaultRequest(exception);
+                    }
+                });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MercadoPagoComponents.Activities.PAYMENT_VAULT_REQUEST_CODE) {
-//            resolvePaymentVaultRequest(resultCode, data);
-        } else if (requestCode == MercadoPagoComponents.Activities.PAYMENT_RESULT_REQUEST_CODE) {
-//            resolvePaymentResultRequest(resultCode, data);
-        } else if (requestCode == MercadoPagoComponents.Activities.CARD_VAULT_REQUEST_CODE) {
-//            resolveCardVaultRequest(resultCode, data);
-        } else {
-//            resolveErrorRequest(resultCode, data);
-        }
-    }
-
-//    private void resolvePaymentVaultRequest(int resultCode, Intent data) {
+//    private void resolvePaymentVaultRequest(PaymentData paymentData) {
 //        if (resultCode == RESULT_OK) {
 //
 //            mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
@@ -165,4 +184,74 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
 //            }
 //        }
 //    }
+
+    private void onSuccessPaymentVaultRequest(PaymentData paymentData) {
+        //showReviewAndConfirm(paymentData);
+
+        //TODO cambiar esto de lugar
+        createPayment(paymentData);
+    }
+
+    private void onCancelPaymentVaultRequest() {
+
+    }
+
+    private void onFailurePaymentVaultRequest(MercadoPagoError mercadoPagoError) {
+
+    }
+
+    private void createPayment(PaymentData paymentData) {
+        Map<String, Object> paymentDataMap = createPaymentDataMap(paymentData);
+        String transactionId = createTransactionId();
+        CustomServiceHandler.createPayment(this, transactionId, new Callback<Payment>() {
+            @Override
+            public void success(Payment payment) {
+
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+
+            }
+        });
+    }
+
+    private Map<String, Object> createPaymentDataMap(PaymentData paymentData) {
+        Map<String, Object> paymentDataMap = new HashMap<>();
+//        paymentDataMap.put("")
+//
+//        paymentIntent.setPrefId(mCheckoutPreference.getId());
+//        paymentIntent.setPublicKey(mMerchantPublicKey);
+//        paymentIntent.setPaymentMethodId(mSelectedPaymentMethod.getId());
+//        paymentIntent.setBinaryMode(mBinaryModeEnabled);
+//        Payer payer = mCheckoutPreference.getPayer();
+//        if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
+//            payer.setId(mCustomerId);
+//        }
+//
+//        paymentIntent.setPayer(payer);
+//
+//        if (mCreatedToken != null) {
+//            paymentIntent.setTokenId(mCreatedToken.getId());
+//        }
+//        if (mSelectedPayerCost != null) {
+//            paymentIntent.setInstallments(mSelectedPayerCost.getInstallments());
+//        }
+//        if (mSelectedIssuer != null) {
+//            paymentIntent.setIssuerId(mSelectedIssuer.getId());
+//        }
+//
+//        if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
+//            mTransactionId = createNewTransactionId();
+//        }
+//
+//        paymentIntent.setTransactionId(mTransactionId);
+//        return paymentIntent;
+        return paymentDataMap;
+    }
+
+    private String createTransactionId() {
+        //TODO
+        return "";
+    }
 }
