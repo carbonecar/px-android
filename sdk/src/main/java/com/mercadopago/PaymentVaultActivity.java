@@ -18,8 +18,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.mercadopago.adapters.PaymentMethodSearchItemAdapter;
+import com.mercadopago.callbacks.CallbackHolder;
 import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.callbacks.OnSelectedCallback;
+import com.mercadopago.callbacks.PaymentDataCallback;
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoContext;
@@ -29,6 +31,7 @@ import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Card;
 import com.mercadopago.model.CustomSearchItem;
+import com.mercadopago.model.PaymentData;
 import com.mercadopago.preferences.DecorationPreference;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
@@ -391,14 +394,24 @@ public class PaymentVaultActivity extends AppCompatActivity implements PaymentVa
     }
 
     protected void finishWithCardResult() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("token", JsonUtil.getInstance().toJson(mToken));
+//        Intent returnIntent = new Intent();
+//        returnIntent.putExtra("token", JsonUtil.getInstance().toJson(mToken));
+//        if (mSelectedIssuer != null) {
+//            returnIntent.putExtra("issuer", JsonUtil.getInstance().toJson(mSelectedIssuer));
+//        }
+//        returnIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(mSelectedPayerCost));
+//        returnIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(mSelectedPaymentMethod));
+//        this.setResult(Activity.RESULT_OK, returnIntent);
+        PaymentDataCallback paymentDataCallback = CallbackHolder.getInstance().getPaymentDataCallback();
+        PaymentData paymentData = new PaymentData();
+        paymentData.setToken(mToken);
+        paymentData.setPayerCost(mSelectedPayerCost);
+        paymentData.setPaymentMethod(mSelectedPaymentMethod);
         if (mSelectedIssuer != null) {
-            returnIntent.putExtra("issuer", JsonUtil.getInstance().toJson(mSelectedIssuer));
+            paymentData.setIssuer(mSelectedIssuer);
         }
-        returnIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(mSelectedPayerCost));
-        returnIntent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(mSelectedPaymentMethod));
-        this.setResult(Activity.RESULT_OK, returnIntent);
+        paymentDataCallback.onSuccess(paymentData);
+
         this.finish();
         animatePaymentMethodSelection();
     }

@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.mercadopago.BuildConfig;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,14 +62,23 @@ public class ServicePreference {
     }
 
     public Map<String, String> getGetCustomerAdditionalInfo() {
+        if (this.getCustomerAdditionalInfo == null) {
+            this.getCustomerAdditionalInfo = new HashMap<>();
+        }
         return this.getCustomerAdditionalInfo;
     }
 
     public Map<String, Object> getCreatePaymentAdditionalInfo() {
+        if (this.createPaymentAdditionalInfo == null) {
+          this.createPaymentAdditionalInfo = new HashMap<>();
+        }
         return this.createPaymentAdditionalInfo;
     }
 
     public Map<String, Object> getCreateCheckoutPreferenceAdditionalInfo() {
+        if (this.createCheckoutPreferenceAdditionalInfo == null) {
+            this.createCheckoutPreferenceAdditionalInfo = new HashMap<>();
+        }
         return this.createCheckoutPreferenceAdditionalInfo;
     }
 

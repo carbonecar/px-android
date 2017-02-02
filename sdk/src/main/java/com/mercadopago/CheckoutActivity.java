@@ -31,6 +31,7 @@ import com.mercadopago.util.MercadoPagoUtil;
 import com.mercadopago.views.CheckoutActivityView;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -193,7 +194,8 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
 
     private void createPayment(PaymentData paymentData) {
         PaymentBody paymentBody = createPaymentBody(paymentData);
-        String transactionId = createTransactionId();
+        Log.d("lala", paymentData.getPaymentMethod().getId());
+        Long transactionId = createTransactionId();
         //TODO transactionId debería funcionar tanto en el body como en la url como parametro
 //        paymentBody.setTransactionId(transactionId);
 
@@ -206,16 +208,23 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
             @Override
             public void failure(ApiException apiException) {
                 Log.d("log", "payment failure");
+                //TODO not working because: email is required and must be in email format
+                // payer missing
+                Log.d("log", apiException.getMessage());
             }
         });
     }
 
-    private String createTransactionId() {
+    private Long createTransactionId() {
         //TODO
 //        if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
 //            mTransactionId = createNewTransactionId();
 //        }
-        return "";
+        return createNewTransactionId();
+    }
+
+    private Long createNewTransactionId() {
+        return Calendar.getInstance().getTimeInMillis() + Math.round(Math.random()) * Math.round(Math.random());
     }
 
     private PaymentBody createPaymentBody(PaymentData paymentData) {

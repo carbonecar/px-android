@@ -60,7 +60,7 @@ public class CustomServiceHandler {
         service.getCustomer(getCustomerURI, additionalInfo).enqueue(callback);
     }
 
-    public static void createPayment(Context context, String transactionId, PaymentBody paymentBody, Callback<Payment> callback) {
+    public static void createPayment(Context context, Long transactionId, PaymentBody paymentBody, Callback<Payment> callback) {
 //        ServicePreference servicePreference = new ServicePreference.Builder()
 //                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
 //                .build();
@@ -73,10 +73,10 @@ public class CustomServiceHandler {
         createPayment(context, transactionId, createPaymentURL, createPaymentURI, additionalInfo, callback);
     }
 
-    public static void createPayment(Context context, String transactionId, String baseUrl, String uri,
+    public static void createPayment(Context context, Long transactionId, String baseUrl, String uri,
                                      Map<String, Object> paymentData, Callback<Payment> callback) {
         CustomService service = getService(context, baseUrl);
-        service.createPayment(transactionId, ripFirstSlash(uri), paymentData).enqueue(callback);
+        service.createPayment(String.valueOf(transactionId), ripFirstSlash(uri), paymentData).enqueue(callback);
     }
 
     private static CustomService getService(Context context, String baseUrl) {
