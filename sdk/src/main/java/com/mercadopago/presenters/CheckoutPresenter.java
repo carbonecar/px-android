@@ -1,5 +1,7 @@
 package com.mercadopago.presenters;
 
+import android.util.Log;
+
 import com.mercadopago.core.MercadoPagoContext;
 import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.Card;
@@ -46,6 +48,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutActivityView, Checko
             @Override
             public void onFailure(MercadoPagoError exception) {
                 //TODO
+                Log.d("log", "failure get payment method search");
 //                if (isActivityActive()) {
 //                    setFailureRecovery(new FailureRecovery() {
 //                        @Override

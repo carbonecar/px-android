@@ -13,16 +13,21 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.mercadopago.callbacks.Callback;
+import com.mercadopago.callbacks.FailureRecovery;
 import com.mercadopago.callbacks.PaymentCallback;
 import com.mercadopago.constants.PaymentMethods;
 import com.mercadopago.constants.PaymentTypes;
 import com.mercadopago.constants.Sites;
+import com.mercadopago.core.CustomServiceHandler;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoCheckout;
+import com.mercadopago.core.MercadoPagoServices;
 import com.mercadopago.core.MerchantServer;
 import com.mercadopago.examples.R;
 import com.mercadopago.examples.utils.ColorPickerDialog;
 import com.mercadopago.examples.utils.ExamplesUtils;
+import com.mercadopago.exceptions.CheckoutPreferenceException;
+import com.mercadopago.exceptions.ExceptionHandler;
 import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Item;
@@ -32,6 +37,9 @@ import com.mercadopago.model.Payment;
 import com.mercadopago.callbacks.PaymentCallback;
 import com.mercadopago.preferences.FlowPreference;
 import com.mercadopago.preferences.ServicePreference;
+import com.mercadopago.services.PaymentService;
+import com.mercadopago.util.ApiUtil;
+import com.mercadopago.util.ErrorUtil;
 import com.mercadopago.util.JsonUtil;
 import com.mercadopago.util.LayoutUtil;
 
@@ -79,23 +87,42 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 
     public void onContinueClicked(View view) {
         showProgressLayout();
-        Map<String, Object> map = new HashMap<>();
-        map.put("item_id", "1");
-        map.put("amount", new BigDecimal(300));
-        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
-                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
-                    @Override
-                    public void success(CheckoutPreference checkoutPreference) {
-                        mCheckoutPreference = checkoutPreference;
-                        startMercadoPagoCheckout();
-                    }
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("item_id", "1");
+//        map.put("amount", new BigDecimal(300));
+//        MerchantServer.createPreference(this, "http://private-4d9654-mercadopagoexamples.apiary-mock.com/",
+//                "merchantUri/create_preference", map, new Callback<CheckoutPreference>() {
+//                    @Override
+//                    public void success(CheckoutPreference checkoutPreference) {
+//                        mCheckoutPreference = checkoutPreference;
+//                        startMercadoPagoCheckout();
+//                    }
+//
+//                    @Override
+//                    public void failure(ApiException error) {
+//                        showRegularLayout();
+//                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+        String publicKey = "TEST-9eb0be69-329a-417f-9dd5-aad772a4d50b";
+        String checkoutPrefId = "137787120-2853c5cb-388b-49f1-824c-759366965aef";
+        mPublicKey = publicKey;
+        MercadoPagoServices mercadoPagoServices = new MercadoPagoServices.Builder()
+                .setPublicKey(publicKey)
+                .setContext(this)
+                .build();
+        mercadoPagoServices.getPreference(checkoutPrefId, new Callback<CheckoutPreference>() {
+            @Override
+            public void success(CheckoutPreference checkoutPreference) {
+                mCheckoutPreference = checkoutPreference;
+                startMercadoPagoCheckout();
+            }
 
-                    @Override
-                    public void failure(ApiException error) {
-                        showRegularLayout();
-                        Toast.makeText(mActivity, getString(R.string.preference_creation_failed), Toast.LENGTH_LONG).show();
-                    }
-                });
+            @Override
+            public void failure(ApiException apiException) {
+                Log.d("log", "error creacion de pref");
+            }
+        });
     }
 
     private void startMercadoPagoCheckout() {

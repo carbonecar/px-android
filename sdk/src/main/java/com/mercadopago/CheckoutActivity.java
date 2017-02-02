@@ -1,6 +1,7 @@
 package com.mercadopago;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoComponents;
 import com.mercadopago.core.MercadoPagoContext;
+import com.mercadopago.model.Issuer;
+import com.mercadopago.model.PayerCost;
+import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.Site;
+import com.mercadopago.model.Token;
+import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.preferences.DecorationPreference;
 import com.mercadopago.preferences.FlowPreference;
@@ -77,6 +83,15 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
 
     private void initializeMercadoPagoContext(DecorationPreference decorationPreference,
                                               ServicePreference servicePreference, CheckoutPreference checkoutPreference) {
+        if (servicePreference == null) {
+            ServicePreference defaultServicePreference = new ServicePreference.Builder()
+                    //TODO poner nuestras urls default
+//                    .setCreateCheckoutPreferenceURL()
+//                    .setCreatePaymentURL()
+                    .build();
+            servicePreference = defaultServicePreference;
+        }
+
         new MercadoPagoContext.Builder()
                 .setPublicKey(mMerchantPublicKey)
                 .setDecorationPreference(decorationPreference)
@@ -116,4 +131,38 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
                 .setCards(mPresenter.getSavedCards())
                 .startActivity();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MercadoPagoComponents.Activities.PAYMENT_VAULT_REQUEST_CODE) {
+//            resolvePaymentVaultRequest(resultCode, data);
+        } else if (requestCode == MercadoPagoComponents.Activities.PAYMENT_RESULT_REQUEST_CODE) {
+//            resolvePaymentResultRequest(resultCode, data);
+        } else if (requestCode == MercadoPagoComponents.Activities.CARD_VAULT_REQUEST_CODE) {
+//            resolveCardVaultRequest(resultCode, data);
+        } else {
+//            resolveErrorRequest(resultCode, data);
+        }
+    }
+
+//    private void resolvePaymentVaultRequest(int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK) {
+//
+//            mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
+//            mSelectedPayerCost = JsonUtil.getInstance().fromJson(data.getStringExtra("payerCost"), PayerCost.class);
+//            mCreatedToken = JsonUtil.getInstance().fromJson(data.getStringExtra("token"), Token.class);
+//            mSelectedPaymentMethod = JsonUtil.getInstance().fromJson(data.getStringExtra("paymentMethod"), PaymentMethod.class);
+//            MPTracker.getInstance().trackScreen("REVIEW_AND_CONFIRM", "3", mMerchantPublicKey, mCheckoutPreference.getSiteId(), BuildConfig.VERSION_NAME, this);
+//            showReviewAndConfirm();
+//            stopProgressBar();
+//        } else {
+//            if (!mPaymentMethodEditionRequested) {
+//                Intent returnIntent = new Intent();
+//                setResult(RESULT_CANCELED, returnIntent);
+//                finish();
+//            } else {
+//                animateBackFromPaymentEdition();
+//            }
+//        }
+//    }
 }

@@ -66,7 +66,7 @@ public class MercadoPagoCheckout {
 
     private void startCheckoutActivity() {
         Intent checkoutIntent = new Intent(context, CheckoutActivity.class);
-        checkoutIntent.putExtra("publicKey", publicKey);
+        checkoutIntent.putExtra("merchantPublicKey", publicKey);
         checkoutIntent.putExtra("checkoutPreference", JsonUtil.getInstance().toJson(checkoutPreference));
         checkoutIntent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
         checkoutIntent.putExtra("servicePreference", JsonUtil.getInstance().toJson(servicePreference));
