@@ -42,7 +42,7 @@ import com.mercadopago.model.Payer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PayerIntent;
 import com.mercadopago.model.Payment;
-import com.mercadopago.model.PaymentIntent;
+import com.mercadopago.model.PaymentBody;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentMethodSearch;
 import com.mercadopago.preferences.PaymentPreference;
@@ -135,7 +135,7 @@ public class MercadoPago {
         }
     }
 
-    public void createPayment(final PaymentIntent paymentIntent, final Callback<Payment> callback) {
+    public void createPayment(final PaymentBody paymentBody, final Callback<Payment> callback) {
         if (this.mKeyType.equals(KEY_TYPE_PUBLIC)) {
             MPTracker.getInstance().trackEvent("NO_SCREEN", "CREATE_PAYMENT", "1", mKey, BuildConfig.VERSION_NAME, mContext);
             Retrofit paymentsRetrofitAdapter = new Retrofit.Builder()
@@ -146,7 +146,7 @@ public class MercadoPago {
                     .build();
 
             PaymentService service = paymentsRetrofitAdapter.create(PaymentService.class);
-            service.createPayment(String.valueOf(paymentIntent.getTransactionId()), paymentIntent).enqueue(callback);
+            service.createPayment(String.valueOf(paymentBody.getTransactionId()), paymentBody).enqueue(callback);
 
         } else {
             throw new RuntimeException("Unsupported key type for this method");

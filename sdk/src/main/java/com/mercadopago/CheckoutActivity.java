@@ -1,30 +1,24 @@
 package com.mercadopago;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.callbacks.PaymentDataCallback;
 import com.mercadopago.core.CustomServiceHandler;
-import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoComponents;
 import com.mercadopago.core.MercadoPagoContext;
 import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.ApiException;
-import com.mercadopago.model.Issuer;
 import com.mercadopago.model.Payer;
-import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.Payment;
 import com.mercadopago.model.PaymentData;
-import com.mercadopago.model.PaymentIntent;
-import com.mercadopago.model.PaymentMethod;
+import com.mercadopago.model.PaymentBody;
 import com.mercadopago.model.Site;
-import com.mercadopago.model.Token;
-import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.preferences.DecorationPreference;
 import com.mercadopago.preferences.FlowPreference;
@@ -39,9 +33,6 @@ import com.mercadopago.views.CheckoutActivityView;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
-import retrofit2.http.POST;
 
 /**
  * Created by vaserber on 2/1/17.
@@ -201,57 +192,55 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
     }
 
     private void createPayment(PaymentData paymentData) {
-        Map<String, Object> paymentDataMap = createPaymentDataMap(paymentData);
+        PaymentBody paymentBody = createPaymentBody(paymentData);
         String transactionId = createTransactionId();
-        CustomServiceHandler.createPayment(this, transactionId, new Callback<Payment>() {
+        //TODO transactionId debería funcionar tanto en el body como en la url como parametro
+//        paymentBody.setTransactionId(transactionId);
+
+        CustomServiceHandler.createPayment(this, transactionId, paymentBody, new Callback<Payment>() {
             @Override
             public void success(Payment payment) {
-
+                Log.d("log", payment.getStatus());
             }
 
             @Override
             public void failure(ApiException apiException) {
-
+                Log.d("log", "payment failure");
             }
         });
     }
 
-    private Map<String, Object> createPaymentDataMap(PaymentData paymentData) {
-        Map<String, Object> paymentDataMap = new HashMap<>();
-//        paymentDataMap.put("")
-//
-//        paymentIntent.setPrefId(mCheckoutPreference.getId());
-//        paymentIntent.setPublicKey(mMerchantPublicKey);
-//        paymentIntent.setPaymentMethodId(mSelectedPaymentMethod.getId());
-//        paymentIntent.setBinaryMode(mBinaryModeEnabled);
+    private String createTransactionId() {
+        //TODO
+//        if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
+//            mTransactionId = createNewTransactionId();
+//        }
+        return "";
+    }
+
+    private PaymentBody createPaymentBody(PaymentData paymentData) {
+        PaymentBody paymentBody = new PaymentBody();
+        paymentBody.setPrefId(MercadoPagoContext.getInstance().getCheckoutPreference().getId());
+        paymentBody.setPublicKey(mMerchantPublicKey);
+        paymentBody.setPaymentMethodId(paymentData.getPaymentMethod().getId());
+        //TODO missing binary mode and payer
+//        paymentBody.setBinaryMode(mBinaryModeEnabled);
 //        Payer payer = mCheckoutPreference.getPayer();
 //        if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
 //            payer.setId(mCustomerId);
 //        }
 //
-//        paymentIntent.setPayer(payer);
-//
-//        if (mCreatedToken != null) {
-//            paymentIntent.setTokenId(mCreatedToken.getId());
-//        }
-//        if (mSelectedPayerCost != null) {
-//            paymentIntent.setInstallments(mSelectedPayerCost.getInstallments());
-//        }
-//        if (mSelectedIssuer != null) {
-//            paymentIntent.setIssuerId(mSelectedIssuer.getId());
-//        }
-//
-//        if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
-//            mTransactionId = createNewTransactionId();
-//        }
-//
-//        paymentIntent.setTransactionId(mTransactionId);
-//        return paymentIntent;
-        return paymentDataMap;
-    }
+//        paymentBody.setPayer(payer);
 
-    private String createTransactionId() {
-        //TODO
-        return "";
+        if (paymentData.getToken() != null) {
+            paymentBody.setTokenId(paymentData.getToken().getId());
+        }
+        if (paymentData.getPayerCost() != null) {
+            paymentBody.setInstallments(paymentData.getPayerCost().getInstallments());
+        }
+        if (paymentData.getIssuer() != null) {
+            paymentBody.setIssuerId(paymentData.getIssuer().getId());
+        }
+        return paymentBody;
     }
 }

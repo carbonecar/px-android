@@ -45,7 +45,7 @@ import com.mercadopago.model.Issuer;
 import com.mercadopago.model.Payer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.Payment;
-import com.mercadopago.model.PaymentIntent;
+import com.mercadopago.model.PaymentBody;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentMethodSearch;
 import com.mercadopago.model.PaymentMethodSearchItem;
@@ -752,9 +752,9 @@ public class DeprecatedCheckoutActivity extends MercadoPagoActivity implements T
     protected void createPayment() {
         mScrollView.setVisibility(View.GONE);
         LayoutUtil.showProgressLayout(this);
-        PaymentIntent paymentIntent = createPaymentIntent();
+        PaymentBody paymentBody = createPaymentIntent();
 
-        mMercadoPago.createPayment(paymentIntent, new Callback<Payment>() {
+        mMercadoPago.createPayment(paymentBody, new Callback<Payment>() {
             @Override
             public void success(Payment payment) {
                 mCreatedPayment = payment;
@@ -775,35 +775,35 @@ public class DeprecatedCheckoutActivity extends MercadoPagoActivity implements T
         });
     }
 
-    private PaymentIntent createPaymentIntent() {
-        PaymentIntent paymentIntent = new PaymentIntent();
-        paymentIntent.setPrefId(mCheckoutPreference.getId());
-        paymentIntent.setPublicKey(mMerchantPublicKey);
-        paymentIntent.setPaymentMethodId(mSelectedPaymentMethod.getId());
-        paymentIntent.setBinaryMode(mBinaryModeEnabled);
+    private PaymentBody createPaymentIntent() {
+        PaymentBody paymentBody = new PaymentBody();
+        paymentBody.setPrefId(mCheckoutPreference.getId());
+        paymentBody.setPublicKey(mMerchantPublicKey);
+        paymentBody.setPaymentMethodId(mSelectedPaymentMethod.getId());
+        paymentBody.setBinaryMode(mBinaryModeEnabled);
         Payer payer = mCheckoutPreference.getPayer();
         if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
             payer.setId(mCustomerId);
         }
 
-        paymentIntent.setPayer(payer);
+        paymentBody.setPayer(payer);
 
         if (mCreatedToken != null) {
-            paymentIntent.setTokenId(mCreatedToken.getId());
+            paymentBody.setTokenId(mCreatedToken.getId());
         }
         if (mSelectedPayerCost != null) {
-            paymentIntent.setInstallments(mSelectedPayerCost.getInstallments());
+            paymentBody.setInstallments(mSelectedPayerCost.getInstallments());
         }
         if (mSelectedIssuer != null) {
-            paymentIntent.setIssuerId(mSelectedIssuer.getId());
+            paymentBody.setIssuerId(mSelectedIssuer.getId());
         }
 
         if (!existsTransactionId() || !MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
             mTransactionId = createNewTransactionId();
         }
 
-        paymentIntent.setTransactionId(mTransactionId);
-        return paymentIntent;
+        paymentBody.setTransactionId(mTransactionId);
+        return paymentBody;
     }
 
     private void checkStartPaymentResultActivity(Payment payment) {

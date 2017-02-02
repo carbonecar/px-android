@@ -2,10 +2,13 @@ package com.mercadopago.core;
 
 import android.content.Context;
 
+import com.google.gson.annotations.SerializedName;
 import com.mercadopago.adapters.ErrorHandlingCallAdapter;
 import com.mercadopago.callbacks.Callback;
 import com.mercadopago.model.Customer;
+import com.mercadopago.model.Payer;
 import com.mercadopago.model.Payment;
+import com.mercadopago.model.PaymentBody;
 import com.mercadopago.preferences.CheckoutPreference;
 import com.mercadopago.preferences.ServicePreference;
 import com.mercadopago.services.CustomService;
@@ -57,7 +60,7 @@ public class CustomServiceHandler {
         service.getCustomer(getCustomerURI, additionalInfo).enqueue(callback);
     }
 
-    public static void createPayment(Context context, String transactionId, Callback<Payment> callback) {
+    public static void createPayment(Context context, String transactionId, PaymentBody paymentBody, Callback<Payment> callback) {
 //        ServicePreference servicePreference = new ServicePreference.Builder()
 //                .setCreateCheckoutPreferenceURL("/baseUrl", "/Uri")
 //                .build();
@@ -66,7 +69,7 @@ public class CustomServiceHandler {
         String createPaymentURL = servicePreference.getCreatePaymentURL();
         String createPaymentURI = servicePreference.getCreatePaymentURI();
         Map<String, Object> additionalInfo = servicePreference.getCreatePaymentAdditionalInfo();
-
+        addPaymentBodyToMap(paymentBody, additionalInfo);
         createPayment(context, transactionId, createPaymentURL, createPaymentURI, additionalInfo, callback);
     }
 
@@ -94,5 +97,18 @@ public class CustomServiceHandler {
 
     private static String ripFirstSlash(String uri) {
         return uri.startsWith("/") ? uri.substring(1) : uri;
+    }
+
+    private static void addPaymentBodyToMap(PaymentBody paymentBody, Map<String, Object> additionalInfo) {
+        additionalInfo.put("transaction_id", paymentBody.getTransactionId());
+        additionalInfo.put("installments", paymentBody.getInstallments());
+        additionalInfo.put("issuer_id", paymentBody.getIssuerId());
+        additionalInfo.put("payment_method_id", paymentBody.getPaymentMethodId());
+        additionalInfo.put("pref_id", paymentBody.getPrefId());
+        additionalInfo.put("token", paymentBody.getTokenId());
+        additionalInfo.put("binary_mode", paymentBody.getBinaryMode());
+        additionalInfo.put("public_key", paymentBody.getPublicKey());
+        additionalInfo.put("email", paymentBody.getEmail());
+        additionalInfo.put("payer", paymentBody.getPayer());
     }
 }

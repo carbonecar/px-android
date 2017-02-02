@@ -2,7 +2,7 @@ package com.mercadopago.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PaymentIntent {
+public class PaymentBody {
 
     private Long transactionId;
     private Integer installments;
@@ -79,5 +79,21 @@ public class PaymentIntent {
 
     public void setBinaryMode(Boolean binaryMode) {
         this.binaryMode = binaryMode;
+    }
+
+    public Boolean getBinaryMode() {
+        return this.binaryMode;
+    }
+
+    public String getPublicKey() {
+        return this.publicKey;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public Payer getPayer() {
+        return this.payer;
     }
 }
