@@ -58,7 +58,7 @@
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar" />
         <activity
-            android:name=".InstallmentsReviewActivity"
+            android:name=".InstallmentReviewActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.ProcessMercadoPagoTheme.NoActionbar"/>
         <activity

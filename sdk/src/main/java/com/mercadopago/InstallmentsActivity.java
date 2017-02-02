@@ -127,6 +127,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
         String payerEmail = this.getIntent().getStringExtra("payerEmail");
         Boolean discountEnabled = this.getIntent().getBooleanExtra("discountEnabled", true);
+        Boolean installmentReviewEnabled = this.getIntent().getBooleanExtra("installmentReviewEnabled", true);
 
         mPresenter.setPaymentMethod(paymentMethod);
         mPresenter.setPublicKey(publicKey);
@@ -139,6 +140,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         mPresenter.setPayerCosts(payerCosts);
         mPresenter.setPaymentPreference(paymentPreference);
         mPresenter.setCardInfo(cardInfo);
+        mPresenter.setInstallmentReviewEnabled(installmentReviewEnabled);
     }
 
     private boolean isDecorationEnabled() {
@@ -494,6 +496,11 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
                 .setPaymentMethod(mPresenter.getPaymentMethod())
                 .setPayerCost(payerCost)
                 .setCardInfo(mPresenter.getCardInfo())
+                .setDiscount(mPresenter.getDiscount())
+                .setDiscountEnabled(mPresenter.getDiscountEnabled())
+                .setPayerEmail(mPresenter.getPayerEmail())
+                .setAmount(mPresenter.getAmount())
+                .setSite(mPresenter.getSite())
                 .setDecorationPreference(mDecorationPreference);
 
         mercadoPagoBuilder.startInstallmentsReviewActivity();

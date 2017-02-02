@@ -41,6 +41,7 @@ public class CardVaultPresenter {
     protected List<PaymentMethod> mPaymentMethodList;
     protected Site mSite;
     protected Boolean mInstallmentsEnabled;
+    protected Boolean mInstallmentReviewEnabled;
     protected String mPublicKey;
     protected BigDecimal mAmount;
 
@@ -207,6 +208,14 @@ public class CardVaultPresenter {
 
     public Boolean getDiscountEnabled() {
         return this.mDiscountEnabled;
+    }
+
+    public void setInstallmentReviewEnabled(Boolean installmentReviewEnabled) {
+        this.mInstallmentReviewEnabled = installmentReviewEnabled;
+    }
+
+    public Boolean getInstallmentReviewEnabled() {
+        return this.mInstallmentReviewEnabled;
     }
 
     public CardInfo getCardInfo() {

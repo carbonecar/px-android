@@ -6,5 +6,5 @@ import com.mercadopago.mvp.ResourcesProvider;
  * Created by mromar on 2/1/17.
  */
 
-public interface InstallmentsReviewProvider extends ResourcesProvider {
+public interface InstallmentReviewProvider extends ResourcesProvider {
 }

@@ -8,13 +8,13 @@ import java.math.BigDecimal;
  * Created by mromar on 2/1/17.
  */
 
-public interface InstallmentsReviewActivityView extends MvpView {
+public interface InstallmentReviewActivityView extends MvpView {
 
     void finishWithCancelResult();
 
-    void showInstallmentAmount();
+    void setInstallmentAmountText();
 
-    void showTotalAmount();
+    void setTotalAmountWithRateText();
 
     void showTeaPercent();
 

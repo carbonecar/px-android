@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -21,17 +22,18 @@ import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.Site;
 import com.mercadopago.mptracker.MPTracker;
 import com.mercadopago.observers.TimerObserver;
-import com.mercadopago.presenters.InstallmentsReviewPresenter;
+import com.mercadopago.presenters.InstallmentReviewPresenter;
 import com.mercadopago.providers.InstallmentsReviewProviderImpl;
 import com.mercadopago.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.uicontrollers.card.FrontCardView;
 import com.mercadopago.uicontrollers.discounts.DiscountRowView;
+import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.JsonUtil;
-import com.mercadopago.views.InstallmentsReviewActivityView;
+import com.mercadopago.views.InstallmentReviewActivityView;
 
 import java.math.BigDecimal;
 
-public class InstallmentsReviewActivity extends AppCompatActivity implements InstallmentsReviewActivityView, TimerObserver {
+public class InstallmentReviewActivity extends AppCompatActivity implements InstallmentReviewActivityView, TimerObserver {
 
     //Normal View
     protected CollapsingToolbarLayout mCollapsingToolbar;
@@ -51,7 +53,7 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
     // Local vars
     protected DecorationPreference mDecorationPreference;
 
-    protected InstallmentsReviewPresenter mPresenter;
+    protected InstallmentReviewPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
     }
 
     private void createPresenter() {
-        mPresenter = new InstallmentsReviewPresenter();
+        mPresenter = new InstallmentReviewPresenter();
     }
 
     private void getActivityParameters() {
@@ -82,8 +84,10 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
         mPresenter.setPayerCost(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("payerCost"), PayerCost.class));
         mPresenter.setCardInfo(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("cardInfo"), CardInfo.class));
         mPresenter.setDiscount(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class));
+        mPresenter.setTransactionAmount(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("amount"), BigDecimal.class));
         mPresenter.setSite(JsonUtil.getInstance().fromJson(getIntent().getStringExtra("site"), Site.class));
         mPresenter.setPayerEmail(getIntent().getStringExtra("payerEmail"));
+        mPresenter.setDiscountEnabled(getIntent().getBooleanExtra("discountEnabled", true));
 
     }
 
@@ -113,10 +117,14 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
         mTeaPercent = (MPTextView) findViewById(R.id.mpsdkTeaPercent);
         mCftpercent = (MPTextView) findViewById(R.id.mpsdkCftpercent);
 
+        mTimerTextView = (MPTextView) findViewById(R.id.mpsdkTimerTextView);
+
         mDiscountFrameLayout = (FrameLayout) findViewById(R.id.mpsdkDiscount);
     }
 
     protected void onValidStart() {
+        MPTracker.getInstance().trackScreen("INSTALLMENT_REVIEW", "2", mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
+
         showTimer();
         loadViews();
 
@@ -169,27 +177,46 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
     }
 
     @Override
-    public void showInstallmentAmount() {
-        mInstallmentsAmount.setText(mPresenter.getPayerCost().getRecommendedMessage());
+    public void setInstallmentAmountText() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(mPresenter.getPayerCost().getInstallments());
+        sb.append(" ");
+        sb.append(getString(R.string.mpsdk_installments_by));
+        sb.append(" ");
+
+        sb.append(CurrenciesUtil.formatNumber(mPresenter.getPayerCost().getInstallmentAmount(), mPresenter.getSite().getCurrencyId()));
+        Spanned spannedInstallmentsText = CurrenciesUtil.formatCurrencyInText(mPresenter.getPayerCost().getInstallmentAmount(),
+                mPresenter.getSite().getCurrencyId(), sb.toString(), false, true);
+
+        mInstallmentsAmount.setText(spannedInstallmentsText);
     }
 
     @Override
-    public void showTotalAmount() {
-        mTotalAmount.setText("($9000)");
+    public void setTotalAmountWithRateText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(CurrenciesUtil.formatNumber(mPresenter.getPayerCost().getTotalAmount(), mPresenter.getSite().getCurrencyId()));
+        sb.append(")");
+        Spanned spannedFullAmountText = CurrenciesUtil.formatCurrencyInText(mPresenter.getPayerCost().getTotalAmount(),
+                mPresenter.getSite().getCurrencyId(), sb.toString(), false, true);
+
+        mTotalAmount.setText(spannedFullAmountText);
     }
 
     @Override
     public void showTeaPercent() {
-        mTeaPercent.setText("TEA 90%");
+        String teaPercenct = getString(R.string.mpsdk_installments_tea) + " " + mPresenter.getPayerCost().getTeaPercent();
+        mTeaPercent.setText(teaPercenct);
     }
 
     @Override
     public void showCftPercent() {
-        mCftpercent.setText("CFT 10,00%");
+        String cftPercent = getString(R.string.mpsdk_installments_cft) + " " + mPresenter.getPayerCost().getCftPercent();
+        mCftpercent.setText(cftPercent);
     }
 
     public void onClickInstallmentOptionButton(View view) {
-        //TODO installments hacer que llame directamente a finish, este método está de más
         finishWithResult();
     }
 
@@ -215,21 +242,22 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
 
     @Override
     public void showDiscountRow(BigDecimal transactionAmount) {
-        DiscountRowView discountRowView = new MercadoPagoUI.Views.DiscountRowViewBuilder()
-                .setContext(this)
-                .setTransactionAmount(transactionAmount)
-                .setCurrencyId(mPresenter.getSite().getCurrencyId())
-                .build();
+        MercadoPagoUI.Views.DiscountRowViewBuilder discountRowBuilder = new MercadoPagoUI.Views.DiscountRowViewBuilder();
+
+        discountRowBuilder.setContext(this)
+                        .setTransactionAmount(transactionAmount)
+                        .setDiscount(mPresenter.getDiscount())
+                        .setCurrencyId(mPresenter.getSite().getCurrencyId());
+
+        if (mPresenter.getDiscount() == null) {
+            discountRowBuilder.setDiscountEnabled(false);
+        }
+
+        DiscountRowView discountRowView = discountRowBuilder.build();
 
         discountRowView.inflateInParent(mDiscountFrameLayout, true);
         discountRowView.initializeControls();
         discountRowView.draw();
-        discountRowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.initializeDiscountActivity();
-            }
-        });
     }
 
     @Override
@@ -243,7 +271,7 @@ public class InstallmentsReviewActivity extends AppCompatActivity implements Ins
 
     @Override
     public void onBackPressed() {
-        MPTracker.getInstance().trackEvent("INSTALLMENTS_REVIEW", "BACK_PRESSED", "2", mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
+        MPTracker.getInstance().trackEvent("INSTALLMENT_REVIEW", "BACK_PRESSED", "2", mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("backButtonPressed", true);
         returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));

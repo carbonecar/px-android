@@ -8,7 +8,7 @@ import com.mercadopago.core.MercadoPago;
  * Created by mromar on 2/1/17.
  */
 
-public class InstallmentsReviewProviderImpl implements InstallmentsReviewProvider {
+public class InstallmentsReviewProviderImpl implements InstallmentReviewProvider {
 
     private final MercadoPago mercadoPago;
 

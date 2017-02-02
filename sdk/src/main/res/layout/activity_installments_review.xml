@@ -44,6 +44,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="24dp"
+                android:textColor="@color/mpsdk_base_text"
+                app:fontStyle="regular"
                 tools:text="9 x $ 911" />
 
             <com.mercadopago.customviews.MPTextView
@@ -53,6 +55,8 @@
                 android:layout_marginTop="3dp"
                 android:gravity="center"
                 android:textSize="17dp"
+                android:textColor="@color/mpsdk_base_text"
+                app:fontStyle="regular"
                 tools:text="($ 9567)" />
 
             <com.mercadopago.customviews.MPTextView
@@ -62,15 +66,16 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:textSize="10dp"
+                app:fontStyle="regular"
                 tools:text="TEA 90%" />
 
             <com.mercadopago.customviews.MPTextView
                 android:id="@+id/mpsdkCftpercent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
                 android:gravity="center"
                 android:textSize="25dp"
+                app:fontStyle="regular"
                 tools:text="CFT 109,00%" />
         </LinearLayout>
 

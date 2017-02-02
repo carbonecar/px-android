@@ -7,8 +7,8 @@ import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.Site;
 import com.mercadopago.mvp.MvpPresenter;
-import com.mercadopago.providers.InstallmentsReviewProvider;
-import com.mercadopago.views.InstallmentsReviewActivityView;
+import com.mercadopago.providers.InstallmentReviewProvider;
+import com.mercadopago.views.InstallmentReviewActivityView;
 
 import java.math.BigDecimal;
 
@@ -16,9 +16,9 @@ import java.math.BigDecimal;
  * Created by mromar on 2/1/17.
  */
 
-public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReviewActivityView, InstallmentsReviewProvider> {
+public class InstallmentReviewPresenter extends MvpPresenter<InstallmentReviewActivityView, InstallmentReviewProvider> {
 
-    private InstallmentsReviewActivityView mView;
+    private InstallmentReviewActivityView mView;
 
     //Activity parameters
     private String mPublicKey;
@@ -29,22 +29,21 @@ public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReview
     private String mPayerEmail;
     private BigDecimal mTransactionAmount;
     private Discount mDiscount;
+    private Boolean mDiscountEnabled;
     private Site mSite;
 
     @Override
-    public void attachView(InstallmentsReviewActivityView view) {
+    public void attachView(InstallmentReviewActivityView view) {
         this.mView = view;
     }
 
     public void initialize() {
-        mView.showInstallmentAmount();
-        mView.showTotalAmount();
+        mView.setInstallmentAmountText();
+        mView.setTotalAmountWithRateText();
         mView.showTeaPercent();
         mView.showCftPercent();
-    }
 
-    public void initializeDiscountActivity() {
-        mView.startDiscountActivity(mTransactionAmount);
+        mView.showDiscountRow(mTransactionAmount);
     }
 
     public void setMerchantPublicKey(String publicKey) {
@@ -119,5 +118,13 @@ public class InstallmentsReviewPresenter extends MvpPresenter<InstallmentsReview
 
     public Site getSite() {
         return this.mSite;
+    }
+
+    public void setDiscountEnabled(Boolean discountEnabled) {
+        this.mDiscountEnabled = discountEnabled;
+    }
+
+    public Boolean getDiscountEnabled() {
+        return this.mDiscountEnabled;
     }
 }

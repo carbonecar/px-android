@@ -122,6 +122,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
     private void getActivityParameters() {
         Boolean installmentsEnabled = getIntent().getBooleanExtra("installmentsEnabled", false);
         Boolean discountEnabled = getIntent().getBooleanExtra("discountEnabled", true);
+        Boolean installmentReviewEnabled = getIntent().getBooleanExtra("installmentReviewEnabled", true);
         String publicKey = getIntent().getStringExtra("merchantPublicKey");
         Site site = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("site"), Site.class);
         Card card = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("card"), Card.class);
@@ -161,6 +162,7 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
         mPresenter.setPayerEmail(payerEmail);
         mPresenter.setDiscount(discount);
         mPresenter.setDiscountEnabled(discountEnabled);
+        mPresenter.setInstallmentReviewEnabled(installmentReviewEnabled);
     }
 
     private void setContentView() {
@@ -432,6 +434,8 @@ public class CardVaultActivity extends AppCompatActivity implements CardVaultAct
                 .setPaymentPreference(mPresenter.getPaymentPreference())
                 .setSite(mPresenter.getSite())
                 .setDecorationPreference(mDecorationPreference)
+                .setInstallmentsEnabled(mPresenter.getInstallmentsEnabled())
+                .setInstallmentReviewEnabled(mPresenter.getInstallmentReviewEnabled())
                 .setCardInfo(mPresenter.getCardInfo())
                 .startInstallmentsActivity();
     }

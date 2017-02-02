@@ -74,8 +74,35 @@ public class PayerCost {
         return totalAmount;
     }
 
+
+
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    //TODO installlment mejorarrr
+    public String getTeaPercent() {
+        String teaPercent = "";
+
+        for (String label : labels) {
+            if (label.contains("TEA_")) {
+                teaPercent = label.substring(15);
+            }
+        }
+
+        return teaPercent;
+    }
+
+    public String getCftPercent() {
+        String cftPercent = "";
+
+        for (String label : labels) {
+            if (label.contains("CFT_")) {
+                cftPercent = label.substring(4, label.indexOf("|"));
+            }
+        }
+
+        return cftPercent;
     }
 
     @Override

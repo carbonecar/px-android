@@ -50,6 +50,7 @@ public class InstallmentsPresenter {
     private CardInfo mCardInfo;
     private Discount mDiscount;
     private Boolean mDiscountEnabled;
+    private Boolean mInstallmentReviewEnabled;
 
     public InstallmentsPresenter(Context context) {
         this.mContext = context;
@@ -260,6 +261,14 @@ public class InstallmentsPresenter {
         return this.mDiscountEnabled;
     }
 
+    public void setInstallmentReviewEnabled(Boolean installmentReviewEnabled) {
+        this.mInstallmentReviewEnabled = installmentReviewEnabled;
+    }
+
+    public Boolean getInstallmentReviewEnabled() {
+        return this.mInstallmentReviewEnabled;
+    }
+
     private void loadPayerCosts() {
         if (werePayerCostsSet()) {
             resolvePayerCosts(mPayerCosts);
@@ -325,11 +334,15 @@ public class InstallmentsPresenter {
     }
 
     public void onItemSelected(int position) {
-        //TODO installments, si está prendido el componente, mostrarlo, sino finalizar
-        mView.startInstallmentsReview(mPayerCosts.get(position));
+        if (isInstallmentReviewEnabled()){
+            mView.startInstallmentsReview(mPayerCosts.get(position));
+        } else {
+            mView.finishWithResult(mPayerCosts.get(position));
+        }
+    }
 
-        //TODO
-//        mView.finishWithResult(mPayerCosts.get(position));
+    private Boolean isInstallmentReviewEnabled() {
+        return mInstallmentReviewEnabled != null && mInstallmentReviewEnabled;
     }
 
 }

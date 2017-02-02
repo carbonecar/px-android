@@ -55,6 +55,7 @@ public class PaymentVaultPresenter {
     private BigDecimal mAmount;
     private Boolean mAccountMoneyEnabled;
     private Boolean mDiscountEnabled;
+    private Boolean mInstallmentReviewEnabled;
     private Integer mMaxSavedCards;
 
     public void attachView(PaymentVaultView paymentVaultView) {
@@ -553,6 +554,14 @@ public class PaymentVaultPresenter {
 
     public String getPayerEmail() {
         return mPayerEmail;
+    }
+
+    public void setInstallmentReviewEnabled(Boolean installmentReviewEnabled) {
+        this.mInstallmentReviewEnabled = installmentReviewEnabled;
+    }
+
+    public Boolean getInstallmentReviewEnabled() {
+        return this.mInstallmentReviewEnabled;
     }
 
     public void setDiscountEnabled(Boolean discountEnabled) {
