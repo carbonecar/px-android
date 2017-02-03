@@ -1,10 +1,14 @@
 package com.mercadopago.model;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PayerCost {
 
+    public static final String CFT = "CFT";
+    public static final String TEA = "TEA";
     private Integer installments;
     private BigDecimal installmentRate;
     private List<String> labels;
@@ -74,45 +78,53 @@ public class PayerCost {
         return totalAmount;
     }
 
-
-
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public String getTeaPercent() {
-        String teaPercent = "";
-
-        for (String label : labels) {
-            if (label.contains("CFT_") && label.contains("TEA_")) {
-                String[] rates = label.split("\\|");
-
-                teaPercent = rates[1];
-                teaPercent = teaPercent.replace("TEA_","");
-            }
-        }
-
-        return teaPercent;
+    public String getTEAPercent() {
+        return getRates().get(TEA);
     }
 
-    public String getCftPercent() {
-        String cftPercent = "";
+    public String getCFTPercent() {
+        return getRates().get(CFT);
+    }
 
-        for (String label : labels) {
-            if (label.contains("CFT_") && label.contains("TEA_")) {
-                String[] rates = label.split("\\|");
+    public Map<String, String> getRates() {
+        Map<String, String> ratesMap = new HashMap<>();
 
-                cftPercent = rates[0];
-                cftPercent = cftPercent.replace("CFT_","");
+        if (isValidLabels()){
+            for (String label : labels) {
+                if (label.contains(CFT) || label.contains(TEA)) {
+                    String[] ratesRaw = label.split("\\|");
+                    for (String rate : ratesRaw) {
+                        String[] rates = rate.split("_");
+                        ratesMap.put(rates[0], rates[1]);
+                    }
+                }
             }
         }
+        return ratesMap;
+    }
 
-        return cftPercent;
+    public Boolean hasRates() {
+        return hasTEA() && hasCFT();
+    }
+
+    public Boolean hasCFT() {
+        return getCFTPercent() != null;
+    }
+
+    public Boolean hasTEA() {
+        return getTEAPercent() != null;
+    }
+
+    private Boolean isValidLabels() {
+        return labels != null && labels.size()>0;
     }
 
     @Override
     public String toString() {
         return installments.toString();
     }
-
 }
