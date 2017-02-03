@@ -14,6 +14,7 @@ import com.mercadopago.callbacks.PaymentDataCallback;
 import com.mercadopago.core.CustomServiceHandler;
 import com.mercadopago.core.MercadoPagoComponents;
 import com.mercadopago.core.MercadoPagoContext;
+import com.mercadopago.core.MercadoPagoServices;
 import com.mercadopago.exceptions.MercadoPagoError;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.Payer;
@@ -75,9 +76,8 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
         mPresenter.attachResourcesProvider(mResourcesProvider);
 
         getActivityParameters();
-//        setContentView();
-
-        mPresenter.start();
+        //TODO validateActivityParameters();
+//        mPresenter.start();
     }
 
     private void getActivityParameters() {
@@ -86,9 +86,36 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
         ServicePreference servicePreference = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("servicePreference"), ServicePreference.class);
         mFlowPreference = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("flowPreference"), FlowPreference.class);
 
-        mSite = new Site(checkoutPreference.getSiteId(), checkoutPreference.getItems().get(0).getCurrencyId());
+        //TODO falta validar los parametros de entrada
+        if (checkoutPreference.getId() != null) {
+            // Traer la preferencia real
+            getCheckoutPreferenceById(checkoutPreference.getId(), decorationPreference, servicePreference);
+        } else {
+            //si checkout pref no tiene id, nos tiene que setear una url para create payment en su servidor
 
-        initializeMercadoPagoContext(decorationPreference, servicePreference, checkoutPreference);
+        }
+
+    }
+
+    private void getCheckoutPreferenceById(String id, final DecorationPreference decorationPreference, final ServicePreference servicePreference) {
+        MercadoPagoServices mercadoPagoServices = new MercadoPagoServices.Builder()
+                .setContext(this)
+                .setPublicKey(mMerchantPublicKey)
+                .build();
+        mercadoPagoServices.getPreference(id, new Callback<CheckoutPreference>() {
+            @Override
+            public void success(CheckoutPreference checkoutPreference) {
+                //TODO validar la respuesta
+                mSite = new Site(checkoutPreference.getSiteId(), checkoutPreference.getItems().get(0).getCurrencyId());
+                initializeMercadoPagoContext(decorationPreference, servicePreference, checkoutPreference);
+                startPresenter();
+            }
+
+            @Override
+            public void failure(ApiException apiException) {
+                //TODO
+            }
+        });
     }
 
     private void initializeMercadoPagoContext(DecorationPreference decorationPreference,
@@ -111,23 +138,13 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
                 .initialize();
     }
 
-
-//    private void onValidStart() {
-//        CheckoutPreference checkoutPreference = MercadoPagoContext.getInstance().getCheckoutPreference();
-//        if (checkoutPreference != null && checkoutPreference.getSiteId() != null && checkoutPreference.getItems() != null
-//                && !checkoutPreference.getItems().isEmpty()) {
-//            mSite = new Site(checkoutPreference.getSiteId(), checkoutPreference.getItems().get(0).getCurrencyId());
-//        }
-//        startPaymentVaultActivity();
-//    }
-
-    private void onInvalidStart(String message) {
-
+    private void startPresenter() {
+        mPresenter.start();
     }
 
-//    private void setContentView() {
-//        setContentView(R.layout.mpsdk_activity_checkout);
-//    }
+    private void onInvalidStart(String message) {
+        //TODO
+    }
 
     @Override
     public void startPaymentVaultActivity() {
@@ -249,18 +266,20 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
     }
 
     private PaymentBody createPaymentBody(PaymentData paymentData) {
+        CheckoutPreference checkoutPreference = MercadoPagoContext.getInstance().getCheckoutPreference();
+
         PaymentBody paymentBody = new PaymentBody();
-        paymentBody.setPrefId(MercadoPagoContext.getInstance().getCheckoutPreference().getId());
+        paymentBody.setPrefId(checkoutPreference.getId());
         paymentBody.setPublicKey(mMerchantPublicKey);
         paymentBody.setPaymentMethodId(paymentData.getPaymentMethod().getId());
         //TODO missing binary mode and payer
 //        paymentBody.setBinaryMode(mBinaryModeEnabled);
-//        Payer payer = mCheckoutPreference.getPayer();
-//        if (!TextUtils.isEmpty(mCustomerId) && MercadoPagoUtil.isCard(mSelectedPaymentMethod.getPaymentTypeId())) {
-//            payer.setId(mCustomerId);
-//        }
-//
-//        paymentBody.setPayer(payer);
+        Payer payer = checkoutPreference.getPayer();
+        String customerId = mPresenter.getCustomerId();
+        if (!TextUtils.isEmpty(customerId) && MercadoPagoUtil.isCard(paymentData.getPaymentMethod().getPaymentTypeId())) {
+            payer.setId(customerId);
+        }
+        paymentBody.setPayer(payer);
 
         if (paymentData.getToken() != null) {
             paymentBody.setTokenId(paymentData.getToken().getId());

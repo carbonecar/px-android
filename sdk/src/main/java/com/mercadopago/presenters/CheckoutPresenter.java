@@ -95,4 +95,8 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutActivityView, Checko
     public List<Card> getSavedCards() {
         return mSavedCards;
     }
+
+    public String getCustomerId() {
+        return mCustomerId;
+    }
 }
