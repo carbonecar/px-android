@@ -80,13 +80,15 @@ public class PayerCost {
         this.totalAmount = totalAmount;
     }
 
-    //TODO installlment mejorarrr
     public String getTeaPercent() {
         String teaPercent = "";
 
         for (String label : labels) {
-            if (label.contains("TEA_")) {
-                teaPercent = label.substring(15);
+            if (label.contains("CFT_") && label.contains("TEA_")) {
+                String[] rates = label.split("\\|");
+
+                teaPercent = rates[1];
+                teaPercent = teaPercent.replace("TEA_","");
             }
         }
 
@@ -97,8 +99,11 @@ public class PayerCost {
         String cftPercent = "";
 
         for (String label : labels) {
-            if (label.contains("CFT_")) {
-                cftPercent = label.substring(4, label.indexOf("|"));
+            if (label.contains("CFT_") && label.contains("TEA_")) {
+                String[] rates = label.split("\\|");
+
+                cftPercent = rates[0];
+                cftPercent = cftPercent.replace("CFT_","");
             }
         }
 
