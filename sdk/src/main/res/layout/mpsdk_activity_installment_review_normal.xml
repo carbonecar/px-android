@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="25dp"
-                app:fontStyle="regular"
+                app:fontStyle="default_light"
                 tools:text="CFT 109,00%" />
         </LinearLayout>
 

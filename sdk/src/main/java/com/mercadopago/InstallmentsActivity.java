@@ -489,7 +489,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
     }
 
     @Override
-    public void startInstallmentsReview(PayerCost payerCost) {
+    public void startInstallmentsReview(PayerCost payerCost, BigDecimal transactionAmount) {
         MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
 
         mercadoPagoBuilder.setActivity(this)
@@ -500,7 +500,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
                 .setDiscount(mPresenter.getDiscount())
                 .setDiscountEnabled(mPresenter.getDiscountEnabled())
                 .setPayerEmail(mPresenter.getPayerEmail())
-                .setAmount(mPresenter.getAmount())
+                .setAmount(transactionAmount)
                 .setSite(mPresenter.getSite())
                 .setDecorationPreference(mDecorationPreference);
 

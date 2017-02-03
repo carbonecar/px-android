@@ -315,6 +315,14 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
         discountRowView.inflateInParent(mDiscountFrameLayout, true);
         discountRowView.initializeControls();
         discountRowView.draw();
+        discountRowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPresenter.getDiscount() != null) {
+                    mPresenter.initializeDiscountActivity();
+                }
+            }
+        });
     }
 
     @Override

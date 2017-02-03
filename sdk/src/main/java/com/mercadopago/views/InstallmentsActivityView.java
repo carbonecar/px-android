@@ -22,5 +22,5 @@ public interface InstallmentsActivityView {
     void initializeInstallments(List<PayerCost> payerCostList);
     void showDiscountRow(BigDecimal transactionAmount);
     void startDiscountActivity(BigDecimal transactionAmount);
-    void startInstallmentsReview(PayerCost payerCost);
+    void startInstallmentsReview(PayerCost payerCost, BigDecimal transactionAmount);
 }

@@ -335,7 +335,7 @@ public class InstallmentsPresenter {
 
     public void onItemSelected(int position) {
         if (isInstallmentReviewEnabled()){
-            mView.startInstallmentsReview(mPayerCosts.get(position));
+            mView.startInstallmentsReview(mPayerCosts.get(position), mAmount);
         } else {
             mView.finishWithResult(mPayerCosts.get(position));
         }

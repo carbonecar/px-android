@@ -46,6 +46,10 @@ public class InstallmentReviewPresenter extends MvpPresenter<InstallmentReviewAc
         mView.showDiscountRow(mTransactionAmount);
     }
 
+    public void initializeDiscountActivity() {
+        mView.startDiscountActivity(mTransactionAmount);
+    }
+
     public boolean isCardInfoAvailable() {
         return mCardInfo != null && mPaymentMethod != null;
     }

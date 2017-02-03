@@ -91,6 +91,17 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     }
 
     private void startMercadoPagoCheckout() {
+        //TODO installlborrar
+//        DecorationPreference decorationPreference = getCurrentDecorationPreference();
+//
+//        new MercadoPago.StartActivityBuilder()
+//                .setActivity(this)
+//                .setPublicKey("TEST-bbc4bfb5-b57b-48cc-9cc5-a3e3d5f1f5e1")
+//                .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
+//                .setDecorationPreference(decorationPreference) //Optional
+//                .startCheckoutActivity();
+
+
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 
         new MercadoPago.StartActivityBuilder()
