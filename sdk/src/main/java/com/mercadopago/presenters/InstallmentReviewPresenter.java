@@ -46,6 +46,10 @@ public class InstallmentReviewPresenter extends MvpPresenter<InstallmentReviewAc
         mView.showDiscountRow(mTransactionAmount);
     }
 
+    public boolean isCardInfoAvailable() {
+        return mCardInfo != null && mPaymentMethod != null;
+    }
+
     public void setMerchantPublicKey(String publicKey) {
         this.mPublicKey = publicKey;
     }

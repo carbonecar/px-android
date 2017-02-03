@@ -5,9 +5,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.mercadopago.controllers.CheckoutTimer;
@@ -29,6 +31,7 @@ import com.mercadopago.uicontrollers.card.FrontCardView;
 import com.mercadopago.uicontrollers.discounts.DiscountRowView;
 import com.mercadopago.util.CurrenciesUtil;
 import com.mercadopago.util.JsonUtil;
+import com.mercadopago.util.ScaleUtil;
 import com.mercadopago.views.InstallmentReviewActivityView;
 
 import java.math.BigDecimal;
@@ -50,6 +53,12 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
 
     protected MPTextView mTimerTextView;
 
+    //ViewMode
+    protected boolean mLowResActive;
+    //Low Res View
+    protected Toolbar mLowResToolbar;
+    protected MPTextView mLowResTitleToolbar;
+
     // Local vars
     protected DecorationPreference mDecorationPreference;
 
@@ -67,6 +76,7 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
             setTheme(R.style.Theme_MercadoPagoTheme_NoActionBar);
         }
 
+        analyzeLowRes();
         setContentView();
         initializeControls();
         onValidStart();
@@ -102,15 +112,44 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
     }
 
     private void setContentView() {
-        setContentView(R.layout.activity_installments_review);
+        MPTracker.getInstance().trackScreen("INSTALLMENT_REVIEW", "2", mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
+
+        if (mLowResActive) {
+            setContentViewLowRes();
+        } else {
+            setContentViewNormal();
+        }
+    }
+
+    private void setContentViewLowRes() {
+        setContentView(R.layout.mpsdk_activity_installment_review_lowres);
+    }
+
+    private void setContentViewNormal() {
+        setContentView(R.layout.mpsdk_activity_installment_review_normal);
     }
 
     private  void initializeControls() {
-        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.mpsdkCollapsingToolbar);
-        mAppBar = (AppBarLayout) findViewById(R.id.mpsdkInstallmentesAppBar);
-        mCardContainer = (FrameLayout) findViewById(R.id.mpsdkActivityCardContainer);
-        mNormalToolbar = (Toolbar) findViewById(R.id.mpsdkRegularToolbar);
-        mNormalToolbar.setVisibility(View.VISIBLE);
+        if (mLowResActive) {
+            mLowResToolbar = (Toolbar) findViewById(R.id.mpsdkRegularToolbar);
+            mLowResTitleToolbar = (MPTextView) findViewById(R.id.mpsdkTitle);
+
+            if (CheckoutTimer.getInstance().isTimerEnabled()) {
+                Toolbar.LayoutParams marginParams = new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                marginParams.setMargins(0, 0, 0, 6);
+                mLowResTitleToolbar.setLayoutParams(marginParams);
+                mLowResTitleToolbar.setTextSize(19);
+                mTimerTextView.setTextSize(17);
+            }
+
+            mLowResToolbar.setVisibility(View.VISIBLE);
+        } else {
+            mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.mpsdkCollapsingToolbar);
+            mAppBar = (AppBarLayout) findViewById(R.id.mpsdkInstallmentesAppBar);
+            mCardContainer = (FrameLayout) findViewById(R.id.mpsdkActivityCardContainer);
+            mNormalToolbar = (Toolbar) findViewById(R.id.mpsdkRegularToolbar);
+            mNormalToolbar.setVisibility(View.VISIBLE);
+        }
 
         mInstallmentsAmount = (MPTextView) findViewById(R.id.mpsdkInstallmentsAmount);
         mTotalAmount = (MPTextView) findViewById(R.id.mpsdkTotalAmount);
@@ -118,13 +157,10 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
         mCftpercent = (MPTextView) findViewById(R.id.mpsdkCftpercent);
 
         mTimerTextView = (MPTextView) findViewById(R.id.mpsdkTimerTextView);
-
         mDiscountFrameLayout = (FrameLayout) findViewById(R.id.mpsdkDiscount);
     }
 
     protected void onValidStart() {
-        MPTracker.getInstance().trackScreen("INSTALLMENT_REVIEW", "2", mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
-
         showTimer();
         loadViews();
 
@@ -139,7 +175,28 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
         }
     }
 
+    public void analyzeLowRes() {
+        if (mPresenter.isCardInfoAvailable()) {
+            this.mLowResActive = ScaleUtil.isLowRes(this);
+        } else {
+            this.mLowResActive = true;
+        }
+    }
+
     private void loadViews() {
+        if (mLowResActive) {
+            loadLowResViews();
+        } else {
+            loadNormalViews();
+        }
+    }
+
+    private void loadLowResViews() {
+        loadToolbarArrow(mLowResToolbar);
+        mLowResTitleToolbar.setText(getString(R.string.mpsdk_card_installments_title));
+    }
+
+    private void loadNormalViews() {
         loadToolbarArrow(mNormalToolbar);
         mNormalToolbar.setTitle(getString(R.string.mpsdk_card_installments_title));
 
@@ -206,13 +263,13 @@ public class InstallmentReviewActivity extends AppCompatActivity implements Inst
 
     @Override
     public void showTeaPercent() {
-        String teaPercenct = getString(R.string.mpsdk_installments_tea) + " " + mPresenter.getPayerCost().getTeaPercent();
+        String teaPercenct = getString(R.string.mpsdk_installments_tea) + " " + mPresenter.getPayerCost().getTEAPercent();
         mTeaPercent.setText(teaPercenct);
     }
 
     @Override
     public void showCftPercent() {
-        String cftPercent = getString(R.string.mpsdk_installments_cft) + " " + mPresenter.getPayerCost().getCftPercent();
+        String cftPercent = getString(R.string.mpsdk_installments_cft) + " " + mPresenter.getPayerCost().getCFTPercent();
         mCftpercent.setText(cftPercent);
     }
 
