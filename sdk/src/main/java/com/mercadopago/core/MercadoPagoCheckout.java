@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mercadopago.CheckoutActivity;
-import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.callbacks.CallbackHolder;
 import com.mercadopago.callbacks.PaymentCallback;
 import com.mercadopago.callbacks.PaymentDataCallback;

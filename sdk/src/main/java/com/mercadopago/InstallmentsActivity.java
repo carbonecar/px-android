@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +19,13 @@ import com.mercadopago.callbacks.OnSelectedCallback;
 import com.mercadopago.controllers.CheckoutTimer;
 import com.mercadopago.core.MercadoPago;
 import com.mercadopago.core.MercadoPagoContext;
+import com.mercadopago.core.MercadoPagoUI;
 import com.mercadopago.customviews.MPTextView;
 import com.mercadopago.listeners.RecyclerItemClickListener;
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.CardInfo;
 import com.mercadopago.preferences.DecorationPreference;
+import com.mercadopago.model.Discount;
 import com.mercadopago.model.Issuer;
 import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
@@ -36,6 +37,7 @@ import com.mercadopago.presenters.InstallmentsPresenter;
 import com.mercadopago.uicontrollers.FontCache;
 import com.mercadopago.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.uicontrollers.card.FrontCardView;
+import com.mercadopago.uicontrollers.discounts.DiscountRowView;
 import com.mercadopago.util.ApiUtil;
 import com.mercadopago.util.ColorsUtil;
 import com.mercadopago.util.ErrorUtil;
@@ -52,7 +54,7 @@ import java.util.List;
  * Created by vaserber on 9/29/16.
  */
 
-public class InstallmentsActivity extends AppCompatActivity implements InstallmentsActivityView, TimerObserver {
+public class InstallmentsActivity extends MercadoPagoBaseActivity implements InstallmentsActivityView, TimerObserver {
 
     protected InstallmentsPresenter mPresenter;
     protected Activity mActivity;
@@ -73,6 +75,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     protected Toolbar mNormalToolbar;
     protected FrontCardView mFrontCardView;
     protected MPTextView mTimerTextView;
+    protected FrameLayout mDiscountFrameLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,7 +112,6 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         if (this.getIntent().getStringExtra("amount") != null) {
             amount = new BigDecimal(this.getIntent().getStringExtra("amount"));
         }
-
         Site site = JsonUtil.getInstance().fromJson(this.getIntent().getStringExtra("site"), Site.class);
         List<PayerCost> payerCosts;
         try {
@@ -120,10 +122,17 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             payerCosts = null;
         }
 
+        Discount discount = JsonUtil.getInstance().fromJson(getIntent().getStringExtra("discount"), Discount.class);
+        String payerEmail = this.getIntent().getStringExtra("payerEmail");
+        Boolean discountEnabled = this.getIntent().getBooleanExtra("discountEnabled", true);
+
         mPresenter.setPaymentMethod(paymentMethod);
         mPresenter.setPublicKey(publicKey);
         mPresenter.setIssuer(issuer);
         mPresenter.setAmount(amount);
+        mPresenter.setPayerEmail(payerEmail);
+        mPresenter.setDiscount(discount);
+        mPresenter.setDiscountEnabled(discountEnabled);
         mPresenter.setSite(site);
         mPresenter.setPayerCosts(payerCosts);
         mPresenter.setPaymentPreference(paymentPreference);
@@ -177,7 +186,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         decorate();
         showTimer();
         initializeAdapter();
-        mPresenter.loadPayerCosts();
+
+        mPresenter.initialize();
     }
 
     private void showTimer() {
@@ -191,6 +201,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void onInvalidStart(String message) {
         Intent returnIntent = new Intent();
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
@@ -219,6 +230,8 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             mNormalToolbar = (Toolbar) findViewById(R.id.mpsdkRegularToolbar);
             mNormalToolbar.setVisibility(View.VISIBLE);
         }
+
+        mDiscountFrameLayout = (FrameLayout) findViewById(R.id.mpsdkDiscount);
     }
 
     public void loadLowResViews() {
@@ -257,6 +270,9 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
+                    setResult(RESULT_CANCELED, returnIntent);
                     finish();
                 }
             });
@@ -349,12 +365,16 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void showLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.GONE);
+        mDiscountFrameLayout.setVisibility(View.GONE);
+
         LayoutUtil.showProgressLayout(this);
     }
 
     @Override
     public void stopLoadingView() {
         mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
+        mDiscountFrameLayout.setVisibility(View.VISIBLE);
+
         LayoutUtil.showRegularLayout(this);
     }
 
@@ -372,6 +392,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     public void finishWithResult(PayerCost payerCost) {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("payerCost", JsonUtil.getInstance().toJson(payerCost));
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_OK, returnIntent);
         finish();
     }
@@ -382,6 +403,7 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
                 mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("backButtonPressed", true);
+        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
@@ -392,9 +414,20 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
         if (requestCode == ErrorUtil.ERROR_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 mPresenter.recoverFromFailure();
-            } else {
-                setResult(resultCode, data);
-                finish();
+            }
+        } else if (requestCode == MercadoPago.DISCOUNTS_REQUEST_CODE) {
+            resolveDiscountRequest(resultCode, data);
+        } else {
+            setResult(resultCode, data);
+            finish();
+        }
+    }
+
+    protected void resolveDiscountRequest(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (mPresenter.getDiscount() == null) {
+                Discount discount = JsonUtil.getInstance().fromJson(data.getStringExtra("discount"), Discount.class);
+                mPresenter.onDiscountReceived(discount);
             }
         }
     }
@@ -407,5 +440,52 @@ public class InstallmentsActivity extends AppCompatActivity implements Installme
     @Override
     public void onFinish() {
         this.finish();
+    }
+
+    @Override
+    public void startDiscountActivity(BigDecimal transactionAmount) {
+        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
+
+        mercadoPagoBuilder.setActivity(this)
+                .setPublicKey(mPresenter.getPublicKey())
+                .setPayerEmail(mPresenter.getPayerEmail())
+                .setAmount(transactionAmount)
+                .setDiscount(mPresenter.getDiscount())
+                .setDecorationPreference(mDecorationPreference);
+
+        if (mPresenter.getDiscount() == null) {
+            mercadoPagoBuilder.setDirectDiscountEnabled(false);
+        } else {
+            mercadoPagoBuilder.setDiscount(mPresenter.getDiscount());
+        }
+
+        mercadoPagoBuilder.startDiscountsActivity();
+    }
+
+    @Override
+    public void showDiscountRow(BigDecimal transactionAmount) {
+        DiscountRowView discountRowView = new MercadoPagoUI.Views.DiscountRowViewBuilder()
+                .setContext(this)
+                .setDiscount(mPresenter.getDiscount())
+                .setTransactionAmount(transactionAmount)
+                .setCurrencyId(mPresenter.getSite().getCurrencyId())
+                .setDiscountEnabled(mPresenter.getDiscountEnabled())
+                .build();
+
+        discountRowView.inflateInParent(mDiscountFrameLayout, true);
+        discountRowView.initializeControls();
+        discountRowView.draw();
+        discountRowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPresenter.getDiscountEnabled()) {
+                    mPresenter.initializeDiscountActivity();
+                }
+            }
+        });
+    }
+
+    public InstallmentsPresenter getPresenter() {
+        return mPresenter;
     }
 }

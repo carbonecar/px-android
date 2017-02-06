@@ -166,16 +166,12 @@ public class MercadoPagoComponents {
                 return this;
             }
 
-            public void startActivity(PaymentDataCallback paymentDataCallback) {
+            public void startActivity() {
                 if (this.activity == null) throw new IllegalStateException("activity is null");
                 if (this.amount == null) throw new IllegalStateException("amount is null");
                 if (this.site == null) throw new IllegalStateException("site is null");
                 if (this.merchantPublicKey == null)
                     throw new IllegalStateException("public key is null");
-                if (paymentDataCallback == null) {
-                    throw new IllegalStateException("paymentDataCallback is null");
-                }
-                CallbackHolder.getInstance().setPaymentDataCallback(paymentDataCallback);
                 startPaymentVaultActivity();
             }
 

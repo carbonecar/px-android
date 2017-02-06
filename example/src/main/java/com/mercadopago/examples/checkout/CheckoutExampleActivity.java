@@ -84,7 +84,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         }).show();
     }
 
-
     public void onContinueClicked(View view) {
         showProgressLayout();
 //        Map<String, Object> map = new HashMap<>();

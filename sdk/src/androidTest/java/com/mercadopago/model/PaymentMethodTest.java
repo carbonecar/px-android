@@ -1,6 +1,5 @@
 package com.mercadopago.model;
 
-import com.mercadopago.DeprecatedCheckoutActivity;
 import com.mercadopago.test.BaseTest;
 
 public class PaymentMethodTest extends BaseTest<DeprecatedCheckoutActivity> {

@@ -156,44 +156,8 @@ public class CheckoutActivity extends AppCompatActivity implements CheckoutActiv
                 .setMerchantPublicKey(mMerchantPublicKey)
                 .setPaymentMethodSearch(mPresenter.getPaymentMethodSearch())
                 .setCards(mPresenter.getSavedCards())
-                .startActivity(new PaymentDataCallback() {
-                    @Override
-                    public void onSuccess(PaymentData paymentData) {
-                        onSuccessPaymentVaultRequest(paymentData);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        onCancelPaymentVaultRequest();
-                    }
-
-                    @Override
-                    public void onFailure(MercadoPagoError exception) {
-                        onFailurePaymentVaultRequest(exception);
-                    }
-                });
+                .startActivity();
     }
-
-//    private void resolvePaymentVaultRequest(PaymentData paymentData) {
-//        if (resultCode == RESULT_OK) {
-//
-//            mSelectedIssuer = JsonUtil.getInstance().fromJson(data.getStringExtra("issuer"), Issuer.class);
-//            mSelectedPayerCost = JsonUtil.getInstance().fromJson(data.getStringExtra("payerCost"), PayerCost.class);
-//            mCreatedToken = JsonUtil.getInstance().fromJson(data.getStringExtra("token"), Token.class);
-//            mSelectedPaymentMethod = JsonUtil.getInstance().fromJson(data.getStringExtra("paymentMethod"), PaymentMethod.class);
-//            MPTracker.getInstance().trackScreen("REVIEW_AND_CONFIRM", "3", mMerchantPublicKey, mCheckoutPreference.getSiteId(), BuildConfig.VERSION_NAME, this);
-//            showReviewAndConfirm();
-//            stopProgressBar();
-//        } else {
-//            if (!mPaymentMethodEditionRequested) {
-//                Intent returnIntent = new Intent();
-//                setResult(RESULT_CANCELED, returnIntent);
-//                finish();
-//            } else {
-//                animateBackFromPaymentEdition();
-//            }
-//        }
-//    }
 
     private void onSuccessPaymentVaultRequest(PaymentData paymentData) {
         //showReviewAndConfirm(paymentData);
