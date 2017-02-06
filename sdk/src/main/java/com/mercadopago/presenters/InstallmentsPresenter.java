@@ -1,7 +1,6 @@
 package com.mercadopago.presenters;
 
 import android.content.Context;
-import android.transition.Slide;
 
 import com.mercadopago.R;
 import com.mercadopago.callbacks.Callback;
@@ -336,10 +335,11 @@ public class InstallmentsPresenter {
 
     public void onItemSelected(int position) {
         if (isInstallmentReviewEnabled()){
-            mView.updateDiscountRow(mAmount);
             mView.hideInstallmentsRecyclerView();
-//            mView.showInstallmentsReview();
-//            mView.initInstallmentsReviewView(mPayerCosts.get(position));
+            mView.showInstallmentsReviewView();
+
+            initializeDiscountRow();
+            mView.initInstallmentsReviewView(mPayerCosts.get(position));
         } else {
             mView.finishWithResult(mPayerCosts.get(position));
         }

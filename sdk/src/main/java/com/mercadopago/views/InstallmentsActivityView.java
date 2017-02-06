@@ -27,7 +27,6 @@ public interface InstallmentsActivityView {
     void initInstallmentsReviewView(PayerCost payerCost);
     void hideInstallmentsRecyclerView();
     void showInstallmentsRecyclerView();
-    void hideInstallmentsReview();
-    void showInstallmentsReview();
-    void updateDiscountRow(BigDecimal transactionAmount);
+    void hideInstallmentsReviewView();
+    void showInstallmentsReviewView();
 }
