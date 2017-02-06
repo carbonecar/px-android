@@ -1,5 +1,7 @@
 package com.mercadopago.views;
 
+import android.view.View;
+
 import com.mercadopago.model.ApiException;
 import com.mercadopago.model.PayerCost;
 
@@ -22,5 +24,10 @@ public interface InstallmentsActivityView {
     void initializeInstallments(List<PayerCost> payerCostList);
     void showDiscountRow(BigDecimal transactionAmount);
     void startDiscountActivity(BigDecimal transactionAmount);
-    void startInstallmentsReview(PayerCost payerCost, BigDecimal transactionAmount);
+    void initInstallmentsReviewView(PayerCost payerCost);
+    void hideInstallmentsRecyclerView();
+    void showInstallmentsRecyclerView();
+    void hideInstallmentsReview();
+    void showInstallmentsReview();
+    void updateDiscountRow(BigDecimal transactionAmount);
 }

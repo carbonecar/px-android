@@ -17,7 +17,6 @@ import com.mercadopago.CustomerCardsActivity;
 import com.mercadopago.DiscountsActivity;
 import com.mercadopago.GuessingCardActivity;
 import com.mercadopago.InstallmentsActivity;
-import com.mercadopago.InstallmentReviewActivity;
 import com.mercadopago.InstructionsActivity;
 import com.mercadopago.IssuersActivity;
 import com.mercadopago.PaymentMethodsActivity;
@@ -463,26 +462,6 @@ public class MercadoPago {
         intent.putExtra("installmentReviewEnabled", installmentReviewEnabled);
 
         activity.startActivityForResult(intent, INSTALLMENTS_REQUEST_CODE);
-    }
-
-    private static void startInstallmentsReviewActivity(Activity activity, String publicKey, PaymentMethod paymentMethod, PayerCost payerCost,
-                                                        CardInfo cardInfo, Discount discount, Boolean discountEnabled, String payerEmail, BigDecimal amount,
-                                                        Site site, DecorationPreference decorationPreference) {
-
-        Intent intent = new Intent(activity, InstallmentReviewActivity.class);
-
-        intent.putExtra("merchantPublicKey", publicKey);
-        intent.putExtra("paymentMethod", JsonUtil.getInstance().toJson(paymentMethod));
-        intent.putExtra("payerCost", JsonUtil.getInstance().toJson(payerCost));
-        intent.putExtra("cardInfo", JsonUtil.getInstance().toJson(cardInfo));
-        intent.putExtra("discount", JsonUtil.getInstance().toJson(discount));
-        intent.putExtra("amount", JsonUtil.getInstance().toJson(amount));
-        intent.putExtra("discountEnabled", discountEnabled);
-        intent.putExtra("payerEmail", payerEmail);
-        intent.putExtra("site", JsonUtil.getInstance().toJson(site));
-        intent.putExtra("decorationPreference", JsonUtil.getInstance().toJson(decorationPreference));
-
-        activity.startActivityForResult(intent, INSTALLMENT_REVIEW_REQUEST_CODE);
     }
 
     private static void startIssuersActivity(Activity activity, String publicKey,
@@ -1196,17 +1175,6 @@ public class MercadoPago {
             MercadoPago.startInstallmentsActivity(mActivity, mAmount, mSite,
                     mKey, mPayerCosts, mPaymentPreference, mIssuer, mPaymentMethod, mDecorationPreference,
                     mCardInfo, mAmount, mPayerEmail, mDiscount, mDiscountEnabled, mInstallmentReviewEnabled);
-        }
-
-        public void startInstallmentsReviewActivity() {
-            if (this.mActivity == null) throw new IllegalStateException("activity is null");
-            if (this.mPaymentMethod == null) throw new IllegalStateException("payment method is null");
-            if (this.mPayerCost == null) throw new IllegalStateException("payer cost is null");
-            if (this.mCardInfo == null) throw new IllegalStateException("card info is null");
-            if (this.mKey == null) throw new IllegalStateException("key is null");
-
-            MercadoPago.startInstallmentsReviewActivity(mActivity, mKey, mPaymentMethod, mPayerCost, mCardInfo, mDiscount,
-                    mDiscountEnabled, mPayerEmail, mAmount, mSite, mDecorationPreference);
         }
 
         public void startIssuersActivity() {

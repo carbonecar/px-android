@@ -4,13 +4,14 @@ import com.google.gson.reflect.TypeToken;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -37,6 +38,7 @@ import com.mercadopago.presenters.InstallmentsPresenter;
 import com.mercadopago.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.uicontrollers.card.FrontCardView;
 import com.mercadopago.uicontrollers.discounts.DiscountRowView;
+import com.mercadopago.uicontrollers.installments.InstallmentsReviewView;
 import com.mercadopago.util.ApiUtil;
 import com.mercadopago.util.ColorsUtil;
 import com.mercadopago.util.ErrorUtil;
@@ -71,6 +73,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
     protected CollapsingToolbarLayout mCollapsingToolbar;
     protected AppBarLayout mAppBar;
     protected FrameLayout mCardContainer;
+    protected FrameLayout mInstallmentsReview;
     protected Toolbar mNormalToolbar;
     protected FrontCardView mFrontCardView;
     protected MPTextView mTimerTextView;
@@ -237,6 +240,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         }
 
         mDiscountFrameLayout = (FrameLayout) findViewById(R.id.mpsdkDiscount);
+        mInstallmentsReview = (FrameLayout) findViewById(R.id.mpsdkInstallmentsReview);
     }
 
     public void loadLowResViews() {
@@ -272,10 +276,16 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
-                    setResult(RESULT_CANCELED, returnIntent);
-                    finish();
+                    if (isInstallmentsRecyclerViewVisible()) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
+                        setResult(RESULT_CANCELED, returnIntent);
+                        finish();
+                    } else {
+                        mPresenter.initializeDiscountRow();
+                        hideInstallmentsReview();
+                        showInstallmentsRecyclerView();
+                    }
                 }
             });
         }
@@ -393,13 +403,19 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
 
     @Override
     public void onBackPressed() {
-        MPTracker.getInstance().trackEvent("CARD_INSTALLMENTS", "BACK_PRESSED", "2",
-                mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("backButtonPressed", true);
-        returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
-        setResult(RESULT_CANCELED, returnIntent);
-        finish();
+        if (isInstallmentsRecyclerViewVisible()) {
+            MPTracker.getInstance().trackEvent("CARD_INSTALLMENTS", "BACK_PRESSED", "2",
+                    mPresenter.getPublicKey(), mPresenter.getSite().getId(), BuildConfig.VERSION_NAME, this);
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("backButtonPressed", true);
+            returnIntent.putExtra("discount", JsonUtil.getInstance().toJson(mPresenter.getDiscount()));
+            setResult(RESULT_CANCELED, returnIntent);
+            finish();
+        } else {
+            mPresenter.initializeDiscountRow();
+            hideInstallmentsReview();
+            showInstallmentsRecyclerView();
+        }
     }
 
     @Override
@@ -465,6 +481,35 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
         mercadoPagoBuilder.startDiscountsActivity();
     }
 
+    //TODO installments mejorar
+    @Override
+    public void updateDiscountRow(BigDecimal transactionAmount) {
+        MercadoPagoUI.Views.DiscountRowViewBuilder discountRowBuilder = new MercadoPagoUI.Views.DiscountRowViewBuilder();
+
+        discountRowBuilder.setContext(this)
+                .setTransactionAmount(transactionAmount)
+                .setDiscount(mPresenter.getDiscount())
+                .setCurrencyId(mPresenter.getSite().getCurrencyId());
+
+        if (mPresenter.getDiscount() == null) {
+            discountRowBuilder.setDiscountEnabled(false);
+        }
+
+        DiscountRowView discountRowView = discountRowBuilder.build();
+
+        discountRowView.inflateInParent(mDiscountFrameLayout, true);
+        discountRowView.initializeControls();
+        discountRowView.draw();
+        discountRowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPresenter.getDiscount() != null) {
+                    mPresenter.initializeDiscountActivity();
+                }
+            }
+        });
+    }
+
     @Override
     public void showDiscountRow(BigDecimal transactionAmount) {
         DiscountRowView discountRowView = new MercadoPagoUI.Views.DiscountRowViewBuilder()
@@ -489,22 +534,52 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity implements Ins
     }
 
     @Override
-    public void startInstallmentsReview(PayerCost payerCost, BigDecimal transactionAmount) {
-        MercadoPago.StartActivityBuilder mercadoPagoBuilder = new MercadoPago.StartActivityBuilder();
-
-        mercadoPagoBuilder.setActivity(this)
-                .setPublicKey(mPresenter.getPublicKey())
-                .setPaymentMethod(mPresenter.getPaymentMethod())
+    public void initInstallmentsReviewView(final PayerCost payerCost) {
+        InstallmentsReviewView installmentsReviewView= new MercadoPagoUI.Views.InstallmentsReviewViewBuilder()
+                .setContext(this)
+                .setCurrencyId(mPresenter.getSite().getCurrencyId())
                 .setPayerCost(payerCost)
-                .setCardInfo(mPresenter.getCardInfo())
-                .setDiscount(mPresenter.getDiscount())
-                .setDiscountEnabled(mPresenter.getDiscountEnabled())
-                .setPayerEmail(mPresenter.getPayerEmail())
-                .setAmount(transactionAmount)
-                .setSite(mPresenter.getSite())
-                .setDecorationPreference(mDecorationPreference);
+                .build();
 
-        mercadoPagoBuilder.startInstallmentsReviewActivity();
+        installmentsReviewView.inflateInParent(mInstallmentsReview, true);
+        installmentsReviewView.initializeControls();
+        installmentsReviewView.draw();
+        installmentsReviewView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finishWithResult(payerCost);
+            }
+        });
+    }
+
+    //TODO validar installment
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB_MR1)
+    @Override
+    public void hideInstallmentsRecyclerView() {
+
+        mInstallmentsRecyclerView.animate().x(1000);
+
+
+//        mInstallmentsRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showInstallmentsRecyclerView() {
+        mInstallmentsRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showInstallmentsReview() {
+        mInstallmentsReview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideInstallmentsReview() {
+        mInstallmentsReview.setVisibility(View.GONE);
+    }
+
+    private Boolean isInstallmentsRecyclerViewVisible() {
+        return mInstallmentsRecyclerView.getVisibility() == View.VISIBLE;
     }
 
     public InstallmentsPresenter getPresenter() {

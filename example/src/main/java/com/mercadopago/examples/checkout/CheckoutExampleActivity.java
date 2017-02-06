@@ -100,7 +100,7 @@ public class CheckoutExampleActivity extends AppCompatActivity {
 //                .setCheckoutPreferenceId("236387490-8cc00347-60c4-4524-b9bf-ff6c14126551")
 //                .setDecorationPreference(decorationPreference) //Optional
 //                .startCheckoutActivity();
-
+//
 
         DecorationPreference decorationPreference = getCurrentDecorationPreference();
 

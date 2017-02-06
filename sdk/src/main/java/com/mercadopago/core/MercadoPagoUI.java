@@ -18,6 +18,7 @@ import com.mercadopago.model.PayerCost;
 import com.mercadopago.model.PaymentMethod;
 import com.mercadopago.model.PaymentPreference;
 import com.mercadopago.uicontrollers.discounts.DiscountRowView;
+import com.mercadopago.uicontrollers.installments.InstallmentsReviewView;
 import com.mercadopago.uicontrollers.reviewandconfirm.ReviewSummaryView;
 import com.mercadopago.uicontrollers.savedcards.SavedCardRowView;
 import com.mercadopago.uicontrollers.savedcards.SavedCardView;
@@ -329,6 +330,31 @@ public class MercadoPagoUI {
             public ReviewSummaryView build() {
                 return new ReviewSummaryView(context, currencyId, amount, payerCost, paymentMethod,
                         discountPercentage, discountAmount, callback, decorationPreference);
+            }
+        }
+
+        public static class InstallmentsReviewViewBuilder {
+            private Context context;
+            private PayerCost payerCost;
+            private String currencyId;
+
+            public InstallmentsReviewViewBuilder setContext(Context context) {
+                this.context = context;
+                return this;
+            }
+
+            public InstallmentsReviewViewBuilder setPayerCost(PayerCost payerCost) {
+                this.payerCost = payerCost;
+                return this;
+            }
+
+            public InstallmentsReviewViewBuilder setCurrencyId(String currencyId) {
+                this.currencyId = currencyId;
+                return this;
+            }
+
+            public InstallmentsReviewView build() {
+                return new InstallmentsReviewView(context, payerCost, currencyId);
             }
         }
     }
